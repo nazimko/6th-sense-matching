@@ -1,0 +1,385 @@
+<resources>
+    <string name="app_name">Aurenia</string>
+    <string name="web_client_id">59601056696-ilhuiccbnp9pumusba4g4bv35l0qg853.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">25926651663696038</string>
+    <string name="fb_login_protocol_scheme">fb25926651663696038</string>
+    <string name="phase1_title">Visual Intuition</string>
+    <string name="phase1_description">Choose with your first instinct.</string>
+    <string name="phase1_question1">Which word appeals to you more?</string>
+    <string name="p1_q1_option1">FREEDOM</string>
+    <string name="p1_q1_option2">BALANCE</string>
+    <string name="phase1_question2">Which emoji best represents you?</string>
+    <string name="p1_q2_option1">FIRE</string>
+    <string name="p1_q2_option2">Water</string>
+    <string name="phase2_title">Colors</string>
+    <string name="phase2_description">Which color appeals to you?</string>
+    <string name="phase2_question1">Which shade do you prefer?</string>
+    <string name="p2_q1_option1">Warm Tones</string>
+    <string name="p2_q1_option2">Cold Tones</string>
+    <string name="questions_loading">Questions are loading…</string>
+    <string name="intuition">INTUITION</string>
+    <string name="colors">COLORS</string>
+    <string name="spirit_animals">SPIRIT ANIMALS</string>
+    <string name="elements">ELEMENTS</string>
+    <string name="dimensions">DIMENSIONS</string>
+    <string name="free_spirit">FREE SPIRIT</string>
+    <string name="qustion">"Question "</string>
+    <string name="phase1_subtitle">Follow your feelings</string>
+    <string name="phase2_subtitle">What resonates with you?</string>
+    <string name="phase3_subtitle">Your inner guide</string>
+    <string name="phase4_subtitle">Choose your elemental path</string>
+    <string name="phase5_subtitle">Beyond space and time</string>
+    <string name="phase6_subtitle">Say what comes to mind</string>
+    <string name="nature">Nature</string>
+    <string name="moods">Moods</string>
+    <string name="preferenses">Preferences</string>
+    <string name="last_questions">Last questions</string>
+    <string name="choose_feel">Choose what you feel.</string>
+    <string name="continue_text">Continue →</string>
+    <string name="planet_placeholder">Example: Mars, Venus…</string>
+    <string name="team_placeholder">Example: Barcelona, Lakers…</string>
+    <string name="male_name_placeholder">Example: Ali, John…</string>
+    <string name="city_placeholder">Example: Paris, Tokyo…</string>
+    <string name="planet_question">Name a planet</string>
+    <string name="team_question">Name a sports team</string>
+    <string name="male_name_question">Name a boy</string>
+    <string name="city_question">Name a city</string>
+    <string name="first_word">The first word that comes to your mind</string>
+    <string name="food_question">Name a food</string>
+    <string name="movie_question">Name a movie</string>
+    <string name="song_question">Name a song</string>
+    <string name="book_question">Name a book</string>
+    <string name="food_placeholder">Example: Pizza, Sushi…</string>
+    <string name="movie_placeholder">Example: Inception, Avatar…</string>
+    <string name="song_placeholder">Example: Bohemian Rhapsody…</string>
+    <string name="book_placeholder">Example: 1984, Harry Potter…</string>
+    <string name="no_match_text">You haven\'t been matched with anyone yet 😔\nSomeone might match with you. Leave it to fate.</string>
+    <string name="try_tomorrow_text">You can try again tomorrow with how you feel.</string>
+    <string name="home">Home</string>
+    <string name="completed_today_text">Completed today.</string>
+    <string name="come_tomorrow_text">You used your intuition today. \nA new discovery awaits you tomorrow 🔮</string>
+    <string name="auth_subtitle_1">Find your soulmate</string>
+    <string name="auth_subtitle_2">Connect deeply</string>
+    <string name="auth_subtitle_3">Discover harmony</string>
+    <string name="feature_item_1">AI-powered matching</string>
+    <string name="feature_item_2">Deep compatibility analysis</string>
+    <string name="feature_item_3">Authentic connections</string>
+    <string name="google_button_text">Continue with Google</string>
+    <string name="no_coversation_text">You don\'t have a conversation yet.</string>
+    <string name="no_conversation_subtext">Once you match, you can start messaging!</string>
+    <string name="conversations_text">Conversations 💬</string>
+    <string name="no_message_text">No message yet.</string>
+    <string name="similarity_text">Similarity</string>
+    <string name="messages_text">Messages</string>
+    <string name="profile_text">Profile</string>
+    <string name="discover_text">Discover</string>
+    <string name="connection_error_message">Connection error</string>
+    <string name="check_internet_text">Check your internet connection\nand try again</string>
+    <string name="try_again_text">🔄 Try Again</string>
+    <string name="loading_text">Loading…</string>
+    <string name="image_failed_text">Image failed to load</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="checklist">"Checklist: "</string>
+    <string name="wifi_text">Is Wi-Fi or mobile data turned on?</string>
+    <string name="airplane_mode">Is flight mode off?</string>
+    <string name="signal">Is the signal strength good enough?</string>
+    <string name="checking">Checking…</string>
+    <string name="no_internet_subtitle">If the problem persists, check your settings.</string>
+    <string name="hint">Hint</string>
+    <string name="hint_subtitle">Some features work in offline mode. You can explore the app even without an internet connection.</string>
+    <string name="limit">Limit reached!</string>
+    <string name="later">Later</string>
+    <string name="upgrade">Upgrade to Premium</string>
+    <string name="statistics">Statistics</string>
+    <string name="reached_daily_discover">You\'ve reached your daily discover limit</string>
+    <string name="discover">Discover 🔭</string>
+    <string name="active_today">Active today</string>
+    <string name="card">card</string>
+    <string name="no_active_users">There are no \nother active users today.</string>
+    <string name="invite_your_friends">Come again tomorrow \nor invite your friends!</string>
+    <string name="refresh">"Refresh 🔄 "</string>
+    <string name="harmony">% harmony</string>
+    <string name="matched">✨ Matched</string>
+    <string name="join_the_game">Join the Game 🎮</string>
+    <string name="match_notification_body">You\'ve been matched with someone new.</string>
+    <string name="soul_sync_notification_title">Soul Sync Invitation!</string>
+    <string name="error_same_user">You cannot send a friend request to yourself.</string>
+    <string name="error_already_friend">You\'re already friends or there\'s a pending friend request.</string>
+    <string name="error_no_today_session">You didn\'t complete any activities today.</string>
+    <string name="error_no_today_friend_session">Your friend didn\'t complete an activity today.</string>
+    <string name="error_invalid_invite_code">Invalid invite code.</string>
+    <string name="error_own_code">You can\'t use your own code.</string>
+    <string name="error_already_used_code">You already used an invitation code.</string>
+    <string name="accepted_friend">Friendship accepted!</string>
+    <string name="error_occurred">An error occurred.</string>
+    <string name="rejected_friend">Friendship rejected.</string>
+    <string name="removed_friend">Friendship removed</string>
+    <string name="send_friend_request">Friendship request sent!</string>
+    <string name="friends">Friends</string>
+    <string name="invite">Invite</string>
+    <string name="requests">Requests</string>
+    <string name="history">History</string>
+    <string name="no_requests">No pending request.</string>
+    <string name="no_requests_subtext">Your new friend requests \nwill appear here.</string>
+    <string name="friend_request_text">Send Friend Request</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
+    <string name="remove_friend">Removed Friend?</string>
+    <string name="remove_friend_subtext">will be removed from your friend list. Your similarity test history will be preserved.</string>
+    <string name="remove">Yes, remove</string>
+    <string name="cancel">Cancel</string>
+    <string name="enter_invite_code">Enter Invite Code</string>
+    <string name="invite_your_friends_and_test">Share your invite code and take a similarity test with your friends!</string>
+    <string name="copied">Code copied!</string>
+    <string name="copy_code">Copy the code</string>
+    <string name="or">Or</string>
+    <string name="back">Back</string>
+    <string name="submit">Submit</string>
+    <string name="close">Close</string>
+    <string name="no_test_history">You haven\'t taken a test yet.</string>
+    <string name="history_subtext">Take a similarity test with your friend\nand see the results here!</string>
+    <string name="common_choices">Common Choices</string>
+    <string name="no_friends">No friends yet.</string>
+    <string name="friends_subtext">You can add your friends by clicking the Invite button!</string>
+    <string name="active">Active</string>
+    <string name="passive">Passive</string>
+    <string name="friend_completed_today">Your friend completed an activity today.</string>
+    <string name="perfect_harmony">Perfect Harmony!</string>
+    <string name="very_good_harmony">Very Good Harmony!</string>
+    <string name="good_harmony">Good Harmony</string>
+    <string name="compatibility_with_friend">Your similarity with %1$s</string>
+    <string name="total_choices">Total Choices</string>
+    <string name="great">Great!</string>
+    <string name="no_progress">You haven\'t started.</string>
+    <string name="one_progress">You\'ve completed half of it.</string>
+    <string name="two_progress">All done!</string>
+    <string name="todays_activities">Today\'s Activities</string>
+    <string name="session_description_preference">Share your preferences</string>
+    <string name="session_description_intuition">Go with the flow with your intuition</string>
+    <string name="welcome">Welcome back</string>
+    <string name="home_header_greeting">Find Your Connection</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="your_match">Your Match</string>
+    <string name="completed">Done</string>
+    <string name="daily_done">Daily Goal Achieved!</string>
+    <string name="daily_done_desc">You finished both of them, that\'s amazing!</string>
+    <string name="premium_member">Premium Member</string>
+    <string name="daily_limits">Daily Limits</string>
+    <string name="all_active">All features are active.</string>
+    <string name="use_limitless">Go Unlimited</string>
+    <string name="today_match">Today\'s Match</string>
+    <string name="today_matches">Today\'s Matches</string>
+    <plurals name="days_streak">
+        <item quantity="one">%d Day Streak</item>
+        <item quantity="other">%d Days Streak</item>
+    </plurals>
+    <string name="today">Today</string>
+    <string name="waiting">Waiting…</string>
+    <string name="view_details">View Details →</string>
+    <string name="spiritual_harmony">Spiritual Harmony</string>
+    <string name="interesting">Interesting</string>
+    <string name="no_harmony">Differences enrich society!</string>
+    <string name="connection">Connection</string>
+    <string name="home_no_matches">No Matches Yet</string>
+    <string name="home_subtitle">Complete your daily activities \nand trust your intuition.</string>
+    <string name="no_session">Session not found</string>
+    <string name="wp_isnt_loaded">WhatsApp isn\'t installed.</string>
+    <string name="ig_isnt_loaded">Instagram isn\'t installed.</string>
+    <string name="share_fb_text">Please log in through your browser to share on Facebook.</string>
+    <string name="share_via_sms">Send via SMS</string>
+    <string name="share_via_email">Send via E-mail</string>
+    <string name="share">Share</string>
+    <string name="code_input_subtitle_text">Enter the invite code you received from your friend and get premium!</string>
+    <string name="apply">Apply 🎁</string>
+    <string name="congrats">Congratulations!</string>
+    <string name="premium_win_message">You won %1$d days of Premium!</string>
+    <string name="premium_badge">Premium Badge</string>
+    <string name="unlimited_messaging">Unlimited Messaging</string>
+    <string name="unlimited_swipe">Unlimited Swipes</string>
+    <string name="premium_active_status">Premium active for %1$d days</string>
+    <string name="share_invite_message">
+    🔮 Join Aurania!\n\n
+    Meet people who resonate with your intuition. Build meaningful connections through daily activities and our spiritual alignment algorithm.\n\n
+    My invite code: %1$s\n\n
+    %2$s
+</string>
+    <string name="share_aurania">Share Aurania</string>
+    <string name="shared">Shared!</string>
+    <string name="invite_message_simple">🔮 Join Aurenia! Find people who resonate with your intuition.\nMy code: %1$s</string>
+    <string name="email_subject">You are invited to Aurenia!</string>
+    <string name="invite_email_simple">🔮 Hello! \n \n I invite you to Aurenis, an intuitive matching platform. \nMy invitation code: %1$s</string>
+    <string name="earn_premium">Earn Premium!</string>
+    <string name="reward_item1">1 Week Premium</string>
+    <string name="reward_item2">+5 days of unlimited swipes</string>
+    <string name="reward_item3">Special Badge</string>
+    <string name="wp_desc">Share with a special person.</string>
+    <string name="ig_desc">Share on Story or DM</string>
+    <string name="fb_desc">Invite your friends</string>
+    <string name="tw_desc">Share as a tweet</string>
+    <string name="copy_desc">Copy and share the link.</string>
+    <string name="my_code">My Invite Code</string>
+    <string name="invitation_sent">Invitation sent</string>
+    <string name="invitation_accepted">Joined Friends</string>
+    <string name="premium_days_earned">Earned Premium</string>
+    <string name="days">days</string>
+    <string name="people">people</string>
+    <string name="you_are_friends">You are friends</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="message_text">Message</string>
+    <string name="more_matches">More Matches</string>
+    <string name="gate_card_subtitle">Become a premium member to see your entire match history.</string>
+    <string name="matches">Matches</string>
+    <string name="premium_limit_reached">You\'ve reached your daily message limit\nUpgrade to Premium for unlimited messaging</string>
+    <string name="error_conversation_id">Error: Conversation not found.</string>
+    <string name="match_not_found">Error: Match not found</string>
+    <string name="match_removed">Match removed</string>
+    <string name="onboarding_1">Welcome to Aurania</string>
+    <string name="onboarding_1_desc">Use your intuition, connect with your spiritual world, and meet people who are similar to you.</string>
+    <string name="onboarding_2">Daily Intuition Activity</string>
+    <string name="onboarding_2_desc">A different theme every day. Colors, elements, animals… Your choices define you.</string>
+    <string name="onboarding_3">Soulmate</string>
+    <string name="onboarding_3_desc">Your choices match you with like-minded people. Genuine connections, genuine intuition.</string>
+    <string name="skip">Skip</string>
+    <string name="begin">Let\'s begin.</string>
+    <string name="start_monthly">Start Monthly Premium</string>
+    <string name="start_yearly">Start Yearly Premium</string>
+    <string name="cancel_anytime">You can cancel anytime.</string>
+    <string name="paywall_subtitle">Unleash the full power of your intuition.</string>
+
+    <string name="premium_feature_explore_title">Unlimited Explore</string>
+    <string name="premium_feature_messaging_title">Unlimited Messaging</string>
+    <string name="premium_feature_matches_title">All Matches</string>
+    <string name="premium_feature_badge_title">Premium Badge</string>
+    <string name="premium_feature_ads_title">Ad-Free</string>
+
+    <string name="premium_feature_explore_desc">Remove your daily swipe limit</string>
+    <string name="premium_feature_messaging_desc">Remove the 10-message daily limit</string>
+    <string name="premium_feature_matches_desc">View your entire match history</string>
+    <string name="premium_feature_badge_desc">Exclusive badge on your profile</string>
+    <string name="premium_feature_ads_desc">Interruption-free experience</string>
+    <string name="choose_plan">Choose Plan</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="price_format">%1$s %2$s</string>
+    <string name="price_per_month">%1$s / month</string>
+    <string name="price_per_year">%1$s / year</string>
+    <string name="save_badge">Save %1$s%%</string>
+    <string name="trial_period">%1$d days free trial</string>
+    <string name="feature_unlimited_matches">Unlimited daily matches</string>
+    <string name="feature_soul_sync">Advanced Soul Sync</string>
+    <string name="feature_priority">Priority matching</string>
+    <string name="premium_member_desc">You have Aurania Premium.</string>
+    <string name="first_activity">First Step</string>
+    <string name="first_activity_desc">Complete your first activity.</string>
+    <string name="streak_3">Ring of Fire</string>
+    <string name="streak_3_desc">Complete a 3-day streak</string>
+    <string name="streak_7">Weekly Champion</string>
+    <string name="streak_7_desc">Complete a week streak</string>
+    <string name="first_match">First Match</string>
+    <string name="first_match_desc">Make your first match.</string>
+    <string name="matches_5">Master of Intuition</string>
+    <string name="matches_5_desc">Make 5 matches</string>
+    <string name="veteran">Veteran</string>
+    <string name="veteran_desc">Member for 30 days</string>
+    <string name="legend">Legend</string>
+    <string name="legend_desc">Complete 50 activities</string>
+    <string name="activities">Activities</string>
+    <string name="member_since">Days of Member</string>
+    <string name="activities_details_text">Activity Details</string>
+    <string name="total_activities">Total Activities</string>
+    <string name="last_7_days">Last 7 Days</string>
+    <string name="badges_text">Badges</string>
+    <string name="my_friends">My Friends</string>
+    <string name="check_compatibility">Check compatibility</string>
+    <string name="total_matches">Total Matches</string>
+    <string name="next_goal">Next Goal</string>
+    <string name="name_updated">Name updated ✓</string>
+    <string name="theme">Theme</string>
+    <string name="notifications">Notifications</string>
+    <string name="match_notifications">Match Notifications</string>
+    <string name="match_notifications_desc">Notify me when I have a new match.</string>
+    <string name="message_notifications">Message Notifications</string>
+    <string name="message_notifications_desc">Notify me on new message.</string>
+    <string name="privacy">Privacy</string>
+    <string name="show_in_discover">Show in Discover</string>
+    <string name="show_in_discover_desc">Show profile to other users</string>
+    <string name="save">Save</string>
+    <string name="edit_name">Edit name</string>
+    <string name="anonymous">No name</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="light_theme">Light Theme</string>
+    <string name="dark_desc">Eye-friendly dark mode</string>
+    <string name="light_desc">Bright and clean</string>
+    <string name="soul_sync_button_text">"Enter Soul Sync "</string>
+    <string name="soul_sync_subtitle">Are you ready for the deep compatibility test?</string>
+    <string name="no_match_subtitle">When someone else completes the test,\nthe similarity between you will be calculated automatically.</string>
+    <string name="answer">Write your answer…</string>
+    <string name="ready">Get ready!</string>
+    <string name="test_over">Test Over!</string>
+    <string name="you">You</string>
+    <string name="continue_messaging_text">Keep messaging 💬</string>
+    <string name="score">Score</string>
+
+    <string name="comp_legendary_title">LEGENDARY HARMONY!</string>
+    <string name="comp_legendary_msg">You both are on the exact same wavelength!</string>
+
+    <string name="comp_perfect_title">PERFECT MATCH!</string>
+    <string name="comp_perfect_msg">You have a wonderful connection!</string>
+
+    <string name="comp_strong_title">STRONG VIBE!</string>
+    <string name="comp_strong_msg">You understand each other very well!</string>
+
+    <string name="comp_good_title">GOOD SYNERGY!</string>
+    <string name="comp_good_msg">You have plenty of common ground!</string>
+
+    <string name="comp_different_title">DIFFERENT PERSPECTIVES</string>
+    <string name="comp_different_msg">But that makes your dynamic interesting!</string>
+    <string name="your_answer">Your Answer</string>
+    <string name="your_matches_answer">Your Match\'s Answer</string>
+    <string name="points">points</string>
+
+    <string name="match_perfect">PERFECT MATCH!</string>
+    <string name="match_near">SO CLOSE!</string>
+    <string name="match_different">DIFFERENT</string>
+    <string name="and_text">and</string>
+
+    <string name="game_status_joining">Joining game…</string>
+    <string name="game_status_waiting_opponent">Waiting for opponent…</string>
+    <string name="game_status_starting">Game starting…</string>
+    <string name="sent_answer">Answer sent</string>
+    <string name="your_match_typing">Your match is typing an answer…</string>
+    <string name="activities_10">Active Explorer</string>
+
+    <string name="activities_10_desc">Complete 10 activities</string>
+
+    <string-array name="days_of_week_short">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
+
+    <string-array name="profile_questions_array">
+        <item>An animal</item>
+        <item>A color</item>
+        <item>A meal</item>
+        <item>A city</item>
+        <item>A fruit</item>
+        <item>A profession</item>
+        <item>An emotion</item>
+        <item>A season</item>
+        <item>A drink</item>
+        <item>A flower</item>
+        <item>A musical instrument</item>
+        <item>A sport</item>
+        <item>A planet</item>
+        <item>An element</item>
+        <item>A game</item>
+    </string-array>
+
+
+</resources>

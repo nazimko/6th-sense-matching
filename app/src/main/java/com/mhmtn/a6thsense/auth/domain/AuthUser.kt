@@ -1,0 +1,10 @@
+package com.mhmtn.a6thsense.auth.domain
+
+data class AuthUser(
+    val uid: String,
+    val name: String,
+    val photoUrl: String?,
+    val isPremium: Boolean = false,
+    val showInDiscover: Boolean = true
+)
+

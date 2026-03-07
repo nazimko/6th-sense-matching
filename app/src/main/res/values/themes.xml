@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Ana App Teması -->
+    <style name="Theme._6thSense" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Splash Screen Teması -->
+    <style name="Theme._6thSense.Starting" parent="Theme.SplashScreen">
+
+        <!-- Arka plan -->
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+
+        <!-- Ortadaki icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+
+        <!-- Animasyon süresi -->
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+
+        <!-- Splash sonrası geçilecek tema -->
+        <item name="postSplashScreenTheme">@style/Theme._6thSense</item>
+
+    </style>
+
+</resources>

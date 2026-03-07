@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="40dp"
+    android:viewportWidth="200"
+    android:viewportHeight="40">
+
+    <!-- "VibeTribe" text as path (you'll need to convert text to path) -->
+    <!-- For now, simple text representation -->
+    <group>
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M20,20 h160 v2 h-160 z" />
+    </group>
+</vector>

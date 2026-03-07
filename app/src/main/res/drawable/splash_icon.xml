@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Gradient tanımı -->
+    <group android:name="logo_group">
+        <!-- Outer glow circle -->
+        <path
+            android:fillColor="#7B5EA7"
+            android:fillAlpha="0.3"
+            android:pathData="M100,100m-80,0a80,80 0,1,1 160,0a80,80 0,1,1 -160,0" />
+
+        <!-- Middle circle -->
+        <path
+            android:fillColor="#4568DC"
+            android:fillAlpha="0.5"
+            android:pathData="M100,100m-60,0a60,60 0,1,1 120,0a60,60 0,1,1 -120,0" />
+
+        <!-- Center crystal/gem shape -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M100,40 L140,80 L140,120 L100,160 L60,120 L60,80 Z" />
+
+        <!-- Inner gradient -->
+        <path
+            android:pathData="M100,40 L140,80 L140,120 L100,160 L60,120 L60,80 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startColor="#7B5EA7"
+                    android:endColor="#4568DC"
+                    android:type="linear"
+                    android:startX="100"
+                    android:startY="40"
+                    android:endX="100"
+                    android:endY="160" />
+            </aapt:attr>
+        </path>
+    </group>
+</vector>
