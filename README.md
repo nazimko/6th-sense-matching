@@ -1,5 +1,7 @@
 # 6thSense Based Matching App Architecture
 
+📲 [Try Now](https://rb.gy/htgz2s)
+
 This repository demonstrates the modular architecture of the 6thSense Android application, showcasing a clean separation of concerns and modern Android development practices.
 
 The implementation code has been removed to focus on structural design.
