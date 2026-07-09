@@ -25,23 +25,4 @@ fun AppStartRoute(
             OnboardingEntryPoint::class.java
         )
         .onboardingRepository()
-) {
-    LaunchedEffect(Unit) {
-
-        val hasCompletedOnboarding = onboardingRepository
-            .hasCompletedOnboarding()
-            .first()
-
-        when {
-            !hasCompletedOnboarding -> {
-                navController.navigate(Routes.ONBOARDING) { popUpTo(0) }
-            }
-            authRepository.currentUser() != null -> {
-                navController.navigate(Routes.HOME) { popUpTo(0) }
-            }
-            else -> {
-                navController.navigate(Routes.AUTH) { popUpTo(0) }
-            }
-        }
-    }
-}
+) {// Source code removed.}

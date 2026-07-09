@@ -7,11 +7,15 @@ object ConversationListContract {
     data class State(
         val conversations: List<ConversationItem> = emptyList(),
         val isLoading: Boolean = true,
-        val error: String? = null
+        val error: String? = null,
+        val conversationToDelete: ConversationItem? = null
     )
 
     sealed class Action {
         data class OnConversationClick(val item: ConversationItem) : Action()
+        data class OnDeleteConversation(val item: ConversationItem) : Action()
+        object ConfirmDelete : Action()
+        object DismissDeleteDialog : Action()
         object Reload : Action()
     }
 

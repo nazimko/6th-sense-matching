@@ -15,45 +15,4 @@ fun MatchHistoryRoute(
     onNavigateToMessaging: (String) -> Unit,
     onNavigateToPaywall: () -> Unit,
     viewModel: MatchHistoryViewModel = hiltViewModel()
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val analyticsHelper = remember {
-        EntryPointAccessors
-            .fromApplication(context, AnalyticsEntryPoint::class.java)
-            .analyticsHelper()
-    }
-
-    LaunchedEffect(Unit) {
-        analyticsHelper.logScreenView("MatchHistoryScreen")
-    }
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is MatchHistoryContract.Effect.NavigateToMessaging -> {
-                    onNavigateToMessaging(
-                        Routes.messagingRoute(
-                            conversationId = effect.conversationId,
-                            matchedUserName = effect.matchedUserName,
-                            matchedUserPhotoUrl = effect.matchedUserPhotoUrl,
-                            matchedUserId = effect.matchedUserId
-                        )
-                    )
-                }
-                MatchHistoryContract.Effect.NavigateToPaywall -> {
-                    onNavigateToPaywall()
-                }
-                is MatchHistoryContract.Effect.ShowToast -> { // 👈 YENİ
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                }
-
-            }
-        }
-    }
-
-    MatchHistoryScreen(
-        state = state,
-        onAction = viewModel::onAction,
-        onBackClick = onBackClick
-    )
-}
+) {// Source code removed.}

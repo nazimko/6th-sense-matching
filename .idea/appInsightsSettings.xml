@@ -18,15 +18,29 @@
             </InsightsFilterSettings>
           </value>
         </entry>
-        <entry key="Firebase Crashlytics">
+        <entry key="Android vitals">
           <value>
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.mhmtn.a6thsense" />
-                  <option name="mobileSdkAppId" value="1:59601056696:android:c43f7481e2dd0ba23f154d" />
-                  <option name="projectId" value="sixth-sense-9647e" />
-                  <option name="projectNumber" value="59601056696" />
+                </ConnectionSetting>
+              </option>
+              <option name="signal" value="SIGNAL_UNSPECIFIED" />
+              <option name="timeIntervalDays" value="SEVEN_DAYS" />
+              <option name="visibilityType" value="ALL" />
+            </InsightsFilterSettings>
+          </value>
+        </entry>
+        <entry key="Firebase Crashlytics">
+          <value>
+            <InsightsFilterSettings>
+              <option name="connection">
+                <ConnectionSetting>
+                  <option name="appId" value="PLACEHOLDER" />
+                  <option name="mobileSdkAppId" value="" />
+                  <option name="projectId" value="" />
+                  <option name="projectNumber" value="" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

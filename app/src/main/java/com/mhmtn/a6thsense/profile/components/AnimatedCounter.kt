@@ -28,39 +28,4 @@ fun AnimatedCounter(
     target: Int,
     label: String,
     gradient: List<Color>
-) {
-    var displayValue by remember { mutableStateOf(0) }
-
-    LaunchedEffect(target) {
-        val steps = 30
-        val stepDelay = 1000L / steps
-        for (i in 0..steps) {
-            displayValue = (target * i / steps)
-            delay(stepDelay)
-        }
-        displayValue = target
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(Brush.linearGradient(gradient))
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = displayValue.toString(),
-                fontSize = 64.sp,
-                fontWeight = FontWeight.Black,
-                color = Color.White
-            )
-            Text(
-                text = label,
-                fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.8f)
-            )
-        }
-    }
-}
+) {// Source code removed.}

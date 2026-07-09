@@ -10,6 +10,7 @@ import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun OnboardingRoute(
+    isDark: Boolean,
     onComplete: () -> Unit,
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
@@ -33,6 +34,7 @@ fun OnboardingRoute(
     }
 
     OnboardingScreen(
+        isDark = isDark,
         onAction = viewModel::onAction
     )
 }

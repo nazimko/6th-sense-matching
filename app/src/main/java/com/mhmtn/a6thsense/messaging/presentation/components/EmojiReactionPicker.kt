@@ -19,28 +19,4 @@ fun EmojiReactionPicker(
     onEmojiSelected: (String) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .background(
-                color = Color(0xFF2A2A3E),
-                shape = RoundedCornerShape(24.dp)
-            )
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AVAILABLE_REACTIONS.forEach { emoji ->
-                Text(
-                    text = emoji,
-                    fontSize = 28.sp,
-                    modifier = Modifier
-                        .clickable { onEmojiSelected(emoji) }
-                        .padding(4.dp)
-                )
-            }
-        }
-    }
-}
+) {// Source code removed.}

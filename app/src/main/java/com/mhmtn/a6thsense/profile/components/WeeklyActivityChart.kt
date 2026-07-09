@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,66 +29,4 @@ import com.mhmtn.a6thsense.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun WeeklyActivityChart(weeklyActivity: List<Boolean>) {
-
-    val days = stringArrayResource(R.array.days_of_week_short).toList()
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        weeklyActivity.forEachIndexed { index, isActive ->
-            val animatedHeight = remember { Animatable(0f) }
-
-            LaunchedEffect(Unit) {
-                delay(index * 100L)
-                animatedHeight.animateTo(
-                    targetValue = if (isActive) 1f else 0.2f,
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessMedium
-                    )
-                )
-            }
-
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(animatedHeight.value)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(
-                                if (isActive)
-                                    Brush.verticalGradient(
-                                        listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
-                                    )
-                                else
-                                    Brush.verticalGradient(
-                                        listOf(
-                                            Color(0xFF7B5EA7).copy(alpha = 0.2f),
-                                            Color(0xFF4568DC).copy(alpha = 0.2f)
-                                        )
-                                    )
-                            )
-                    )
-                }
-
-                Text(
-                    text = days.getOrElse(index) { "" },
-                    fontSize = 10.sp,
-                    color = Color(0xFF9E9E9E)
-                )
-            }
-        }
-    }
-}
+fun WeeklyActivityChart(weeklyActivity: List<Boolean>) {// Source code removed.}

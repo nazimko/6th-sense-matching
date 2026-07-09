@@ -19,44 +19,4 @@ import androidx.compose.ui.unit.dp
 import com.mhmtn.a6thsense.ui.theme.MeditationSoftLavender
 
 @Composable
-fun AmbientParticles() {
-    val infiniteTransition = rememberInfiniteTransition(label = "particles")
-
-    (0..8).forEach { index ->
-        val offsetY by infiniteTransition.animateFloat(
-            initialValue = (index * 100).toFloat(),
-            targetValue = (index * 100 + 800).toFloat(),
-            animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = 8000 + index * 1000,
-                    easing = LinearEasing
-                ),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "particleY$index"
-        )
-
-        val offsetX by infiniteTransition.animateFloat(
-            initialValue = (index * 40).toFloat(),
-            targetValue = (index * 40 + 30).toFloat(),
-            animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = 3000 + index * 500,
-                    easing = EaseInOutSine
-                ),
-                repeatMode = RepeatMode.Reverse
-            ),
-            label = "particleX$index"
-        )
-
-        Box(
-            modifier = Modifier
-                .offset(x = offsetX.dp, y = offsetY.dp)
-                .size((4 + index % 3).dp)
-                .background(
-                    MeditationSoftLavender.copy(alpha = 0.3f),
-                    CircleShape
-                )
-        )
-    }
-}
+fun AmbientParticles() {// Source code removed.}

@@ -17,22 +17,9 @@ enum class FriendshipStatus {
 }
 
 data class Friend(
-    val uid: String = "",
-    val name: String = "",
-    val photoUrl: String = "",
-    val isPremium: Boolean = false,
-    val hasCompletedToday: Boolean = false,
-    val friendshipId: String = ""
+// Source code removed.
 )
 
 data class CompatibilityTestResult(
-    val testId: String = "",
-    val friendName: String = "",
-    val friendPhotoUrl: String = "",
-    val similarity: Int = 0,
-    val commonSelections: List<String> = emptyList(),
-    val totalSelections: Int = 0,
-    val mySelections: List<String> = emptyList(),
-    val theirSelections: List<String> = emptyList(),
-    val timestamp: Long = 0L
+// Source code removed.
 )

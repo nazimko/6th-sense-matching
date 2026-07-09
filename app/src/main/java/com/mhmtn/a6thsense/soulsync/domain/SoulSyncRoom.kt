@@ -5,7 +5,7 @@ data class SoulSyncRoom(
     val players: Map<String, PlayerState> = emptyMap(),
     val gameState: String = "waiting", // waiting, countdown, playing, revealing, finished
     val currentRound: Int = 1,
-    val currentQuestion: String = "",
+    val currentQuestionIndex: Int = 0,
     val countdownStartTime: Long = 0,
     val createdAt: Long = 0
 )

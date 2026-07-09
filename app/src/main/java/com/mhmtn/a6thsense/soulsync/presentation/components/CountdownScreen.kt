@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,95 +35,6 @@ import com.mhmtn.a6thsense.R
 fun CountdownScreen(
     question: String,
     countdown: Int,
+    isDark: Boolean,
     modifier: Modifier = Modifier
-) {
-    val scale by animateFloatAsState(
-        targetValue = if (countdown % 2 == 0) 1.2f else 0.9f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "countdown_scale"
-    )
-
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
-                    )
-                )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(48.dp)
-        ) {
-            // Soru
-            Text(
-                text = question,
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Black,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .background(
-                        Color.White.copy(alpha = 0.1f),
-                        RoundedCornerShape(24.dp)
-                    )
-                    .padding(24.dp)
-            )
-
-            // Geri sayım
-            Box(
-                modifier = Modifier
-                    .size(200.dp)
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                // Glow circles
-                repeat(3) { index ->
-                    val size = 200.dp - (index * 40.dp)
-                    Box(
-                        modifier = Modifier
-                            .size(size)
-                            .background(
-                                Color(0xFF7B5EA7).copy(alpha = 0.2f - (index * 0.05f)),
-                                CircleShape
-                            )
-                    )
-                }
-
-                // Number
-                Text(
-                    text = countdown.toString(),
-                    fontSize = 120.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White,
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = Color(0xFF7B5EA7),
-                            blurRadius = 30f
-                        )
-                    )
-                )
-            }
-
-            Text(
-                text = R.string.ready.toString(),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White.copy(alpha = 0.7f)
-            )
-        }
-    }
-}
+) {// Source code removed.}

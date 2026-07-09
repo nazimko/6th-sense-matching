@@ -13,20 +13,7 @@ object DiscoverContract {
         val isEmpty: Boolean = false
     )
 
-    sealed class Action {
-        object SwipeLeft : Action()   // Geç
-        object SwipeRight : Action()  // Mesajlaş
-        object Reload : Action()
-    }
+    sealed class Action {// Source code removed.}
 
-    sealed class Effect {
-        data class NavigateToMessaging(
-            val conversationId: String,
-            val matchedUserName: String,
-            val matchedUserPhotoUrl: String,
-            val matchedUserId: String
-        ) : Effect()
-        data class ShowToast(val message: String) : Effect()
-        data object ShowPaywall : Effect()
-    }
+    sealed class Effect {// Source code removed.}
 }

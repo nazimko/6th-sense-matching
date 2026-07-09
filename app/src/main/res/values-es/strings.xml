@@ -1,0 +1,637 @@
+<resources>
+    <string name="app_name">Aurania</string>
+    <string name="web_client_id">59601056696-ilhuiccbnp9pumusba4g4bv35l0qg853.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">25926651663696038</string>
+    <string name="fb_login_protocol_scheme">fb25926651663696038</string>
+
+    <string name="phase1_title">Intuición Visual</string>
+    <string name="phase1_description">Elige con tu primer instinto.</string>
+    <string name="phase1_question1">¿Cuál de estas palabras te atrae más?</string>
+    <string name="p1_q1_option1">LIBERTAD</string>
+    <string name="p1_q1_option2">EQUILIBRIO</string>
+    <string name="phase1_question2">¿Qué emoji te representa mejor?</string>
+    <string name="p1_q2_option1">FUEGO</string>
+    <string name="p1_q2_option2">AGUA</string>
+    <string name="phase2_title">Colores</string>
+    <string name="phase2_description">¿Qué color te llama la atención?</string>
+    <string name="phase2_question1">¿Qué tonos prefieres?</string>
+    <string name="p2_q1_option1">Tonos Cálidos</string>
+    <string name="p2_q1_option2">Tonos Fríos</string>
+    <string name="questions_loading">Cargando preguntas…</string>
+    <string name="intuition">INTUICIÓN</string>
+    <string name="colors">COLORES</string>
+    <string name="spirit_animals">ANIMALES ESPIRITUALES</string>
+    <string name="elements">ELEMENTOS</string>
+    <string name="dimensions">DIMENSIONES</string>
+    <string name="free_spirit">ESPÍRITU LIBRE</string>
+    <string name="qustion">"Pregunta "</string>
+    <string name="phase1_subtitle">Sigue lo que sientes</string>
+    <string name="phase2_subtitle">¿Qué te resuena?</string>
+    <string name="phase3_subtitle">Tu guía interior</string>
+    <string name="phase4_subtitle">Elige tu camino elemental</string>
+    <string name="phase5_subtitle">Más allá del tiempo y el espacio</string>
+    <string name="phase6_subtitle">Di lo primero que te venga a la mente</string>
+    <string name="nature">Naturaleza</string>
+    <string name="moods">Estados de ánimo</string>
+    <string name="preferenses">Preferencias</string>
+    <string name="last_questions">Últimas preguntas</string>
+    <string name="choose_feel">Elige lo que sientes.</string>
+    <string name="continue_text">Continuar →</string>
+    <string name="planet_placeholder">Ej: Marte, Venus…</string>
+    <string name="team_placeholder">Ej: Barcelona, Lakers…</string>
+    <string name="male_name_placeholder">Ej: Carlos, Juan…</string>
+    <string name="city_placeholder">Ej: París, Tokio…</string>
+    <string name="planet_question">Nombra un planeta</string>
+    <string name="team_question">Nombra un equipo deportivo</string>
+    <string name="male_name_question">Nombra un chico</string>
+    <string name="city_question">Nombra una ciudad</string>
+    <string name="first_word">La primera palabra que te venga a la mente</string>
+    <string name="food_question">Nombra una comida</string>
+    <string name="movie_question">Nombra una película</string>
+    <string name="song_question">Nombra una canción</string>
+    <string name="book_question">Nombra un libro</string>
+    <string name="food_placeholder">Ej: Pizza, Sushi…</string>
+    <string name="movie_placeholder">Ej: Inception, Avatar…</string>
+    <string name="song_placeholder">Ej: Bohemian Rhapsody…</string>
+    <string name="book_placeholder">Ej: 1984, Harry Potter…</string>
+    <string name="no_match_text">Aún no tienes ninguna conexión 😔\nAlguien podría conectar contigo. Déjalo al destino.</string>
+    <string name="try_tomorrow_text">Mañana puedes volver a intentarlo.</string>
+    <string name="home">Inicio</string>
+    <string name="completed_today_text">Completado hoy.</string>
+    <string name="come_tomorrow_text">Hoy usaste tu intuición. \nMañana te espera un nuevo descubrimiento 🔮</string>
+    <string name="auth_subtitle_1">Encuentra tu alma gemela</string>
+    <string name="auth_subtitle_2">Crea vínculos profundos</string>
+    <string name="auth_subtitle_3">Descubre la armonía</string>
+    <string name="feature_item_1">Conexiones con inteligencia artificial</string>
+    <string name="feature_item_2">Análisis profundo de compatibilidad</string>
+    <string name="feature_item_3">Conexiones auténticas</string>
+    <string name="google_button_text">Continuar con Google</string>
+    <string name="no_coversation_text">Aún no tienes ninguna conversación.</string>
+    <string name="no_conversation_subtext">¡Cuando conectes con alguien, podrás empezar a chatear!</string>
+    <string name="conversations_text">Conversaciones 💬</string>
+    <string name="no_message_text">Aún no hay mensajes.</string>
+    <string name="similarity_text">Similitud</string>
+    <string name="messages_text">Messages</string>
+    <string name="profile_text">Perfil</string>
+    <string name="discover_text">Descubrir</string>
+    <string name="connection_error_message">Error de conexión</string>
+    <string name="check_internet_text">Comprueba tu conexión a internet\ne inténtalo de nuevo</string>
+    <string name="try_again_text">🔄 Reintentar</string>
+    <string name="loading_text">Cargando…</string>
+    <string name="image_failed_text">No se pudo cargar la imagen</string>
+    <string name="no_internet_connection">Sin conexión a internet</string>
+    <string name="checklist">"Lista de verificación: "</string>
+    <string name="wifi_text">¿Tienes el Wi-Fi o los datos móviles activados?</string>
+    <string name="airplane_mode">¿Está desactivado el modo avión?</string>
+    <string name="signal">¿La señal es suficientemente buena?</string>
+    <string name="checking">Verificando…</string>
+    <string name="no_internet_subtitle">Si el problema persiste, revisa tu configuración.</string>
+    <string name="hint">Consejo</string>
+    <string name="hint_subtitle">Algunas funciones están disponibles sin conexión. Puedes explorar la app aunque no tengas internet.</string>
+    <string name="limit">¡Límite alcanzado!</string>
+    <string name="later">Ahora no</string>
+    <string name="upgrade">Hazte Premium</string>
+    <string name="statistics">Estadísticas</string>
+    <string name="reached_daily_discover">Has alcanzado tu límite diario de descubrimiento</string>
+    <string name="discover">Descubrir 🔭</string>
+    <string name="active_today">Activo hoy</string>
+    <string name="card">tarjeta</string>
+    <string name="no_active_users">Hoy no hay \notros usuarios activos.</string>
+    <string name="invite_your_friends">Vuelve mañana \n¡o invita a tus amigos!</string>
+    <string name="refresh">"Actualizar 🔄 "</string>
+    <string name="harmony">%% de armonía</string>
+    <string name="matched">✨ Conectados</string>
+    <string name="join_the_game">Únete al juego 🎮</string>
+    <string name="match_notification_body">Tienes una nueva conexión.</string>
+    <string name="soul_sync_notification_title">¡Invitación a Soul Sync!</string>
+    <string name="error_same_user">No puedes enviarte una solicitud de amistad a ti mismo.</string>
+    <string name="error_already_friend">Ya sois amigos o hay una solicitud pendiente.</string>
+    <string name="error_no_today_session">No completaste ninguna actividad hoy.</string>
+    <string name="error_no_today_friend_session">Tu amigo no completó ninguna actividad hoy.</string>
+    <string name="error_invalid_invite_code">Código de invitación no válido.</string>
+    <string name="error_own_code">No puedes usar tu propio código.</string>
+    <string name="error_already_used_code">Ya usaste un código de invitación.</string>
+    <string name="accepted_friend">¡Amistad aceptada!</string>
+    <string name="error_occurred">Ocurrió un error.</string>
+    <string name="rejected_friend">Solicitud de amistad rechazada.</string>
+    <string name="removed_friend">Amistad eliminada</string>
+    <string name="send_friend_request">¡Solicitud de amistad enviada!</string>
+    <string name="friends">Amigos</string>
+    <string name="invite">Invitar</string>
+    <string name="requests">Solicitudes</string>
+    <string name="history">Historial</string>
+    <string name="no_requests">No hay solicitudes pendientes.</string>
+    <string name="no_requests_subtext">Aquí aparecerán \ntus nuevas solicitudes de amistad.</string>
+    <string name="friend_request_text">Enviar solicitud de amistad</string>
+    <string name="reject">Rechazar</string>
+    <string name="accept">Aceptar</string>
+    <string name="remove_friend">¿Eliminar amigo?</string>
+    <string name="remove_friend_subtext">será eliminado de tu lista de amigos. El historial de pruebas de similitud se conservará.</string>
+    <string name="remove">Sí, eliminar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="enter_invite_code">Introduce el código de invitación</string>
+    <string name="invite_your_friends_and_test">¡Comparte tu código de invitación y haz una prueba de similitud con tus amigos!</string>
+    <string name="copied">¡Código copiado!</string>
+    <string name="copy_code">Copiar el código</string>
+    <string name="or">O</string>
+    <string name="back">Volver</string>
+    <string name="submit">Enviar</string>
+    <string name="close">Cerrar</string>
+    <string name="no_test_history">Aún no has hecho ninguna prueba.</string>
+    <string name="history_subtext">Haz una prueba de similitud con tu amigo\n¡y ve los resultados aquí!</string>
+    <string name="common_choices">Elecciones en común</string>
+    <string name="no_friends">Aún no tienes amigos.</string>
+    <string name="friends_subtext">¡Puedes agregar amigos tocando el botón Invitar!</string>
+    <string name="active">Activo</string>
+    <string name="passive">Inactivo</string>
+    <string name="friend_completed_today">Tu amigo completó una actividad hoy.</string>
+    <string name="perfect_harmony">¡Armonía perfecta!</string>
+    <string name="very_good_harmony">¡Muy buena armonía!</string>
+    <string name="good_harmony">Buena armonía</string>
+    <string name="compatibility_with_friend">Tu similitud con %1$s</string>
+    <string name="total_choices">Elecciones totales</string>
+    <string name="great">¡Genial!</string>
+    <string name="no_progress">Aún no has empezado.</string>
+    <string name="one_progress">Has completado la mitad.</string>
+    <string name="two_progress">¡Todo listo!</string>
+    <string name="todays_activities">Actividades de hoy</string>
+    <string name="session_description_preference">Comparte tus preferencias</string>
+    <string name="session_description_intuition">Déjate llevar por tu intuición</string>
+    <string name="welcome">Bienvenido de nuevo</string>
+    <string name="home_header_greeting">Encuentra tu conexión</string>
+    <string name="settings">Ajustes</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="your_match">Tu conexión</string>
+    <string name="completed">Completado</string>
+    <string name="daily_done">¡Objetivo diario cumplido!</string>
+    <string name="daily_done_desc">¡Completaste los dos, eres increíble!</string>
+    <string name="premium_member">Miembro Premium</string>
+    <string name="daily_limits">Límites diarios</string>
+    <string name="all_active">Todas las funciones están activas.</string>
+    <string name="use_limitless">Usar sin límites</string>
+    <string name="today_match">Conexión de hoy</string>
+    <string name="today_matches">Conexiones de hoy</string>
+    <plurals name="days_streak">
+        <item quantity="one">Racha de %d día</item>
+        <item quantity="many">Racha de %d días</item>
+        <item quantity="other">Racha de %d días</item>
+    </plurals>
+    <string name="today">Hoy</string>
+    <string name="waiting">Esperando…</string>
+    <string name="view_details">Ver detalles →</string>
+    <string name="spiritual_harmony">Armonía espiritual</string>
+    <string name="interesting">Interesante</string>
+    <string name="no_harmony">¡Las diferencias enriquecen la vida!</string>
+    <string name="connection">Conexión</string>
+    <string name="home_no_matches">Hoy no hay conexiones.</string>
+    <string name="home_subtitle">Completa tus actividades diarias \ny confía en tu intuición.</string>
+    <string name="no_session">Sesión no encontrada</string>
+    <string name="wp_isnt_loaded">WhatsApp no está instalado.</string>
+    <string name="ig_isnt_loaded">Instagram no está instalado.</string>
+    <string name="share_fb_text">Para compartir en Facebook, inicia sesión desde tu navegador.</string>
+    <string name="share_via_sms">Enviar por SMS</string>
+    <string name="share_via_email">Enviar por correo electrónico</string>
+    <string name="share">Compartir</string>
+    <string name="code_input_subtitle_text">¡Introduce el código de invitación que te dio tu amigo y gana premium!</string>
+    <string name="apply">Aplicar 🎁</string>
+    <string name="congrats">¡Felicidades!</string>
+    <string name="premium_win_message">¡Ganaste %1$d días de Premium!</string>
+    <string name="premium_badge">Insignia Premium</string>
+    <string name="unlimited_messaging">Mensajes ilimitados</string>
+    <string name="unlimited_swipe">Descubrimiento ilimitado</string>
+    <string name="premium_active_status">Premium activo por %1$d días más</string>
+    <string name="share_invite_message">
+🔮 ¡Únete a Aurania!\n\n
+Conoce personas que sintonizan con tu intuición. Construye conexiones significativas a través de actividades diarias y nuestro algoritmo de afinidad espiritual.\n\n
+Mi código de invitación: %1$s\n\n
+%2$s
+</string>
+    <string name="share_aurania">Compartir Aurania</string>
+    <string name="shared">¡Compartido!</string>
+    <string name="invite_message_simple">🔮 ¡Únete a Aurania! Encuentra personas que sintonizan con tu intuición.\nMi código: %1$s \nDescárgala aquí: %2$s</string>
+    <string name="email_subject">¡Tienes una invitación a Aurania!</string>
+    <string name="invite_email_simple">🔮 ¡Hola! \n \n Te invito a Aurania, una plataforma de conexiones por intuición. \nMi código de invitación: %1$s</string>
+    <string name="earn_premium">¡Gana Premium!</string>
+    <string name="reward_item1">1 semana de Premium</string>
+    <string name="reward_item2">+5 días de descubrimiento ilimitado</string>
+    <string name="reward_item3">Insignia especial</string>
+    <string name="wp_desc">Comparte con alguien especial.</string>
+    <string name="ig_desc">Comparte en historia o por DM</string>
+    <string name="fb_desc">Invita a tus amigos</string>
+    <string name="tw_desc">Comparte como tweet</string>
+    <string name="copy_desc">Copia y comparte el enlace.</string>
+    <string name="my_code">Mi código de invitación</string>
+    <string name="invitation_sent">Invitación enviada</string>
+    <string name="invitation_accepted">Ahora son amigos</string>
+    <string name="premium_days_earned">Premium ganado</string>
+    <string name="days">días</string>
+    <string name="people">personas</string>
+    <string name="you_are_friends">Sois amigos</string>
+    <string name="add_friend">Agregar amigo</string>
+    <string name="message_text">Mensaje</string>
+    <string name="more_matches">Más conexiones</string>
+    <string name="gate_card_subtitle">Hazte miembro premium para ver todo tu historial de conexiones.</string>
+    <string name="matches">Conexiones</string>
+    <string name="premium_limit_reached">Has alcanzado tu límite diario de mensajes\nHazte Premium para mensajes ilimitados</string>
+    <string name="error_conversation_id">Error: conversación no encontrada.</string>
+    <string name="match_not_found">Error: conexión no encontrada</string>
+    <string name="match_removed">Conexión eliminada</string>
+    <string name="onboarding_1">Bienvenido a Aurania</string>
+    <string name="onboarding_1_desc">Usa tu intuición, conecta con tu mundo interior y conoce personas parecidas a ti.</string>
+    <string name="onboarding_2">Actividad de intuición diaria</string>
+    <string name="onboarding_2_desc">Un tema diferente cada día. Colores, elementos, animales… Tus elecciones te definen.</string>
+    <string name="onboarding_3">Alma gemela</string>
+    <string name="onboarding_3_desc">Tus elecciones te conectan con almas afines. Conexiones reales, intuición genuina.</string>
+    <string name="skip">Omitir</string>
+    <string name="begin">Empecemos.</string>
+    <string name="start_monthly">Comenzar Premium mensual</string>
+    <string name="start_yearly">Comenzar Premium anual</string>
+    <string name="cancel_anytime">Puedes cancelar cuando quieras.</string>
+    <string name="paywall_subtitle">Desata todo el poder de tu intuición.</string>
+
+    <string name="premium_feature_explore_title">Descubrimiento ilimitado</string>
+    <string name="premium_feature_messaging_title">Mensajes ilimitados</string>
+    <string name="premium_feature_matches_title">Todas las conexiones</string>
+    <string name="premium_feature_badge_title">Insignia Premium</string>
+    <string name="premium_feature_ads_title">Sin anuncios</string>
+
+    <string name="premium_feature_explore_desc">Elimina tu límite diario de descubrimiento</string>
+    <string name="premium_feature_messaging_desc">Elimina el límite de 10 mensajes diarios</string>
+    <string name="premium_feature_matches_desc">Ve todo tu historial de conexiones</string>
+    <string name="premium_feature_badge_desc">Insignia exclusiva en tu perfil</string>
+    <string name="premium_feature_ads_desc">Experiencia sin interrupciones</string>
+    <string name="choose_plan">Elige un plan</string>
+    <string name="monthly">Mensual</string>
+    <string name="yearly">Anual</string>
+    <string name="price_format">%1$s %2$s</string>
+    <string name="price_per_month">/ mes</string>
+    <string name="price_per_year">/ año</string>
+    <string name="save_badge">DESCUENTO</string>
+    <string name="trial_period">%1$d días de prueba gratis</string>
+    <string name="feature_unlimited_matches">Conexiones diarias ilimitadas</string>
+    <string name="feature_soul_sync">Soul Sync avanzado</string>
+    <string name="feature_priority">Conexiones prioritarias</string>
+    <string name="premium_member_desc">Tienes Aurania Premium.</string>
+    <string name="first_activity">Primer paso</string>
+    <string name="first_activity_desc">Completa tu primera actividad.</string>
+    <string name="streak_3">Iniciador de fuego</string>
+    <string name="streak_3_desc">Mantén una racha de 3 días</string>
+    <string name="streak_7">Dedicación del alma</string>
+    <string name="streak_7_desc">Mantén una racha de 7 días</string>
+    <string name="streak_30">Alma ascendida</string>
+    <string name="streak_30_desc">Mantén una racha de 30 días</string>
+    <string name="first_match">Encuentro destinado</string>
+    <string name="first_match_desc">Haz tu primera conexión de alma</string>
+    <string name="matches_5">Oráculo social</string>
+    <string name="matches_5_desc">Conecta con 5 almas gemelas</string>
+    <string name="matches_20">Conector universal</string>
+    <string name="matches_20_desc">Conecta con 20 almas gemelas</string>
+    <string name="activities_10">Buscador activo</string>
+    <string name="activities_10_desc">Completa 10 actividades</string>
+    <string name="activities_100">Maestro Zen</string>
+    <string name="activities_100_desc">Completa 100 actividades</string>
+    <string name="veteran">Anciano</string>
+    <string name="veteran_desc">Miembro de Aurania por 30 días</string>
+    <string name="legend">Presencia eterna</string>
+    <string name="legend_desc">Completa 50 actividades y 30 conexiones</string>
+
+    <string name="activities">Actividades</string>
+    <string name="member_since">Días como miembro</string>
+    <string name="activities_details_text">Detalles de actividad</string>
+    <string name="total_activities">Actividades totales</string>
+    <string name="last_7_days">Últimos 7 días</string>
+    <string name="badges_text">Insignias</string>
+    <string name="my_friends">Mis amigos</string>
+    <string name="check_compatibility">Comprobar compatibilidad</string>
+    <string name="total_matches">Conexiones totales</string>
+    <string name="next_goal">Próximo objetivo</string>
+    <string name="name_updated">Nombre actualizado ✓</string>
+    <string name="theme">Tema</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="match_notifications">Notificaciones de conexión</string>
+    <string name="match_notifications_desc">Notificarme cuando tenga una nueva conexión.</string>
+    <string name="message_notifications">Notificaciones de mensajes</string>
+    <string name="message_notifications_desc">Notificarme cuando reciba un mensaje nuevo.</string>
+    <string name="privacy">Privacidad</string>
+    <string name="show_in_discover">Aparecer en Descubrir</string>
+    <string name="show_in_discover_desc">Mostrar tu perfil a otros usuarios</string>
+    <string name="save">Guardar</string>
+    <string name="edit_name">Editar nombre</string>
+    <string name="anonymous">Sin nombre</string>
+    <string name="dark_theme">Tema oscuro</string>
+    <string name="light_theme">Tema claro</string>
+    <string name="dark_desc">Modo oscuro para cuidar la vista</string>
+    <string name="light_desc">Limpio y luminoso</string>
+    <string name="soul_sync_button_text">"Entra en Deep Soul Sync"</string>
+    <string name="soul_sync_subtitle">¿Estás listo para la prueba de compatibilidad profunda?</string>
+    <string name="no_match_subtitle">Cuando tu conexión complete la prueba,\nla similitud entre vosotros se calculará automáticamente.</string>
+    <string name="answer">Escribe tu respuesta…</string>
+    <string name="ready">¡Prepárate!</string>
+    <string name="test_over">¡Prueba terminada!</string>
+    <string name="you">Tú</string>
+    <string name="continue_messaging_text">Seguir chateando 💬</string>
+    <string name="score">Puntuación</string>
+
+    <string name="comp_legendary_title">¡ARMONÍA LEGENDARIA!</string>
+    <string name="comp_legendary_msg">¡Estáis exactamente en la misma sintonía!</string>
+
+    <string name="comp_perfect_title">¡CONEXIÓN PERFECTA!</string>
+    <string name="comp_perfect_msg">¡Tenéis una química increíble!</string>
+
+    <string name="comp_strong_title">¡VIBRACIONES MUY FUERTES!</string>
+    <string name="comp_strong_msg">¡Os entendéis a la perfección!</string>
+
+    <string name="comp_good_title">¡BUENA SINTONÍA!</string>
+    <string name="comp_good_msg">¡Tenéis mucho en común!</string>
+
+    <string name="comp_different_title">PERSPECTIVAS DISTINTAS</string>
+    <string name="comp_different_msg">¡Pero eso hace vuestra dinámica más interesante!</string>
+    <string name="your_answer">Tu respuesta</string>
+    <string name="your_matches_answer">La respuesta de tu conexión</string>
+    <string name="points">puntos</string>
+
+    <string name="match_perfect">¡CONEXIÓN TOTAL!</string>
+    <string name="match_near">¡MUY CERCA!</string>
+    <string name="match_different">DIFERENTE</string>
+    <string name="and_text">y</string>
+
+    <string name="game_status_joining">Uniéndose al juego…</string>
+    <string name="game_status_waiting_opponent">Esperando al oponente…</string>
+    <string name="game_status_starting">El juego está empezando…</string>
+    <string name="sent_answer">Respuesta enviada</string>
+    <string name="your_match_typing">Tu conexión está escribiendo una respuesta…</string>
+
+    <string name="questions_updated">Las preguntas han sido actualizadas.</string>
+    <string name="questions_update_failed">La actualización falló.</string>
+    <string name="remove_match">Eliminar conexión</string>
+    <string name="unmatch_confirmation_warning">Tu conexión con %1$s y todos tus mensajes se eliminarán de forma permanente.</string>
+    <string name="sending">Enviando…</string>
+    <string name="match">Conexión</string>
+    <string name="type_message_here">Escribe un mensaje…</string>
+    <string name="contact_us">Contáctanos</string>
+    <string name="contact_us_subtitle">Comentarios, sugerencias y quejas</string>
+    <string name="contact_us_header">¡Tus opiniones y sugerencias son muy valiosas para nosotros!</string>
+    <string name="subject">Asunto</string>
+    <string name="message">Tu mensaje</string>
+    <string name="message_placeholder">Escribe tu mensaje aquí… (mín. 10 caracteres)</string>
+    <string name="send">Enviar</string>
+
+    <string name="subject_bug_title">Reporte de error</string>
+    <string name="subject_bug_msg">¿Encontraste un fallo?</string>
+
+    <string name="subject_feature_title">Solicitud de función</string>
+    <string name="subject_feature_msg">¿Tienes una nueva idea?</string>
+
+    <string name="subject_feedback_title">Opinión general</string>
+    <string name="subject_feedback_msg">Comparte lo que piensas</string>
+
+    <string name="subject_complaint_title">Queja</string>
+    <string name="subject_complaint_msg">¿Tuviste algún problema?</string>
+
+    <string name="subject_other_title">Otro</string>
+    <string name="subject_other_msg">Cualquier otro tema</string>
+    <string name="logout_title">¿Quieres cerrar sesión?</string>
+    <string name="logout_message">Se cerrará tu sesión. Tendrás que volver a iniciarla.</string>
+    <string name="quarterly">Trimestral</string>
+    <string name="price_per_quarter">/ 3 meses</string>
+    <string name="most_popular">El más elegido</string>
+    <string name="start_quarterly">Comenzar Premium trimestral</string>
+    <string name="message_error">No se pudo enviar el mensaje. Por favor, inténtalo de nuevo.</string>
+
+    <string name="no_match_title">Tu conexión se está preparando</string>
+    <string name="no_match_complete_preference">¡Completa tu sesión de Preferencias para desbloquear conexiones!</string>
+    <string name="no_match_complete_intuition">¡Completa tu sesión de Intuición para desbloquear conexiones!</string>
+    <string name="no_match_patience">Estamos buscando la conexión espiritual perfecta para ti</string>
+    <string name="matching_in_progress">Buscando conexión</string>
+    <string name="daily_update">Actualizaciones diarias</string>
+    <string name="back_to_home">Volver al inicio</string>
+    <string name="explore_app">Explorar la app</string>
+    <string name="no_match_tip">Consejo: ¡Completa ambas sesiones cada día para mejores conexiones!</string>
+    <string name="profile_image_uploaded">Foto de perfil actualizada</string>
+    <string name="no_image_selected">Ninguna imagen seleccionada</string>
+    <string name="no_streak">Sin racha</string>
+    <string name="message_limit">Límite de mensajes</string>
+    <string name="swipe_limit">Límite de descubrimiento</string>
+
+    <string name="delete_conversation_title">Eliminar conversación</string>
+    <string name="delete_conversation_message">¿Estás seguro de que quieres eliminar tu conversación con %1$s?</string>
+    <string name="delete">Eliminar</string>
+
+    <string name="wants_to_be_friend">quiere ser tu amigo.</string>
+    <string name="common_selections_title">Selecciones Comunes</string>
+    <string name="error_not_same_session">No realizaste la misma actividad que tu amigo.</string>
+
+    <string name="your_partner_left">Tu compañero se ha marchado.</string>
+    <string name="game_cancelled">El partido se ha cancelado.</string>
+    <string name="premium_gate_title_soul_sync">Deep Soul Sync Ilimitado</string>
+    <string name="premium_gate_desc">Hazte miembro premium para obtener acceso ilimitado a Deep Soul Sync.</string>
+    <string name="paywall_deep_desc">Eliminar el límite diario de 2 Deep Soul Sync</string>
+    <string name="soul_sync_text">Deep Soul Sync</string>
+    <string name="soul_sync_limit">Límite de Soul Sync</string>
+    <plurals name="matches_plural">
+        <item quantity="one">%d Conexión</item>
+        <item quantity="other">%d Conexiones</item>
+        <item quantity="many">%d Conexiones</item>
+    </plurals>
+
+    <string name="mutual_threshold_info">Recuerda: Aunque tu umbral sea del 10%%, si el de la otra persona es del 70%%, no habrá coincidencia. ¡La afinidad es mutua! 🤝</string>
+    <string name="match_sensitivity">Sensibilidad de coincidencia</string>
+    <string name="threshold_desc_open">Puerta abierta: Estoy listo para conectarme con todos. 🌍</string>
+    <string name="threshold_desc_balanced">Equilibrado: Tengamos puntos comunes. 🤝</string>
+    <string name="threshold_desc_selective">Selectivo: Busco una pareja real. 💎</string>
+    <string name="threshold_desc_soulmate">Alma gemela: ¡Sólo parejas perfectas! 🔥</string>
+    <string name="deleted_successfully">Eliminado de la lista</string>
+    <string name="delete_test_confirmation">¿Borrar historial de pruebas?</string>
+
+    <string-array name="days_of_week_short">
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mié</item>
+        <item>Jue</item>
+        <item>Vie</item>
+        <item>Sáb</item>
+        <item>Dom</item>
+    </string-array>
+
+    <string-array name="profile_questions_array">
+        <item>Un animal</item>
+        <item>Un color</item>
+        <item>Una comida</item>
+        <item>Una ciudad</item>
+        <item>Una fruta</item>
+        <item>Una profesión</item>
+        <item>Una emoción</item>
+        <item>Una estación del año</item>
+        <item>Una bebida</item>
+        <item>Una flor</item>
+        <item>Un instrumento</item>
+        <item>Un deporte</item>
+        <item>Un planeta</item>
+        <item>Un elemento</item>
+        <item>Un juego</item>
+        <item>Una película</item>
+        <item>Un libro</item>
+        <item>Una canción</item>
+        <item>Un tipo de clima</item>
+        <item>Un lugar para relajarse</item>
+        <item>Un tipo de comida</item>
+        <item>Un postre</item>
+        <item>Una festividad</item>
+        <item>Un superpoder</item>
+        <item>Un rasgo de personalidad</item>
+        <item>Un pasatiempo</item>
+        <item>Un momento del día</item>
+        <item>Una época histórica</item>
+        <item>Un país</item>
+        <item>Un vehículo</item>
+        <item>Una aplicación</item>
+        <item>Una actividad social</item>
+        <item>Un plan de fin de semana</item>
+        <item>Un olor</item>
+        <item>Un sonido</item>
+        <item>Una cita</item>
+        <item>Un destino soñado</item>
+        <item>Un desafío</item>
+        <item>Un miedo</item>
+        <item>Un objetivo</item>
+        <item>Un hábito</item>
+        <item>Un placer culposo</item>
+    </string-array>
+
+    <string name="option_a">A</string>
+    <string name="option_b">B</string>
+
+    <string name="color_red">Rojo</string>
+    <string name="color_blue">Azul</string>
+    <string name="color_green">Verde</string>
+    <string name="color_yellow">Amarillo</string>
+    <string name="color_purple">Morado</string>
+    <string name="color_orange">Naranja</string>
+    <string name="color_pink">Rosa</string>
+    <string name="color_cyan">Cian</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_lime">Verde Lima</string>
+    <string name="color_teal">Verde Azulado</string>
+    <string name="color_coral">Coral</string>
+    <string name="color_indigo">Índigo</string>
+    <string name="color_mint">Verde Menta</string>
+    <string name="color_lavender">Lavanda</string>
+    <string name="color_gold">Oro</string>
+    <string name="color_silver">Plata</string>
+    <string name="color_bronze">Bronce</string>
+    <string name="color_emerald">Esmeralda</string>
+    <string name="color_ruby">Rubí</string>
+    <string name="color_sapphire">Zafiro</string>
+    <string name="color_amber">Ámbar</string>
+    <string name="color_turquoise">Turquesa</string>
+    <string name="color_violet">Violeta</string>
+    <string name="color_beige">Beige</string>
+    <string name="color_maroon">Granate</string>
+    <string name="color_olive">Oliva</string>
+    <string name="color_navy">Azul Marino</string>
+    <string name="color_slate">Gris Pizarra</string>
+    <string name="color_crimson">Carmesí</string>
+    <string name="color_charcoal">Gris Carbón</string>
+    <string name="color_ivory">Marfil</string>
+
+    <string name="animal_lion">León</string>
+    <string name="animal_eagle">Águila</string>
+    <string name="animal_dolphin">Delfín</string>
+    <string name="animal_wolf">Lobo</string>
+    <string name="animal_tiger">Tigre</string>
+    <string name="animal_owl">Búho</string>
+    <string name="animal_butterfly">Mariposa</string>
+    <string name="animal_bear">Oso</string>
+    <string name="animal_horse">Caballo</string>
+    <string name="animal_snake">Serpiente</string>
+    <string name="animal_phoenix">Fénix</string>
+    <string name="animal_fox">Zorro</string>
+    <string name="animal_dragon">Dragón</string>
+    <string name="animal_whale">Ballena</string>
+    <string name="animal_hawk">Halcón</string>
+    <string name="animal_peacock">Pavo Real</string>
+    <string name="animal_cat">Gato</string>
+    <string name="animal_dog">Perro</string>
+    <string name="animal_rabbit">Conejo</string>
+    <string name="animal_deer">Ciervo</string>
+    <string name="animal_shark">Tiburón</string>
+    <string name="animal_octopus">Pulpo</string>
+    <string name="animal_ray">Raya</string>
+    <string name="animal_turtle">Tortuga</string>
+    <string name="animal_bat">Murciélago</string>
+    <string name="animal_scorpion">Escorpión</string>
+    <string name="animal_spider">Araña</string>
+    <string name="animal_raven">Cuervo</string>
+    <string name="animal_swan">Kuğu</string>
+    <string name="animal_hummingbird">Colibrí</string>
+    <string name="animal_koala">Koala</string>
+    <string name="animal_panda">Panda</string>
+
+    <string name="nature_fire">Fuego</string>
+    <string name="nature_water">Agua</string>
+    <string name="nature_earth">Tierra</string>
+    <string name="nature_air">Aire</string>
+    <string name="nature_lightning">Relámpago</string>
+    <string name="nature_ice">Hielo</string>
+    <string name="nature_forest">Bosque</string>
+    <string name="nature_desert">Desierto</string>
+    <string name="nature_mountain">Montaña</string>
+    <string name="nature_ocean">Océano</string>
+    <string name="nature_volcano">Volcán</string>
+    <string name="nature_wind">Viento</string>
+    <string name="nature_rain">Lluvia</string>
+    <string name="nature_snow">Nieve</string>
+    <string name="nature_sun">Sol</string>
+    <string name="nature_moon">Luna</string>
+    <string name="nature_storm">Tormenta</string>
+    <string name="nature_thunder">Trueno</string>
+    <string name="nature_cloud">Nube</string>
+    <string name="nature_fog">Niebla</string>
+    <string name="nature_river">Río</string>
+    <string name="nature_lake">Lago</string>
+    <string name="nature_cave">Cueva</string>
+    <string name="nature_canyon">Cañón</string>
+    <string name="nature_star">Estrella</string>
+    <string name="nature_galaxy">Galaxia</string>
+    <string name="nature_nebula">Nebulosa</string>
+    <string name="nature_comet">Cometa</string>
+    <string name="nature_leaf">Hoja</string>
+    <string name="nature_flower">Flor</string>
+    <string name="nature_root">Raíz</string>
+    <string name="nature_seed">Semilla</string>
+
+    <string name="abstract_light">Luz</string>
+    <string name="abstract_dark">Oscuridad</string>
+    <string name="abstract_time">Tiempo</string>
+    <string name="abstract_space">Espacio</string>
+    <string name="abstract_energy">Energía</string>
+    <string name="abstract_gravity">Gravedad</string>
+    <string name="abstract_infinity">Infinito</string>
+    <string name="abstract_void">Vacío</string>
+    <string name="abstract_cosmos">Cosmos</string>
+    <string name="abstract_quantum">Cuántico</string>
+    <string name="abstract_dimension">Dimensión</string>
+    <string name="abstract_parallel">Paralelo</string>
+    <string name="abstract_past">Pasado</string>
+    <string name="abstract_future">Futuro</string>
+    <string name="abstract_present">Presente</string>
+    <string name="abstract_eternity">Eternidad</string>
+    <string name="abstract_mind">Mente</string>
+    <string name="abstract_soul">Alma</string>
+    <string name="abstract_spirit">Espíritu</string>
+    <string name="abstract_body">Cuerpo</string>
+    <string name="abstract_dream">Sueño</string>
+    <string name="abstract_reality">Realidad</string>
+    <string name="abstract_truth">Verdad</string>
+    <string name="abstract_illusion">Ilusión</string>
+    <string name="abstract_order">Orden</string>
+    <string name="abstract_chaos">Caos</string>
+    <string name="abstract_harmony">Armonía</string>
+    <string name="abstract_discord">Discordia</string>
+    <string name="abstract_wisdom">Sabiduría</string>
+    <string name="abstract_knowledge">Conocimiento</string>
+    <string name="abstract_instinct">Instinto</string>
+    <string name="abstract_reason">Razón</string>
+
+
+</resources>

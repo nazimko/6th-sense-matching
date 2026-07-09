@@ -7,6 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.mhmtn.a6thsense.activity.data.MatchingRepositoryImpl
 import com.mhmtn.a6thsense.R
 import com.mhmtn.a6thsense.activity.data.QuestionRepositoryImpl
@@ -14,9 +15,10 @@ import com.mhmtn.a6thsense.activity.domain.MatchingRepository
 import com.mhmtn.a6thsense.activity.domain.QuestionRepository
 import com.mhmtn.a6thsense.auth.data.AuthRepositoryImpl
 import com.mhmtn.a6thsense.auth.domain.AuthRepository
-import com.mhmtn.a6thsense.auth.presentation.AuthViewModel
 import com.mhmtn.a6thsense.billing.data.BillingRepositoryImpl
 import com.mhmtn.a6thsense.billing.domain.BillingRepository
+import com.mhmtn.a6thsense.contact.data.ContactRepositoryImpl
+import com.mhmtn.a6thsense.contact.domain.ContactRepository
 import com.mhmtn.a6thsense.conversations.data.ConversationRepositoryImpl
 import com.mhmtn.a6thsense.conversations.domain.ConversationRepository
 import com.mhmtn.a6thsense.core.domain.analytics.AnalyticsHelper
@@ -43,7 +45,6 @@ import com.mhmtn.a6thsense.settings.data.SettingsRepositoryImpl
 import com.mhmtn.a6thsense.settings.domain.SettingsRepository
 import com.mhmtn.a6thsense.similarity.data.SimilarityRepositoryImpl
 import com.mhmtn.a6thsense.similarity.domain.SimilarityRepository
-import com.mhmtn.a6thsense.similarity.presentation.SimilarityViewModel
 import com.mhmtn.a6thsense.soulsync.data.SoulSyncRepositoryImpl
 import com.mhmtn.a6thsense.soulsync.domain.SoulSyncRepository
 import dagger.Module
@@ -55,7 +56,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FirebaseModule {
+object DIModule {
 
     @Provides
     @Singleton
@@ -71,6 +72,11 @@ object FirebaseModule {
     @Singleton
     fun provideDatabase(): FirebaseDatabase =
         FirebaseDatabase.getInstance()
+
+     @Provides
+     @Singleton
+     fun provideStorage(): FirebaseStorage =
+         FirebaseStorage.getInstance()
 
     @Provides
     @Singleton
@@ -111,8 +117,9 @@ object FirebaseModule {
     fun provideMatchingRepository(
         auth: FirebaseAuth,
         firestore: FirebaseFirestore,
-        dataSource: FirebaseSelectionDataSource
-    ): MatchingRepository = MatchingRepositoryImpl(auth, firestore, dataSource)
+        dataSource: FirebaseSelectionDataSource,
+        @ApplicationContext context: Context
+    ): MatchingRepository = MatchingRepositoryImpl(auth, firestore, dataSource, context)
 
     @Provides
     @Singleton
@@ -149,8 +156,11 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideProfileRepository(
-        firestore: FirebaseFirestore
-    ): ProfileRepository = ProfileRepositoryImpl(firestore)
+        @ApplicationContext context: Context,
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth,
+        storage: FirebaseStorage
+    ): ProfileRepository = ProfileRepositoryImpl(context, firestore, auth, storage)
 
     @Provides
     @Singleton
@@ -222,8 +232,17 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFriendsRepository(
-        firestore: FirebaseFirestore
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
     ): FriendsRepository {
-        return FriendsRepositoryImpl(firestore)
+        return FriendsRepositoryImpl(firestore, auth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideContactRepository(
+        firestore: FirebaseFirestore
+    ): ContactRepository {
+        return ContactRepositoryImpl(firestore)
     }
 }

@@ -11,55 +11,8 @@ import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun DiscoverRoute(
+    isDark: Boolean,
     onNavigateToMessaging: (String) -> Unit,
     onNavigateToPaywall: () -> Unit,
     viewModel: DiscoverViewModel = hiltViewModel()
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    var showPremiumSnackbar by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
-    val analyticsHelper = remember {
-        EntryPointAccessors
-            .fromApplication(context, AnalyticsEntryPoint::class.java)
-            .analyticsHelper()
-    }
-
-    LaunchedEffect(Unit) {
-        analyticsHelper.logScreenView("DiscoverScreen")
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is DiscoverContract.Effect.NavigateToMessaging -> {
-                    onNavigateToMessaging(
-                        Routes.messagingRoute(
-                            conversationId = effect.conversationId,
-                            matchedUserName = effect.matchedUserName,
-                            matchedUserPhotoUrl = effect.matchedUserPhotoUrl,
-                            matchedUserId = effect.matchedUserId
-                        )
-                    )
-                }
-                is DiscoverContract.Effect.ShowToast -> {
-                    // Toast göster
-                }
-                is DiscoverContract.Effect.ShowPaywall -> {
-                    showPremiumSnackbar = true
-                }
-            }
-        }
-    }
-
-    DiscoverScreen(
-        state = state,
-        showPremiumSnackbar = showPremiumSnackbar,
-        onDismissSnackbar = { showPremiumSnackbar = false },
-        onUpgradeClick = {
-            showPremiumSnackbar = false
-            onNavigateToPaywall()
-        },
-        onAction = viewModel::onAction
-    )
-}
+) {// Source code removed.}

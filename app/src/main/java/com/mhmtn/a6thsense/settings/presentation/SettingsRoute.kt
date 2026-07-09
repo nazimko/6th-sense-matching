@@ -11,32 +11,7 @@ import dagger.hilt.android.EntryPointAccessors
 @Composable
 fun SettingsRoute(
     onBackClick: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToContactUs: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
-    val analyticsHelper = remember {
-        EntryPointAccessors
-            .fromApplication(context, AnalyticsEntryPoint::class.java)
-            .analyticsHelper()
-    }
-    LaunchedEffect(Unit) {
-        analyticsHelper.logScreenView("SettingsScreen")
-    }
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is SettingsContract.Effect.ShowMessage -> {
-                    snackbarHostState.showSnackbar(effect.message)
-                }
-            }
-        }
-    }
-
-    SettingsScreen(
-        state = state,
-        onAction = viewModel::onAction,
-        onBackClick = onBackClick
-    )
-}
+) {// Source code removed.}
