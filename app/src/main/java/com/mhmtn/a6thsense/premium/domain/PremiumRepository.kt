@@ -7,4 +7,5 @@ interface PremiumRepository {
     suspend fun incrementSwipeCount(uid: String)
     suspend fun incrementMessageCount(uid: String)
     suspend fun activatePremium(uid: String) // Gerçek ödeme entegrasyonu sonra
+    suspend fun incrementSoulSyncCount(uid: String)
 }

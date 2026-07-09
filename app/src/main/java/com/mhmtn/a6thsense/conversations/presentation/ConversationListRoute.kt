@@ -13,6 +13,7 @@ import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun ConversationListRoute(
+    isDark: Boolean,
     onNavigateToMessaging: (String) -> Unit,
     viewModel: ConversationListViewModel = hiltViewModel()
 ) {
@@ -45,6 +46,7 @@ fun ConversationListRoute(
 
     ConversationListScreen(
         state = state,
+        isDark = isDark,
         onAction = viewModel::onAction
     )
 }

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +35,7 @@ fun HorizontalChoices(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = R.string.choose_feel.toString(),
+            text = stringResource( R.string.choose_feel),
             style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.Light,
                 letterSpacing = 1.5.sp

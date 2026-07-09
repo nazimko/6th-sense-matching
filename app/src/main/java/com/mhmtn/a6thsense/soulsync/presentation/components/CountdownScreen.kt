@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,8 +35,17 @@ import com.mhmtn.a6thsense.R
 fun CountdownScreen(
     question: String,
     countdown: Int,
+    isDark: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E))
+    } else {
+        listOf(Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF))
+    }
+
     val scale by animateFloatAsState(
         targetValue = if (countdown % 2 == 0) 1.2f else 0.9f,
         animationSpec = spring(
@@ -49,11 +60,7 @@ fun CountdownScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
-                    )
+                    colors = gradientColors
                 )
             ),
         contentAlignment = Alignment.Center
@@ -67,12 +74,12 @@ fun CountdownScreen(
                 text = question,
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White,
+                color = colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
                     .background(
-                        Color.White.copy(alpha = 0.1f),
+                        colorScheme.onBackground.copy(alpha = 0.1f),
                         RoundedCornerShape(24.dp)
                     )
                     .padding(24.dp)
@@ -106,7 +113,7 @@ fun CountdownScreen(
                     text = countdown.toString(),
                     fontSize = 120.sp,
                     fontWeight = FontWeight.Black,
-                    color = Color.White,
+                    color = colorScheme.onBackground,
                     style = TextStyle(
                         shadow = Shadow(
                             color = Color(0xFF7B5EA7),
@@ -117,10 +124,10 @@ fun CountdownScreen(
             }
 
             Text(
-                text = R.string.ready.toString(),
+                text = stringResource(R.string.ready),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White.copy(alpha = 0.7f)
+                color = colorScheme.onBackground.copy(alpha = 0.7f)
             )
         }
     }

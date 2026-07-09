@@ -22,12 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.core.presentation.bounceClick
 import com.mhmtn.a6thsense.core.presentation.floating
 
@@ -84,8 +86,8 @@ fun InviteCodeDialog(
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF2D1B69),
-                                Color(0xFF1A1A2E)
+                                MaterialTheme.colorScheme.surface,
+                                MaterialTheme.colorScheme.background
                             )
                         )
                     )
@@ -114,10 +116,10 @@ fun InviteCodeDialog(
 
                     // Title
                     Text(
-                        text = if (showInput) R.string.enter_invite_code.toString()  else R.string.invite.toString(),
+                        text = if (showInput) stringResource(R.string.enter_invite_code)  else stringResource(R.string.invite),
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
 
@@ -128,9 +130,9 @@ fun InviteCodeDialog(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                text = R.string.invite_your_friends_and_test.toString(),
+                                text = stringResource(R.string.invite_your_friends_and_test),
                                 fontSize = 14.sp,
-                                color = Color.White.copy(alpha = 0.7f),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                 textAlign = TextAlign.Center,
                                 lineHeight = 20.sp
                             )
@@ -144,7 +146,7 @@ fun InviteCodeDialog(
                                         shape = RoundedCornerShape(20.dp)
                                     )
                                     .clip(RoundedCornerShape(20.dp))
-                                    .background(Color(0xFF2A2A3E))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .border(
                                         width = 2.dp,
                                         brush = Brush.linearGradient(
@@ -167,7 +169,7 @@ fun InviteCodeDialog(
                                         text = code,
                                         fontSize = 36.sp,
                                         fontWeight = FontWeight.Black,
-                                        color = Color.White,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         letterSpacing = 8.sp
                                     )
                                 }
@@ -191,7 +193,7 @@ fun InviteCodeDialog(
                                             code?.let {
                                                 clipboardManager.setText(AnnotatedString(it))
                                                 Toast
-                                                    .makeText(context, R.string.copied.toString(), Toast.LENGTH_SHORT)
+                                                    .makeText(context, UiText.StringResource(R.string.copied).asString(context), Toast.LENGTH_SHORT)
                                                     .show()
                                             }
                                         }
@@ -205,7 +207,7 @@ fun InviteCodeDialog(
                                 ) {
                                     Text(text = "📋", fontSize = 20.sp)
                                     Text(
-                                        text = R.string.copy_code.toString(),
+                                        text = stringResource(R.string.copy_code),
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White
@@ -223,12 +225,12 @@ fun InviteCodeDialog(
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(1.dp)
-                                        .background(Color.White.copy(alpha = 0.2f))
+                                        .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
                                 )
                                 Text(
-                                    text = R.string.or.toString(),
+                                    text = stringResource(R.string.or),
                                     fontSize = 12.sp,
-                                    color = Color.White.copy(alpha = 0.5f)
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                                 )
                                 Box(
                                     modifier = Modifier
@@ -246,7 +248,7 @@ fun InviteCodeDialog(
                                     .background(Color.Transparent)
                                     .border(
                                         width = 1.dp,
-                                        color = Color.White.copy(alpha = 0.3f),
+                                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                                         shape = RoundedCornerShape(16.dp)
                                     )
                                     .bounceClick(onClick = { showInput = true })
@@ -254,10 +256,10 @@ fun InviteCodeDialog(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = R.string.enter_invite_code.toString(),
+                                    text = stringResource(R.string.enter_invite_code),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White.copy(alpha = 0.7f)
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                                 )
                             }
                         }
@@ -268,9 +270,9 @@ fun InviteCodeDialog(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                text = R.string.enter_invite_code.toString(),
+                                text = stringResource(R.string.enter_invite_code),
                                 fontSize = 14.sp,
-                                color = Color.White.copy(alpha = 0.7f),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                 textAlign = TextAlign.Center,
                                 lineHeight = 20.sp
                             )
@@ -280,7 +282,7 @@ fun InviteCodeDialog(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(16.dp))
-                                    .background(Color(0xFF2A2A3E))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .border(
                                         width = 2.dp,
                                         color = Color(0xFF7B5EA7).copy(alpha = 0.5f),
@@ -295,19 +297,19 @@ fun InviteCodeDialog(
                                     },
                                     modifier = Modifier.fillMaxWidth(),
                                     textStyle = TextStyle(
-                                        color = Color.White,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         fontSize = 24.sp,
                                         fontWeight = FontWeight.Bold,
                                         textAlign = TextAlign.Center,
                                         letterSpacing = 6.sp
                                     ),
                                     singleLine = true,
-                                    cursorBrush = SolidColor(Color.White),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                                     decorationBox = { innerTextField ->
                                         if (inputCode.isEmpty()) {
                                             Text(
                                                 text = "ABCD1234",
-                                                color = Color.White.copy(alpha = 0.3f),
+                                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
                                                 fontSize = 24.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 textAlign = TextAlign.Center,
@@ -327,21 +329,20 @@ fun InviteCodeDialog(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                // Back
                                 Box(
                                     modifier = Modifier
                                         .weight(1f)
                                         .clip(RoundedCornerShape(16.dp))
-                                        .background(Color(0xFF4A4A5E).copy(alpha = 0.5f))
+                                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
                                         .bounceClick(onClick = { showInput = false })
                                         .padding(vertical = 16.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = R.string.back.toString(),
+                                        text = stringResource(R.string.back),
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.White.copy(alpha = 0.7f)
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                                     )
                                 }
 
@@ -357,7 +358,10 @@ fun InviteCodeDialog(
                                                 )
                                             else
                                                 Brush.linearGradient(
-                                                    listOf(Color.Gray, Color.Gray)
+                                                    listOf(
+                                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                                                    )
                                                 )
                                         )
                                         .bounceClick(
@@ -368,7 +372,7 @@ fun InviteCodeDialog(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = R.string.submit.toString(),
+                                        text = stringResource(R.string.submit),
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White
@@ -386,7 +390,7 @@ fun InviteCodeDialog(
                             .background(Color.Transparent)
                             .border(
                                 width = 1.dp,
-                                color = Color.White.copy(alpha = 0.2f),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .bounceClick(onClick = onDismiss)
@@ -394,10 +398,10 @@ fun InviteCodeDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = R.string.close.toString(),
+                            text = stringResource(R.string.close),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.White.copy(alpha = 0.6f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
                     }
                 }

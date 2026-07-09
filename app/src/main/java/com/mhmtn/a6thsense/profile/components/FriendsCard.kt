@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import com.mhmtn.a6thsense.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import com.mhmtn.a6thsense.core.presentation.floating
 
 @Composable
 fun FriendsCard(
+    isDark: Boolean,  // ← ekle
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -41,6 +43,16 @@ fun FriendsCard(
         label = "glow"
     )
 
+    val backgroundGradient = if (isDark) {
+        Brush.horizontalGradient(
+            colors = listOf(Color(0xFF2D1B69), Color(0xFF1A1A2E))
+        )
+    } else {
+        Brush.horizontalGradient(
+            colors = listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
+        )
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -50,14 +62,7 @@ fun FriendsCard(
                 ambientColor = Color(0xFF7B5EA7).copy(alpha = glow)
             )
             .clip(RoundedCornerShape(24.dp))
-            .background(
-                Brush.horizontalGradient(
-                    colors = listOf(
-                        Color(0xFF2D1B69),
-                        Color(0xFF1A1A2E)
-                    )
-                )
-            )
+            .background(backgroundGradient)
             .border(
                 width = 2.dp,
                 brush = Brush.linearGradient(
@@ -80,15 +85,22 @@ fun FriendsCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Icon
                 Box(
                     modifier = Modifier
                         .size(56.dp)
                         .clip(CircleShape)
                         .background(
-                            Brush.linearGradient(
-                                listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
-                            )
+                            if (isDark)
+                                Brush.linearGradient(
+                                    listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
+                                )
+                            else
+                                Brush.linearGradient(
+                                    listOf(
+                                        Color.White.copy(alpha = 0.2f),
+                                        Color.White.copy(alpha = 0.2f)
+                                    )
+                                )
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -99,37 +111,32 @@ fun FriendsCard(
                     )
                 }
 
-                // Text
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = R.string.my_friends.toString(),
+                        text = stringResource(R.string.my_friends),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = Color.White  // her iki gradient üzerinde de sabit
                     )
-
                     Text(
-                        text = R.string.check_compatibility.toString(),
+                        text = stringResource(R.string.check_compatibility),
                         fontSize = 13.sp,
                         color = Color.White.copy(alpha = 0.7f)
                     )
                 }
             }
 
-            // Arrow
             Box(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.1f)),
+                    .background(Color.White.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.7f),
+                    tint = Color.White.copy(alpha = 0.8f),
                     modifier = Modifier.size(20.dp)
                 )
             }

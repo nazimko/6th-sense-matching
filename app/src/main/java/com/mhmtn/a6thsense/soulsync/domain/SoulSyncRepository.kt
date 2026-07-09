@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface SoulSyncRepository {
     suspend fun createRoom(matchId: String, player1: Player, player2: Player): String
     suspend fun joinRoom(roomId: String)
+    suspend fun leaveRoom(roomId: String) // 👈 Yeni eklendi
     fun observeRoom(roomId: String): Flow<SoulSyncRoom?>
     suspend fun startGame(roomId: String, context: Context)
     suspend fun submitAnswer(roomId: String, round: Int, answer: String)

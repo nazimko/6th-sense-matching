@@ -85,7 +85,7 @@ fun ImageChoiceQuestion(
 
         // Soru metni
         Text(
-            text = question.question,
+            text = question.question.asString(),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -154,7 +154,7 @@ fun ImageOptionCard(
         option.imageUrl?.let { imageUrl ->
             SubcomposeAsyncImage(
                 model = imageUrl,
-                contentDescription = option.text,
+                contentDescription = option.text.asString(),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             ) {
@@ -189,7 +189,7 @@ fun ImageOptionCard(
 
         // Text
         Text(
-            text = option.text,
+            text = option.text.asString(),
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,

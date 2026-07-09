@@ -5,6 +5,7 @@ data class AuthUser(
     val name: String,
     val photoUrl: String?,
     val isPremium: Boolean = false,
-    val showInDiscover: Boolean = true
+    val showInDiscover: Boolean = true,
+    val matchNotificationsEnabled: Boolean = true,
+    val messageNotificationsEnabled: Boolean = true
 )
-

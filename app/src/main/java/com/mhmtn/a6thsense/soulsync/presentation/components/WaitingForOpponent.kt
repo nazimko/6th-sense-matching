@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,10 +44,15 @@ import com.mhmtn.a6thsense.soulsync.domain.PlayerState
 fun WaitingForOpponent(
     currentPlayer: PlayerState?,
     otherPlayer: PlayerState?,
+    isDark: Boolean,
     onJoinRoom: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E))
+    } else {
+        listOf(Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF))
+    }
     val currentUid = FirebaseAuth.getInstance().currentUser?.uid
     LaunchedEffect(currentPlayer) {
         Log.d("WaitingForOpponent", "Current UID: $currentUid")
@@ -78,11 +85,7 @@ fun WaitingForOpponent(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
-                    )
+                    colors = gradientColors
                 )
             ),
         contentAlignment = Alignment.Center
@@ -107,7 +110,7 @@ fun WaitingForOpponent(
                 text = "Soul Sync",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -127,16 +130,16 @@ fun WaitingForOpponent(
 
                 // VS text
                 Text(
-                    text = R.string.and_text.toString(),
+                    text = stringResource(R.string.and_text),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
-                    color = Color.White.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                 )
 
                 // Other player
                 PlayerAvatar(
                     photoUrl = otherPlayer?.photoUrl ?: "",
-                    name = otherPlayer?.name ?: R.string.your_match.toString(),
+                    name = otherPlayer?.name ?: stringResource(R.string.your_match),
                     isReady = otherPlayer?.status == "ready",
                     isCurrentPlayer = false
                 )
@@ -147,12 +150,12 @@ fun WaitingForOpponent(
             // Loading text
             Text(
                 text = when {
-                    currentPlayer?.status == "invited" -> R.string.game_status_joining.toString()
-                    otherPlayer?.status == "invited" -> R.string.game_status_waiting_opponent.toString()
-                    else -> R.string.game_status_starting.toString()
+                    currentPlayer?.status == "invited" -> stringResource(R.string.game_status_joining)
+                    otherPlayer?.status == "invited" -> stringResource(R.string.game_status_waiting_opponent)
+                    else -> stringResource(R.string.game_status_starting)
                 },
                 fontSize = 18.sp,
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
 
@@ -175,7 +178,7 @@ fun WaitingForOpponent(
                         modifier = Modifier
                             .size(12.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = alpha))
+                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = alpha))
                     )
                 }
             }
@@ -235,7 +238,7 @@ fun PlayerAvatar(
                         text = name.firstOrNull()?.uppercase() ?: "?",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
@@ -260,7 +263,7 @@ fun PlayerAvatar(
             text = name,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
         )
     }
 }

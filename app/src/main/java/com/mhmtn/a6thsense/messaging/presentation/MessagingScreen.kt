@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
@@ -43,6 +44,7 @@ fun MessagingScreen(
     matchedUserPhotoUrl: String,
     state: MessagingContract.State,
     listState: LazyListState,
+    isDark: Boolean,
     showPremiumSnackbar: Boolean,
     onDismissSnackbar: () -> Unit,
     onUpgradeClick: () -> Unit,
@@ -80,10 +82,10 @@ fun MessagingScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
+                    colors = if (isDark) listOf(
+                        Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E)
+                    ) else listOf(
+                        Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF)
                     )
                 )
             )
@@ -97,7 +99,7 @@ fun MessagingScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.navigationBars)
+                .imePadding()
         ) {
 
             ConversationHeader(
@@ -109,7 +111,7 @@ fun MessagingScreen(
 
             when {
                 state.isLoading -> {
-                    MessagingScreenSkeleton()
+                    MessagingScreenSkeleton(isDark = isDark)
                 }
 
                 state.error != null -> {
@@ -195,6 +197,7 @@ fun MessagingScreen(
                     // Input
                     MessageInput(
                         value = state.currentInput,
+                        isSending = state.isSendingMessage,
                         onValueChange = { onAction(MessagingContract.Action.TypeMessage(it)) },
                         onSend = { onAction(MessagingContract.Action.SendMessage) },
                         isLimitReached = !premiumStatus.isPremium &&
@@ -237,7 +240,7 @@ fun MessagingScreen(
                 .navigationBarsPadding()
         ) {
             PremiumLimitSnackbar(
-                message = R.string.premium_limit_reached.toString(),
+                message = stringResource( R.string.premium_limit_reached),
                 onUpgradeClick = onUpgradeClick,
                 onDismiss = onDismissSnackbar
             )

@@ -1,5 +1,6 @@
 package com.mhmtn.a6thsense.discover.data
 
+import android.util.Log
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -24,10 +25,14 @@ class DiscoverRepositoryImpl @Inject constructor(
             .get()
             .await()
 
+        Log.d("DiscoverDebug", "Today Sessions Count: ${todaySessions.size()}")
+
         val activeUids = todaySessions.documents
             .mapNotNull { it.getString("uid") }
             .filter { it != currentUid }
             .distinct()
+
+        Log.d("DiscoverDebug", "Active UIDs (excl. me): ${activeUids.size}")
 
         if (activeUids.isEmpty()) return emptyList()
 
@@ -48,9 +53,13 @@ class DiscoverRepositoryImpl @Inject constructor(
             }
             .toSet()
 
+        Log.d("DiscoverDebug", "Existing Matches Count: ${existingMatches.size}")
+
         val filteredUids = activeUids.filterNot {
             it in existingMatches || it in swipedToday
         }
+
+        Log.d("DiscoverDebug", "Filtered UIDs Count: ${filteredUids.size}")
 
         // Kullanıcı bilgilerini çek
         val users = filteredUids.mapNotNull { uid ->
@@ -85,7 +94,8 @@ class DiscoverRepositoryImpl @Inject constructor(
             DiscoverUser(
                 uid = uid,
                 name = userDoc.getString("name") ?: "User",
-                photoUrl = userDoc.getString("photoUrl") ?: "",
+                photoUrl = userDoc.getString("profileImageUrl")
+                ?: userDoc.getString("photoUrl") ?: "",
                 similarityScore = similarity,
                 isMatched = existingMatches.contains(uid),
                 lastActiveDate = today,

@@ -6,7 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.mhmtn.a6thsense.R
 import com.mhmtn.a6thsense.core.domain.analytics.AnalyticsHelper
+import com.mhmtn.a6thsense.core.domain.model.UiTextException
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.friends.domain.FriendsRepository
+import com.mhmtn.a6thsense.premium.domain.PremiumRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -16,6 +19,7 @@ import javax.inject.Inject
 class FriendsViewModel @Inject constructor(
     private val repository: FriendsRepository,
     private val auth: FirebaseAuth,
+    private val premiumRepository: PremiumRepository,
     private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
@@ -26,6 +30,7 @@ class FriendsViewModel @Inject constructor(
     val effect = _effect.asSharedFlow()
 
     init {
+        loadPremiumStatus()
         loadFriends()
         loadPendingRequests()
         loadCompatibilityHistory()
@@ -60,11 +65,11 @@ class FriendsViewModel @Inject constructor(
                 }
             }
 
-            FriendsContract.Action.OnConfirmRemoveFriend -> { // 👈 YENİ
+            FriendsContract.Action.OnConfirmRemoveFriend -> {
                 confirmRemoveFriend()
             }
 
-            FriendsContract.Action.OnDismissRemoveFriendDialog -> { // 👈 YENİ
+            FriendsContract.Action.OnDismissRemoveFriendDialog -> {
                 _state.update {
                     it.copy(
                         friendToRemove = null,
@@ -93,6 +98,14 @@ class FriendsViewModel @Inject constructor(
 
             FriendsContract.Action.OnDismissTestResultDialog -> {
                 _state.update { it.copy(showTestResultDialog = false, testResult = null) }
+            }
+
+            is FriendsContract.Action.OnStartSoulSync -> {
+                startSoulSync(action.friend.uid)
+            }
+
+            is FriendsContract.Action.OnDeleteTest -> {
+                deleteTest(action.testId)
             }
         }
     }
@@ -144,9 +157,11 @@ class FriendsViewModel @Inject constructor(
     private fun acceptRequest(friendshipId: String) {
         viewModelScope.launch {
             repository.acceptFriendRequest(friendshipId).onSuccess {
-                _effect.emit(FriendsContract.Effect.ShowToast(R.string.accepted_friend.toString()))
+                _effect.emit(FriendsContract.Effect.ShowToast(UiText.StringResource(R.string.accepted_friend)))
             }.onFailure { e ->
-                _effect.emit(FriendsContract.Effect.ShowToast(e.message ?: R.string.error_occurred.toString()))
+                val message = if (e is UiTextException) e.uiText
+                else UiText.StringResource(R.string.error_occurred)
+                _effect.emit(FriendsContract.Effect.ShowToast(message))
             }
         }
     }
@@ -154,9 +169,11 @@ class FriendsViewModel @Inject constructor(
     private fun rejectRequest(friendshipId: String) {
         viewModelScope.launch {
             repository.rejectFriendRequest(friendshipId).onSuccess {
-                _effect.emit(FriendsContract.Effect.ShowToast(R.string.rejected_friend.toString()))
+                _effect.emit(FriendsContract.Effect.ShowToast(UiText.StringResource(R.string.rejected_friend)))
             }.onFailure { e ->
-                _effect.emit(FriendsContract.Effect.ShowToast(e.message ?: R.string.error_occurred.toString()))
+                val message = if (e is UiTextException) e.uiText
+                else UiText.StringResource(R.string.error_occurred)
+                _effect.emit(FriendsContract.Effect.ShowToast(message))
             }
         }
     }
@@ -173,9 +190,11 @@ class FriendsViewModel @Inject constructor(
             }
 
             repository.removeFriend(friendshipId).onSuccess {
-                _effect.emit(FriendsContract.Effect.ShowToast(R.string.removed_friend.toString()))
+                _effect.emit(FriendsContract.Effect.ShowToast(UiText.StringResource(R.string.removed_friend)))
             }.onFailure { e ->
-                _effect.emit(FriendsContract.Effect.ShowToast(e.message ?: R.string.error_occurred.toString()))
+                val message = if (e is UiTextException) e.uiText
+                else UiText.StringResource(R.string.error_occurred)
+                _effect.emit(FriendsContract.Effect.ShowToast(message))
             }
         }
     }
@@ -196,8 +215,10 @@ class FriendsViewModel @Inject constructor(
                     )
                 }
             }.onFailure { e ->
+                val message = if (e is UiTextException) e.uiText
+                else UiText.StringResource(R.string.error_occurred)
+                _effect.emit(FriendsContract.Effect.ShowToast(message))
                 _state.update { it.copy(isLoading = false) }
-                _effect.emit(FriendsContract.Effect.ShowToast(e.message ?: R.string.error_occurred.toString()))
             }
         }
     }
@@ -208,10 +229,61 @@ class FriendsViewModel @Inject constructor(
             val uid = auth.currentUser?.uid ?: return@launch
 
             repository.acceptInviteCode(code, uid).onSuccess {
-                _effect.emit(FriendsContract.Effect.ShowToast(R.string.send_friend_request.toString()))
+                _effect.emit(FriendsContract.Effect.ShowToast(UiText.StringResource(R.string.send_friend_request)))
                 _state.update { it.copy(showInviteDialog = false) }
             }.onFailure { e ->
-                _effect.emit(FriendsContract.Effect.ShowToast(e.message ?: R.string.error_invalid_invite_code.toString()))
+                val message = if (e is UiTextException) e.uiText
+                else UiText.StringResource(R.string.error_invalid_invite_code)
+                _effect.emit(FriendsContract.Effect.ShowToast(message))
+            }
+        }
+    }
+
+    private fun startSoulSync(friendUid: String) {
+        viewModelScope.launch {
+            val myUid = auth.currentUser?.uid ?: return@launch
+            val premiumStatus = _state.value.premiumStatus
+
+            // Limit kontrolü — premium değilse ve hakkı bittiyse gate göster
+            if (!premiumStatus.isPremium &&
+                premiumStatus.dailySoulSyncUsed >= premiumStatus.dailySoulSyncLimit
+            ) {
+                _effect.emit(FriendsContract.Effect.ShowPremiumGate)
+                return@launch
+            }
+
+            _state.update { it.copy(isLoading = true) }
+
+            // Premium değilse kullanımı say
+            if (!premiumStatus.isPremium) {
+                premiumRepository.incrementSoulSyncCount(myUid)
+            }
+
+            repository.startSoulSyncWithFriend(myUid, friendUid).onSuccess { roomId ->
+                _state.update { it.copy(isLoading = false) }
+                _effect.emit(FriendsContract.Effect.NavigateToSoulSync(roomId))
+            }.onFailure { e ->
+                _state.update { it.copy(isLoading = false) }
+                _effect.emit(FriendsContract.Effect.ShowToast(UiText.DynamicString(e.message ?: "Error")))
+            }
+        }
+    }
+
+    private fun deleteTest(testId: String) {
+        viewModelScope.launch {
+            repository.deleteCompatibilityTest(testId).onSuccess {
+                _effect.emit(FriendsContract.Effect.ShowToast(UiText.StringResource(R.string.deleted_successfully)))
+            }.onFailure { e ->
+                _effect.emit(FriendsContract.Effect.ShowToast(UiText.StringResource(R.string.error_occurred)))
+            }
+        }
+    }
+
+    private fun loadPremiumStatus() {
+        viewModelScope.launch {
+            val uid = auth.currentUser?.uid ?: return@launch
+            premiumRepository.getPremiumStatus(uid).collect { status ->
+                _state.update { it.copy(premiumStatus = status) }
             }
         }
     }

@@ -2,6 +2,7 @@ package com.mhmtn.a6thsense.matchhistory.presentation.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import com.mhmtn.a6thsense.R
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,12 +30,14 @@ import com.mhmtn.a6thsense.matchhistory.domain.MatchHistoryItem
 import java.text.SimpleDateFormat
 import java.util.*
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MatchHistoryCard(
     item: MatchHistoryItem,
     isLoadingConversation: Boolean,
     onMessageClick: () -> Unit,
     onSendFriendRequest: () -> Unit,
+    onLongClick: () -> Unit, // 👇 Yeni parametre
     index: Int = 0
 ) {
     // Staggered reveal animasyonu
@@ -77,10 +81,17 @@ fun MatchHistoryCard(
             .background(
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White,
-                        Color(0xFFF8F5FF)
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.background
                     )
                 )
+            )
+            // 👇 Uzun basma desteği eklendi
+            .combinedClickable(
+                onClick = {}, // Kartın geneline tıklama eylemi vermiyoruz, butonlara veriyoruz
+                onLongClick = onLongClick,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = LocalIndication.current
             )
             .then(
                 if (item.isPremium) {
@@ -184,7 +195,7 @@ fun MatchHistoryCard(
                             text = item.matchedUserName,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF2D1B69)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         if (item.isPremium) {
@@ -195,7 +206,7 @@ fun MatchHistoryCard(
                     Text(
                         text = dateFormat.format(Date(item.timestamp)),
                         fontSize = 13.sp,
-                        color = Color(0xFF9E9E9E)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -225,7 +236,7 @@ fun MatchHistoryCard(
                         ) {
                             Text(text = "✓", fontSize = 14.sp, color = Color(0xFF43E97B))
                             Text(
-                                text = R.string.you_are_friends.toString(),
+                                text = stringResource( R.string.you_are_friends),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF43E97B)
@@ -255,7 +266,7 @@ fun MatchHistoryCard(
                         ) {
                             Text(text = "⏳", fontSize = 14.sp)
                             Text(
-                                text = R.string.send_friend_request.toString(),
+                                text = stringResource(R.string.send_friend_request),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFFFD700)
@@ -285,7 +296,7 @@ fun MatchHistoryCard(
                         ) {
                             Text(text = "➕", fontSize = 14.sp)
                             Text(
-                                text = R.string.add_friend.toString(),
+                                text = stringResource(R.string.add_friend),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -326,7 +337,7 @@ fun MatchHistoryCard(
                     ) {
                         Text(text = "💬", fontSize = 16.sp)
                         Text(
-                            text = R.string.message_text.toString(),
+                            text = stringResource(R.string.message_text),
                             color = Color.White,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold

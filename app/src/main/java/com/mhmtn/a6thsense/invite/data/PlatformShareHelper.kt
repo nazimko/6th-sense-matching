@@ -17,50 +17,60 @@ import java.io.File
 class PlatformShareHelper(private val context: Context) {
 
     // WhatsApp - Direct share with contact picker
-    fun shareToWhatsApp(message: String, link: String) {
+    fun shareToWhatsApp(message: String, //link: String
+         ) {
         try {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 setPackage("com.whatsapp")
-                putExtra(Intent.EXTRA_TEXT, "$message\n\n$link")
+                putExtra(Intent.EXTRA_TEXT, "$message\n")
             }
 
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
             } else {
                 // WhatsApp yüklü değil
-                shareToGeneric(message, link)
-                Toast.makeText(context, R.string.wp_isnt_loaded.toString(), Toast.LENGTH_SHORT).show()
+                shareToGeneric(message
+                    //link
+                    )
+                Toast.makeText(context, context.getString(R.string.wp_isnt_loaded), Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            shareToGeneric(message, link)
+            shareToGeneric(message
+                //link
+            )
         }
     }
 
     // Instagram - Stories or DM
-    fun shareToInstagram(message: String, link: String) {
+    fun shareToInstagram(message: String, //link: String
+    ) {
         try {
             // Instagram Stories için background image gerekir
             // Basit text share için generic share kullan
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 setPackage("com.instagram.android")
-                putExtra(Intent.EXTRA_TEXT, "$message\n$link")
+                putExtra(Intent.EXTRA_TEXT, "$message")
             }
 
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
             } else {
-                Toast.makeText(context, R.string.ig_isnt_loaded.toString(), Toast.LENGTH_SHORT).show()
-                shareToGeneric(message, link)
+                Toast.makeText(context, context.getString(R.string.ig_isnt_loaded), Toast.LENGTH_SHORT).show()
+                shareToGeneric(message
+                    //link
+                )
             }
         } catch (e: Exception) {
-            shareToGeneric(message, link)
+            shareToGeneric(message
+                //link
+            )
         }
     }
 
     // Facebook - SDK ile multi-select friends (requires Facebook app)
-    fun shareToFacebook(link: String, callbackManager: CallbackManager, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun shareToFacebook( link: String, callbackManager: CallbackManager, onSuccess: () -> Unit, onError: (String) -> Unit) {
         // Facebook App Invites veya Share Dialog kullan
         val content = ShareLinkContent.Builder()
             .setContentUrl(Uri.parse(link))
@@ -68,7 +78,7 @@ class PlatformShareHelper(private val context: Context) {
 
         // ShareDialog requires Activity context
         // Bu yüzden Activity'den çağrılmalı
-        Toast.makeText(context, R.string.share_fb_text.toString(), Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, context.getString(R.string.share_fb_text), Toast.LENGTH_SHORT).show()
 
         // Alternatif: Browser'da aç
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/sharer/sharer.php?u=$link"))
@@ -76,8 +86,9 @@ class PlatformShareHelper(private val context: Context) {
     }
 
     // Twitter - Web intent
-    fun shareToTwitter(message: String, link: String) {
-        val tweetText = "$message\n\n$link"
+    fun shareToTwitter(message: String, //link: String
+         ) {
+        val tweetText = "$message\n"
         val tweetUrl = "https://twitter.com/intent/tweet?text=${Uri.encode(tweetText)}"
 
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl))
@@ -85,36 +96,39 @@ class PlatformShareHelper(private val context: Context) {
     }
 
     // SMS - Multiple contacts
-    fun shareViaSMS(message: String, link: String) {
+    fun shareViaSMS(message: String, //link: String
+         ) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "$message\n\n$link")
+            putExtra(Intent.EXTRA_TEXT, "$message\n")
         }
 
-        val smsIntent = Intent.createChooser(intent, R.string.share_via_sms.toString())
+        val smsIntent = Intent.createChooser(intent, context.getString(R.string.share_via_sms))
         context.startActivity(smsIntent)
     }
 
     // Email - Multiple recipients
-    fun shareViaEmail(subject: String, body: String, link: String) {
+    fun shareViaEmail(subject: String, body: String, //link: String
+         ) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "message/rfc822"
             putExtra(Intent.EXTRA_SUBJECT, subject)
-            putExtra(Intent.EXTRA_TEXT, "$body\n\n$link")
+            putExtra(Intent.EXTRA_TEXT, "$body\n")
         }
 
-        val emailIntent = Intent.createChooser(intent, R.string.share_via_email.toString())
+        val emailIntent = Intent.createChooser(intent, context.getString(R.string.share_via_email))
         context.startActivity(emailIntent)
     }
 
     // Generic share (System share sheet)
-    fun shareToGeneric(message: String, link: String) {
+    fun shareToGeneric(message: String, //link: String
+         ) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "$message\n\n$link")
+            putExtra(Intent.EXTRA_TEXT, "$message\n")
         }
 
-        val chooser = Intent.createChooser(intent, R.string.share.toString())
+        val chooser = Intent.createChooser(intent, context.getString(R.string.share))
         context.startActivity(chooser)
     }
 

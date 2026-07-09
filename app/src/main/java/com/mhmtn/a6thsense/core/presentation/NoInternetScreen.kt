@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,8 +58,8 @@ fun NoInternetScreen(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFF8FAFC),
-                        Color(0xFFF1F5F9)
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background
                     )
                 )
             )
@@ -77,7 +78,7 @@ fun NoInternetScreen(
                 shape = RoundedCornerShape(24.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
                 Column(
@@ -114,7 +115,7 @@ fun NoInternetScreen(
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_wifi_off),
-                                    contentDescription = "İnternet Yok",
+                                    contentDescription = "No Internet",
                                     modifier = Modifier.size(48.dp),
                                     tint = Color(0xFFEF5350)
                                 )
@@ -126,19 +127,19 @@ fun NoInternetScreen(
 
                     // Başlık
                     Text(
-                        text = R.string.no_internet_connection.toString(),
+                        text = stringResource(R.string.no_internet_connection),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // Açıklama
                     Text(
-                        text = R.string.check_internet_text.toString(),
+                        text = stringResource(R.string.check_internet_text),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF64748B),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
                     )
@@ -150,7 +151,7 @@ fun NoInternetScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFF8FAFC)
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         Column(
@@ -159,25 +160,24 @@ fun NoInternetScreen(
                                 .padding(20.dp)
                         ) {
                             Text(
-                                text = R.string.checklist.toString(),
+                                text = stringResource(R.string.checklist),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF334155)
+                                color = MaterialTheme.colorScheme.onSurface
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            ChecklistItem(R.string.wifi_text.toString())
+                            ChecklistItem(stringResource(R.string.wifi_text))
                             Spacer(modifier = Modifier.height(12.dp))
-                            ChecklistItem(R.string.airplane_mode.toString())
+                            ChecklistItem(stringResource(R.string.airplane_mode))
                             Spacer(modifier = Modifier.height(12.dp))
-                            ChecklistItem(R.string.signal.toString())
+                            ChecklistItem(stringResource(R.string.signal))
                         }
                     }
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Yenile Butonu
                     Button(
                         onClick = {
                             isRefreshing = true
@@ -188,7 +188,8 @@ fun NoInternetScreen(
                             .height(56.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF2563EB)
+                            containerColor = Color(0xFF2563EB),
+                            contentColor = MaterialTheme.colorScheme.onSurface
                         ),
                         enabled = !isRefreshing
                     ) {
@@ -199,7 +200,7 @@ fun NoInternetScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = if (isRefreshing) R.string.checking.toString() else R.string.try_again_text.toString(),
+                            text = if (isRefreshing) stringResource(R.string.checking) else stringResource(R.string.try_again_text),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -217,9 +218,9 @@ fun NoInternetScreen(
 
                     // Alt Bilgi
                     Text(
-                        text = R.string.no_internet_subtitle.toString(),
+                        text = stringResource(R.string.no_internet_subtitle),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF94A3B8)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -231,11 +232,11 @@ fun NoInternetScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFEFF6FF)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 border = androidx.compose.foundation.BorderStroke(
                     1.dp,
-                    Color(0xFFBFDBFE)
+                    MaterialTheme.colorScheme.outline
                 )
             ) {
                 Row(
@@ -256,18 +257,18 @@ fun NoInternetScreen(
 
                     Column {
                         Text(
-                            text = R.string.hint.toString(),
+                            text = stringResource(R.string.hint),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF1E40AF)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(
-                            text = R.string.hint_subtitle.toString(),
+                            text = stringResource(R.string.hint_subtitle),
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF1D4ED8)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -290,7 +291,7 @@ private fun ChecklistItem(text: String) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF64748B)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

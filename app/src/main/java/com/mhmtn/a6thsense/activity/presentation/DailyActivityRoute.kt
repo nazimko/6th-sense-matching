@@ -1,6 +1,5 @@
 package com.mhmtn.a6thsense.activity.presentation
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,10 +20,10 @@ import dagger.hilt.android.EntryPointAccessors
 fun DailyActivityRoute(
     navController: NavController,
     sessionType: DailyActivityContract.SessionType,
+    threshold: Int,
     modifier: Modifier = Modifier,
     viewModel: DailyActivityViewModel = hiltViewModel()
 ) {
-    Log.d("DailyActivityRoute", "Received sessionType: $sessionType")
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -32,6 +31,9 @@ fun DailyActivityRoute(
     LaunchedEffect(sessionType) {
         // ViewModel zaten SavedStateHandle'dan alıyor
         // Bu LaunchedEffect sadece doğru sessionType'la çalıştığından emin olmak için
+    }
+    LaunchedEffect(threshold) {
+
     }
 
     val analyticsHelper = remember {
@@ -64,7 +66,7 @@ fun DailyActivityRoute(
                     navController.navigate(Routes.ALREADY_COMPLETED)
                 }
                 is DailyActivityContract.Effect.ShowToast -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
             }
         }

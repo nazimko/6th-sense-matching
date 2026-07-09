@@ -18,12 +18,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mhmtn.a6thsense.core.presentation.bounceClick
 import com.mhmtn.a6thsense.core.presentation.floating
 import com.mhmtn.a6thsense.friends.domain.model.Friendship
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun RequestsTab(
@@ -49,16 +53,16 @@ fun RequestsTab(
                 )
 
                 Text(
-                    text = R.string.no_requests.toString(),
+                    text = stringResource(R.string.no_requests),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
 
                 Text(
-                    text = R.string.no_requests_subtext.toString(),
+                    text = stringResource(R.string.no_requests_subtext),
                     fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center,
                     lineHeight = 20.sp
                 )
@@ -88,12 +92,24 @@ fun FriendRequestCard(
     onReject: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Fetch sender info (simplified - you might want to do this in ViewModel)
     var senderName by remember { mutableStateOf("User") }
+    var senderPhotoUrl by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(request.user1) {
-        // Fetch user info from Firestore
-        // senderName = ...
+        try {
+            val userDoc = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(request.user1)
+                .get()
+                .await()
+            
+            senderName = userDoc.getString("name") ?: "User"
+            senderPhotoUrl = userDoc.getString("profileImageUrl")
+                ?: userDoc.getString("photoUrl")
+                        ?: ""
+        } catch (e: Exception) {
+            // Error handling
+        }
     }
 
     Box(
@@ -107,8 +123,8 @@ fun FriendRequestCard(
             .background(
                 Brush.horizontalGradient(
                     colors = listOf(
-                        Color(0xFF2D1B69),
-                        Color(0xFF1A1A2E)
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surface
                     )
                 )
             )
@@ -140,30 +156,38 @@ fun FriendRequestCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = senderName.firstOrNull()?.uppercase() ?: "?",
-                    color = Color.White,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                if (senderPhotoUrl != null) {
+                    AsyncImage(
+                        model = senderPhotoUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(
+                        text = senderName.firstOrNull()?.uppercase() ?: "?",
+                        color = Color.White,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             // Info
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
                     text = senderName,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
-                    text = R.string.friend_request_text.toString(),
+                    text = stringResource(R.string.wants_to_be_friend),
                     fontSize = 13.sp,
-                    color = Color.White.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             }
         }
@@ -172,29 +196,29 @@ fun FriendRequestCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 100.dp),
+                .padding(top = 80.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Reject
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFF4A4A5E).copy(alpha = 0.5f))
+                    .height(44.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
                     .border(
                         width = 1.dp,
-                        color = Color.White.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(16.dp)
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(12.dp)
                     )
                     .bounceClick(onClick = onReject),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = R.string.reject.toString(),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White.copy(alpha = 0.7f)
+                    text = stringResource(R.string.reject),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             }
 
@@ -202,8 +226,8 @@ fun FriendRequestCard(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .height(44.dp)
+                    .clip(RoundedCornerShape(12.dp))
                     .background(
                         Brush.linearGradient(
                             listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
@@ -213,9 +237,9 @@ fun FriendRequestCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = R.string.accept.toString(),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = stringResource(R.string.accept),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
                     color = Color.White
                 )
             }

@@ -12,9 +12,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -54,10 +57,17 @@ fun SettingsScreen(
         }
     }
 
+    if (state.showLogoutDialog) {
+        LogoutConfirmationDialog(
+            onConfirm = { onAction(SettingsContract.Action.OnLogoutConfirm) },
+            onDismiss = { onAction(SettingsContract.Action.OnLogoutDismiss) }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F5FF))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Dekoratif arka plan
         SettingsBackground()
@@ -83,7 +93,7 @@ fun SettingsScreen(
 
             // Tema
             SettingsSection(
-                title = R.string.theme.toString(),
+                title = stringResource(R.string.theme),
                 modifier = Modifier.revealFromBottom(delayMillis = 100)
             ) {
                 ThemeToggleItem(
@@ -96,13 +106,13 @@ fun SettingsScreen(
 
             // Bildirimler
             SettingsSection(
-                title = R.string.notifications.toString(),
+                title = stringResource(R.string.notifications),
                 modifier = Modifier.revealFromBottom(delayMillis = 200)
             ) {
                 NotificationItem(
                     icon = Icons.Outlined.Favorite,
-                    title = R.string.match_notifications.toString(),
-                    subtitle = R.string.match_notifications_desc.toString(),
+                    title = stringResource(R.string.match_notifications),
+                    subtitle = stringResource(R.string.match_notifications_desc),
                     enabled = state.settings.matchNotificationsEnabled,
                     onToggle = {
                         onAction(SettingsContract.Action.UpdateMatchNotifications(it))
@@ -111,13 +121,13 @@ fun SettingsScreen(
 
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    color = Color(0xFFE0E0E0)
+                    color = MaterialTheme.colorScheme.outline
                 )
 
                 NotificationItem(
                     icon = Icons.Outlined.MailOutline,
-                    title = R.string.message_notifications.toString(),
-                    subtitle = R.string.message_notifications_desc.toString(),
+                    title = stringResource(R.string.message_notifications),
+                    subtitle = stringResource(R.string.message_notifications_desc),
                     enabled = state.settings.messageNotificationsEnabled,
                     onToggle = {
                         onAction(SettingsContract.Action.UpdateMessageNotifications(it))
@@ -128,17 +138,39 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             SettingsSection(
-                title = R.string.privacy.toString(),
+                title = stringResource(R.string.privacy),
                 modifier = Modifier.revealFromBottom(delayMillis = 250)
             ) {
                 PrivacySettingItem(
                     icon = Icons.Filled.Search,
-                    title = R.string.show_in_discover.toString(),
-                    description = R.string.show_in_discover_desc.toString(),
+                    title = stringResource(R.string.show_in_discover),
+                    description = stringResource(R.string.show_in_discover_desc),
                     isEnabled = state.showInDiscover,
                     onToggle = { onAction(SettingsContract.Action.OnShowInDiscoverToggle) }
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(
+                title = stringResource(R.string.contact_us),
+                modifier = Modifier.revealFromBottom(delayMillis = 300)
+            ) {
+                SettingsItemWithEmoji(
+                    icon = Icons.Filled.Settings,
+                    title = stringResource(R.string.contact_us),
+                    description = stringResource(R.string.contact_us_subtitle),
+                    onClick = { onAction(SettingsContract.Action.OnContactUsClick) }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            LogoutButton(
+                isLoading = state.isLoggingOut,
+                onClick = { onAction(SettingsContract.Action.OnLogoutClick) },
+                modifier = Modifier.revealFromBottom(delayMillis = 350)
+            )
 
             Spacer(modifier = Modifier.height(40.dp))
         }
@@ -172,6 +204,8 @@ private fun SettingsBackground() {
 
 @Composable
 private fun SettingsHeader(onBackClick: () -> Unit) {
+    val colorScheme = MaterialTheme.colorScheme
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -185,20 +219,20 @@ private fun SettingsHeader(onBackClick: () -> Unit) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Color.White)
+                .background(colorScheme.surface)
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Back",
-                tint = Color(0xFF2D1B69)
+                tint = colorScheme.onBackground
             )
         }
 
         Text(
-            text = R.string.settings.toString(),
+            text = stringResource(R.string.settings),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF2D1B69)
+            color = colorScheme.onBackground
         )
     }
 }
@@ -210,6 +244,7 @@ private fun ProfileSection(
     modifier: Modifier = Modifier
 ) {
     val focusRequester = remember { FocusRequester() }
+    val colorScheme = MaterialTheme.colorScheme
 
     LaunchedEffect(state.isEditingName) {
         if (state.isEditingName) {
@@ -227,7 +262,7 @@ private fun ProfileSection(
                 ambientColor = Color(0xFF7B5EA7).copy(alpha = 0.15f)
             )
             .clip(RoundedCornerShape(24.dp))
-            .background(Color.White)
+            .background(colorScheme.surface)
             .padding(20.dp)
     ) {
         Row(
@@ -284,11 +319,11 @@ private fun ProfileSection(
                                     .fillMaxWidth()
                                     .focusRequester(focusRequester)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFFF3F0FF))
+                                    .background(colorScheme.surfaceVariant)
                                     .padding(horizontal = 12.dp, vertical = 8.dp),
                                 textStyle = TextStyle(
                                     fontSize = 16.sp,
-                                    color = Color(0xFF2D1B69),
+                                    color = colorScheme.onSurface,
                                     fontWeight = FontWeight.SemiBold
                                 ),
                                 cursorBrush = SolidColor(Color(0xFF7B5EA7)),
@@ -310,16 +345,16 @@ private fun ProfileSection(
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(8.dp))
-                                        .background(Color(0xFFF5F5F5))
+                                        .background(colorScheme.surfaceVariant)
                                         .bounceClick {
                                             onAction(SettingsContract.Action.CancelEditingName)
                                         }
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(
-                                        text = R.string.cancel.toString(),
+                                        text = stringResource(R.string.cancel),
                                         fontSize = 13.sp,
-                                        color = Color.Gray
+                                        color = colorScheme.onSurfaceVariant
                                     )
                                 }
 
@@ -348,7 +383,7 @@ private fun ProfileSection(
                                         )
                                     } else {
                                         Text(
-                                            text = R.string.save.toString(),
+                                            text = stringResource(R.string.save),
                                             fontSize = 13.sp,
                                             color = Color.White,
                                             fontWeight = FontWeight.SemiBold
@@ -366,15 +401,15 @@ private fun ProfileSection(
                         ) {
                             Column {
                                 Text(
-                                    text = state.settings.displayName.ifBlank { R.string.anonymous.toString() },
+                                    text = state.settings.displayName.ifBlank { stringResource(R.string.anonymous) },
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF2D1B69)
+                                    color = colorScheme.onSurface
                                 )
                                 Text(
-                                    text = R.string.edit_name.toString(),
+                                    text = stringResource(R.string.edit_name),
                                     fontSize = 12.sp,
-                                    color = Color(0xFF9E9E9E)
+                                    color = colorScheme.onSurfaceVariant
                                 )
                             }
 
@@ -383,7 +418,7 @@ private fun ProfileSection(
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clip(CircleShape)
-                                    .background(Color(0xFFF3F0FF))
+                                    .background(colorScheme.surfaceVariant)
                                     .bounceClick {
                                         onAction(SettingsContract.Action.StartEditingName)
                                     },
@@ -410,6 +445,9 @@ private fun SettingsSection(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
+
+    val colorScheme = MaterialTheme.colorScheme
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -420,7 +458,7 @@ private fun SettingsSection(
             text = title,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF9E9E9E),
+            color = colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
         )
 
@@ -433,7 +471,7 @@ private fun SettingsSection(
                     ambientColor = Color(0xFF7B5EA7).copy(alpha = 0.08f)
                 )
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color.White)
+                .background(colorScheme.surface)
         ) {
             Column(content = content)
         }
@@ -445,6 +483,9 @@ private fun ThemeToggleItem(
     isDark: Boolean,
     onToggle: (Boolean) -> Unit
 ) {
+
+    val colorScheme = MaterialTheme.colorScheme
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -462,10 +503,8 @@ private fun ThemeToggleItem(
                     .size(40.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(
-                        if (isDark)
-                            Color(0xFF1A1A2E)
-                        else
-                            Color(0xFFFFF9C4)
+                        if (isDark) colorScheme.surface
+                        else Color(0xFFFFF9C4)
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -477,15 +516,15 @@ private fun ThemeToggleItem(
 
             Column {
                 Text(
-                    text = if (isDark) R.string.dark_theme.toString() else R.string.light_theme.toString(),
+                    text = if (isDark) stringResource(R.string.dark_theme) else stringResource(R.string.light_theme),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF2D1B69)
+                    color = colorScheme.onSurface
                 )
                 Text(
-                    text = if (isDark) R.string.dark_desc.toString() else R.string.light_desc.toString(),
+                    text = if (isDark) stringResource(R.string.dark_desc) else stringResource(R.string.light_desc),
                     fontSize = 12.sp,
-                    color = Color(0xFF9E9E9E)
+                    color = colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -551,6 +590,10 @@ private fun NotificationItem(
     enabled: Boolean,
     onToggle: (Boolean) -> Unit
 ) {
+
+    val colorScheme = MaterialTheme.colorScheme
+
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -575,10 +618,9 @@ private fun NotificationItem(
                                     Color(0xFF4568DC).copy(alpha = 0.15f)
                                 )
                             )
-                        else
-                            Brush.linearGradient(
-                                listOf(Color(0xFFF5F5F5), Color(0xFFF5F5F5))
-                            )
+                        else Brush.linearGradient(
+                            listOf(colorScheme.surfaceVariant, colorScheme.surfaceVariant)  // 0xFFF5F5F5
+                        )
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -595,12 +637,12 @@ private fun NotificationItem(
                     text = title,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF2D1B69)
+                    color = colorScheme.onSurface
                 )
                 Text(
                     text = subtitle,
                     fontSize = 12.sp,
-                    color = Color(0xFF9E9E9E)
+                    color = colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -620,6 +662,9 @@ fun PrivacySettingItem(
     isEnabled: Boolean,
     onToggle: (Boolean) -> Unit
 ) {
+
+    val colorScheme = MaterialTheme.colorScheme
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -654,7 +699,7 @@ fun PrivacySettingItem(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = if (isEnabled) Color(0xFF7B5EA7) else Color.Gray,
+                    tint = if (isEnabled) colorScheme.onSurfaceVariant else Color.Gray,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -664,12 +709,12 @@ fun PrivacySettingItem(
                     text = title,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF2D1B69)
+                    color = colorScheme.onSurface
                 )
                 Text(
                     text = description,
                     fontSize = 12.sp,
-                    color = Color(0xFF9E9E9E)
+                    color = colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -677,6 +722,75 @@ fun PrivacySettingItem(
         ThemeToggleSwitch(
             isChecked = isEnabled,
             onToggle
+        )
+    }
+}
+
+@Composable
+fun SettingsItemWithEmoji(
+    icon: ImageVector,
+    title: String,
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    gradientColors: List<Color> = listOf(
+        Color(0xFF7B5EA7).copy(alpha = 0.15f),
+        Color(0xFF4568DC).copy(alpha = 0.15f)
+    )
+) {
+    val colorScheme = MaterialTheme.colorScheme
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            // Emoji container
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Brush.linearGradient(gradientColors)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color(0xFF7B5EA7),
+                )
+            }
+
+            // Text content
+            Column {
+                Text(
+                    text = title,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorScheme.onSurface
+                )
+                Text(
+                    text = description,
+                    fontSize = 12.sp,
+                    color = colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // Arrow indicator
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp)
         )
     }
 }

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -93,8 +95,8 @@ fun CodeInputDialog(
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF2D1B69),
-                                Color(0xFF1A1A2E)
+                                MaterialTheme.colorScheme.surface,
+                                MaterialTheme.colorScheme.background
                             )
                         )
                     )
@@ -123,17 +125,17 @@ fun CodeInputDialog(
 
                     // Title
                     Text(
-                        text = R.string.enter_invite_code.toString(),
+                        text = stringResource(R.string.enter_invite_code),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
 
                     Text(
-                        text = R.string.code_input_subtitle_text.toString(),
+                        text = stringResource(R.string.code_input_subtitle_text),
                         fontSize = 14.sp,
-                        color = Color.White.copy(alpha = 0.7f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center,
                         lineHeight = 20.sp
                     )
@@ -143,7 +145,7 @@ fun CodeInputDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFF2A2A3E))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .border(
                                 width = 2.dp,
                                 color = if (error != null)
@@ -163,19 +165,19 @@ fun CodeInputDialog(
                             },
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = TextStyle(
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
                                 letterSpacing = 4.sp
                             ),
                             singleLine = true,
-                            cursorBrush = SolidColor(Color.White),
+                            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                             decorationBox = { innerTextField ->
                                 if (codeInput.isEmpty()) {
                                     Text(
                                         text = "ABCD1234",
-                                        color = Color.White.copy(alpha = 0.3f),
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
                                         fontSize = 24.sp,
                                         fontWeight = FontWeight.Bold,
                                         textAlign = TextAlign.Center,
@@ -225,7 +227,10 @@ fun CodeInputDialog(
                                         if (codeInput.length >= 4)
                                             listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
                                         else
-                                            listOf(Color.Gray, Color.Gray)
+                                            listOf(
+                                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                                            )
                                     )
                                 )
                                 .bounceClick(
@@ -236,7 +241,7 @@ fun CodeInputDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = R.string.apply.toString(),
+                                text = stringResource(R.string.apply),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -251,7 +256,7 @@ fun CodeInputDialog(
                                 .background(Color.Transparent)
                                 .border(
                                     width = 1.dp,
-                                    color = Color.White.copy(alpha = 0.3f),
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .bounceClick(onClick = onDismiss)
@@ -259,10 +264,10 @@ fun CodeInputDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = R.string.cancel.toString(),
+                                text = stringResource(R.string.cancel),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.White.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
                     }

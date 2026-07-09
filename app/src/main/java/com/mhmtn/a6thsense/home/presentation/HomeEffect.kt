@@ -14,5 +14,5 @@ sealed interface HomeEffect {
     data object NavigateToAuth : HomeEffect
     data object NavigateToSettings : HomeEffect
     object NavigateToPaywall : HomeEffect
-    data class NavigateToSession(val type: SessionType) : HomeEffect
+    data class NavigateToSession(val type: SessionType, val threshold: Int) : HomeEffect // ✅ threshold eklendi
 }

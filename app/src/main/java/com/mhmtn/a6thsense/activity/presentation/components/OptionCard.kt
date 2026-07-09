@@ -16,6 +16,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,10 +43,10 @@ fun OptionCard(
     val gradient = getOptionGradient(option)
     val shadowColor = getOptionShadowColor(option)
     val emoji = getOptionEmoji(option)
+    val contentColor = getOptionContentColor(option)
 
     Box(
-        // 👇 MODIFIER SIRASI ÇOK ÖNEMLİ - fillMaxWidth/fillMaxHeight ÖNCE GELMELİ
-        modifier = modifier // 👈 1. Parent'tan gelen (weight, fillMaxHeight)
+        modifier = modifier
             .shadow(
                 elevation = if (isSelected) 16.dp else 8.dp,
                 shape = RoundedCornerShape(16.dp),
@@ -54,7 +57,11 @@ fun OptionCard(
             .background(gradient)
             .border(
                 width = if (isSelected) 3.dp else 1.dp,
-                color = Color.White.copy(alpha = if (isSelected) 0.6f else 0.3f),
+                color = if (contentColor == Color.White) {
+                    Color.White.copy(alpha = if (isSelected) 0.6f else 0.3f)
+                } else {
+                    contentColor.copy(alpha = if (isSelected) 0.5f else 0.2f)
+                },
                 shape = RoundedCornerShape(16.dp)
             )
             .clickable(
@@ -62,7 +69,7 @@ fun OptionCard(
                 indication = null,
                 onClick = onClick
             )
-            .scale(scale) // 👈 Scale EN SONA (shadow'dan sonra)
+            .scale(scale)
             .padding(12.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -76,12 +83,28 @@ fun OptionCard(
             )
 
             Text(
-                text = option.name,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                text = stringResource(option.displayNameRes),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = contentColor,
+                    shadow = if (contentColor == Color.White) Shadow(
+                        color = Color.Black.copy(alpha = 0.3f),
+                        blurRadius = 4f
+                    ) else null
+                )
             )
         }
+    }
+}
+
+private fun getOptionContentColor(option: Option): Color {
+    return when (option) {
+        // Açık renkli gradyanlara sahip olanlar için koyu metin rengi
+        Option.IVORY, Option.SILVER, Option.BEIGE, Option.EAGLE,
+        Option.SWAN, Option.SNOW, Option.CLOUD, Option.TRUTH,
+        Option.SPIRIT, Option.IVORY -> Color(0xFF2D1B69) // Tema koyu moru
+        else -> Color.White
     }
 }
 
@@ -104,6 +127,22 @@ private fun getOptionGradient(option: Option): Brush {
         Option.MINT -> Brush.verticalGradient(listOf(Color(0xFF98FF98), Color(0xFF00FA9A)))
         Option.LAVENDER -> Brush.verticalGradient(listOf(Color(0xFFE6E6FA), Color(0xFFDDA0DD)))
         Option.GOLD -> Brush.verticalGradient(listOf(Color(0xFFFFD700), Color(0xFFFFA500)))
+        Option.SILVER -> Brush.verticalGradient(listOf(Color(0xFFC0C0C0), Color(0xFFA9A9A9)))
+        Option.BRONZE -> Brush.verticalGradient(listOf(Color(0xFFCD7F32), Color(0xFF8B4513)))
+        Option.EMERALD -> Brush.verticalGradient(listOf(Color(0xFF50C878), Color(0xFF006400)))
+        Option.RUBY -> Brush.verticalGradient(listOf(Color(0xFFE0115F), Color(0xFF8B0000)))
+        Option.SAPPHIRE -> Brush.verticalGradient(listOf(Color(0xFF0F52BA), Color(0xFF000080)))
+        Option.AMBER -> Brush.verticalGradient(listOf(Color(0xFFFFBF00), Color(0xFFD2691E)))
+        Option.TURQUOISE -> Brush.verticalGradient(listOf(Color(0xFF40E0D0), Color(0xFF00CED1)))
+        Option.VIOLET -> Brush.verticalGradient(listOf(Color(0xFF8F00FF), Color(0xFF4B0082)))
+        Option.BEIGE -> Brush.verticalGradient(listOf(Color(0xFFF5F5DC), Color(0xFFD2B48C)))
+        Option.MAROON -> Brush.verticalGradient(listOf(Color(0xFF800000), Color(0xFF4B0000)))
+        Option.OLIVE -> Brush.verticalGradient(listOf(Color(0xFF808000), Color(0xFF556B2F)))
+        Option.NAVY -> Brush.verticalGradient(listOf(Color(0xFF000080), Color(0xFF000033)))
+        Option.SLATE -> Brush.verticalGradient(listOf(Color(0xFF708090), Color(0xFF2F4F4F)))
+        Option.CRIMSON -> Brush.verticalGradient(listOf(Color(0xFFDC143C), Color(0xFF800000)))
+        Option.CHARCOAL -> Brush.verticalGradient(listOf(Color(0xFF36454F), Color(0xFF121212)))
+        Option.IVORY -> Brush.verticalGradient(listOf(Color(0xFFFFFFF0), Color(0xFFEEE8AA)))
 
         // Animals - Phase 3
         Option.LION -> Brush.verticalGradient(listOf(Color(0xFFFFD89B), Color(0xFFFF9A56)))
@@ -122,6 +161,22 @@ private fun getOptionGradient(option: Option): Brush {
         Option.WHALE -> Brush.verticalGradient(listOf(Color(0xFF4682B4), Color(0xFF1E3A5F)))
         Option.HAWK -> Brush.verticalGradient(listOf(Color(0xFF696969), Color(0xFF2F4F4F)))
         Option.PEACOCK -> Brush.verticalGradient(listOf(Color(0xFF00CED1), Color(0xFF20B2AA)))
+        Option.CAT -> Brush.verticalGradient(listOf(Color(0xFFFFA07A), Color(0xFFCD5C5C)))
+        Option.DOG -> Brush.verticalGradient(listOf(Color(0xFFDEB887), Color(0xFF8B4513)))
+        Option.RABBIT -> Brush.verticalGradient(listOf(Color(0xFFF0F8FF), Color(0xFFB0C4DE)))
+        Option.DEER -> Brush.verticalGradient(listOf(Color(0xFFBC8F8F), Color(0xFF5D4037)))
+        Option.SHARK -> Brush.verticalGradient(listOf(Color(0xFF708090), Color(0xFF2F4F4F)))
+        Option.OCTOPUS -> Brush.verticalGradient(listOf(Color(0xFF9370DB), Color(0xFF4B0082)))
+        Option.RAY -> Brush.verticalGradient(listOf(Color(0xFFADD8E6), Color(0xFF4682B4)))
+        Option.TURTLE -> Brush.verticalGradient(listOf(Color(0xFF556B2F), Color(0xFF006400)))
+        Option.BAT -> Brush.verticalGradient(listOf(Color(0xFF2F4F4F), Color(0xFF000000)))
+        Option.SCORPION -> Brush.verticalGradient(listOf(Color(0xFFB22222), Color(0xFF330000)))
+        Option.SPIDER -> Brush.verticalGradient(listOf(Color(0xFF424242), Color(0xFF000000)))
+        Option.RAVEN -> Brush.verticalGradient(listOf(Color(0xFF212121), Color(0xFF000000)))
+        Option.SWAN -> Brush.verticalGradient(listOf(Color(0xFFFFFFFF), Color(0xFFE0E0E0)))
+        Option.HUMMINGBIRD -> Brush.verticalGradient(listOf(Color(0xFF00FF7F), Color(0xFF008080)))
+        Option.KOALA -> Brush.verticalGradient(listOf(Color(0xFFBDBDBD), Color(0xFF616161)))
+        Option.PANDA -> Brush.verticalGradient(listOf(Color(0xFFF5F5F5), Color(0xFF212121)))
 
         // Elements - Phase 4
         Option.FIRE -> Brush.verticalGradient(listOf(Color(0xFFFF6B6B), Color(0xFFEE5A6F)))
@@ -140,6 +195,22 @@ private fun getOptionGradient(option: Option): Brush {
         Option.SNOW -> Brush.verticalGradient(listOf(Color(0xFFFFFAFA), Color(0xFFF0F8FF)))
         Option.SUN -> Brush.verticalGradient(listOf(Color(0xFFFDB813), Color(0xFFFF8C00)))
         Option.MOON -> Brush.verticalGradient(listOf(Color(0xFFF0E68C), Color(0xFFE6E6FA)))
+        Option.STORM -> Brush.verticalGradient(listOf(Color(0xFF485563), Color(0xFF29323C)))
+        Option.THUNDER -> Brush.verticalGradient(listOf(Color(0xFFF7971E), Color(0xFFFFD200)))
+        Option.CLOUD -> Brush.verticalGradient(listOf(Color(0xFFECE9E6), Color(0xFFFFFFFF)))
+        Option.FOG -> Brush.verticalGradient(listOf(Color(0xFFBDC3C7), Color(0xFF2C3E50)))
+        Option.RIVER -> Brush.verticalGradient(listOf(Color(0xFF2193B0), Color(0xFF6DD5ED)))
+        Option.LAKE -> Brush.verticalGradient(listOf(Color(0xFF00C6FF), Color(0xFF0072FF)))
+        Option.CAVE -> Brush.verticalGradient(listOf(Color(0xFF434343), Color(0xFF000000)))
+        Option.CANYON -> Brush.verticalGradient(listOf(Color(0xFFD38312), Color(0xFFA83279)))
+        Option.STAR -> Brush.verticalGradient(listOf(Color(0xFFFFF9B0), Color(0xFFFFE66D)))
+        Option.GALAXY -> Brush.verticalGradient(listOf(Color(0xFF6A11CB), Color(0xFF2575FC)))
+        Option.NEBULA -> Brush.verticalGradient(listOf(Color(0xFFE94057), Color(0xFF8A2387)))
+        Option.COMET -> Brush.verticalGradient(listOf(Color(0xFF7474BF), Color(0xFF348AC7)))
+        Option.LEAF -> Brush.verticalGradient(listOf(Color(0xFF91E842), Color(0xFF40910E)))
+        Option.FLOWER -> Brush.verticalGradient(listOf(Color(0xFFFF5F6D), Color(0xFFFFC371)))
+        Option.ROOT -> Brush.verticalGradient(listOf(Color(0xFFDAE2F8), Color(0xFFD6A4A4)))
+        Option.SEED -> Brush.verticalGradient(listOf(Color(0xFFFBD3E9), Color(0xFFBB377D)))
 
         // Dimensions - Phase 5
         Option.LIGHT -> Brush.verticalGradient(listOf(Color(0xFFFFF9B0), Color(0xFFFFE66D)))
@@ -158,6 +229,22 @@ private fun getOptionGradient(option: Option): Brush {
         Option.FUTURE -> Brush.verticalGradient(listOf(Color(0xFF00CED1), Color(0xFF48D1CC)))
         Option.PRESENT -> Brush.verticalGradient(listOf(Color(0xFF32CD32), Color(0xFF00FA9A)))
         Option.ETERNITY -> Brush.verticalGradient(listOf(Color(0xFFFFD700), Color(0xFFFFA500)))
+        Option.MIND -> Brush.verticalGradient(listOf(Color(0xFF00B4DB), Color(0xFF0083B0)))
+        Option.SOUL -> Brush.verticalGradient(listOf(Color(0xFFFF00CC), Color(0xFF333399)))
+        Option.SPIRIT -> Brush.verticalGradient(listOf(Color(0xFFE0EAFC), Color(0xFFCFDEF3)))
+        Option.BODY -> Brush.verticalGradient(listOf(Color(0xFFF12711), Color(0xFFF5AF19)))
+        Option.DREAM -> Brush.verticalGradient(listOf(Color(0xFFFC466B), Color(0xFF3F5EFB)))
+        Option.REALITY -> Brush.verticalGradient(listOf(Color(0xFF2193B0), Color(0xFF6DD5ED)))
+        Option.TRUTH -> Brush.verticalGradient(listOf(Color(0xFFECE9E6), Color(0xFFFFFFFF)))
+        Option.ILLUSION -> Brush.verticalGradient(listOf(Color(0xFFEB3349), Color(0xFFF45C43)))
+        Option.ORDER -> Brush.verticalGradient(listOf(Color(0xFF1D2B64), Color(0xFFF8CDDA)))
+        Option.CHAOS -> Brush.verticalGradient(listOf(Color(0xFF000000), Color(0xFF434343)))
+        Option.HARMONY -> Brush.verticalGradient(listOf(Color(0xFF00F2FE), Color(0xFF4FACFE)))
+        Option.DISCORD -> Brush.verticalGradient(listOf(Color(0xFFCB3066), Color(0xFF161616)))
+        Option.WISDOM -> Brush.verticalGradient(listOf(Color(0xFFF7971E), Color(0xFFFDDC33)))
+        Option.KNOWLEDGE -> Brush.verticalGradient(listOf(Color(0xFF200122), Color(0xFF6F0000)))
+        Option.INSTINCT -> Brush.verticalGradient(listOf(Color(0xFF3CA55C), Color(0xFFB5AC49)))
+        Option.REASON -> Brush.verticalGradient(listOf(Color(0xFF4CA1AF), Color(0xFFC4E0E5)))
 
         else -> Brush.verticalGradient(listOf(Color.Gray, Color.DarkGray))
     }
@@ -183,6 +270,22 @@ private fun getOptionShadowColor(option: Option): Color {
         Option.MINT -> Color(0xFF98FF98)
         Option.LAVENDER -> Color(0xFFE6E6FA)
         Option.GOLD -> Color(0xFFFFD700)
+        Option.SILVER -> Color(0xFFC0C0C0)
+        Option.BRONZE -> Color(0xFFCD7F32)
+        Option.EMERALD -> Color(0xFF50C878)
+        Option.RUBY -> Color(0xFFE0115F)
+        Option.SAPPHIRE -> Color(0xFF0F52BA)
+        Option.AMBER -> Color(0xFFFFBF00)
+        Option.TURQUOISE -> Color(0xFF40E0D0)
+        Option.VIOLET -> Color(0xFF8F00FF)
+        Option.BEIGE -> Color(0xFFF5F5DC)
+        Option.MAROON -> Color(0xFF800000)
+        Option.OLIVE -> Color(0xFF808000)
+        Option.NAVY -> Color(0xFF000080)
+        Option.SLATE -> Color(0xFF708090)
+        Option.CRIMSON -> Color(0xFFDC143C)
+        Option.CHARCOAL -> Color(0xFF36454F)
+        Option.IVORY -> Color(0xFFFFFFF0)
 
         // Phase 3 - Animals
         Option.LION -> Color(0xFFFFD89B)
@@ -201,6 +304,22 @@ private fun getOptionShadowColor(option: Option): Color {
         Option.WHALE -> Color(0xFF4682B4)
         Option.HAWK -> Color(0xFF696969)
         Option.PEACOCK -> Color(0xFF00CED1)
+        Option.CAT -> Color(0xFFFFA07A)
+        Option.DOG -> Color(0xFFDEB887)
+        Option.RABBIT -> Color(0xFFF0F8FF)
+        Option.DEER -> Color(0xFFBC8F8F)
+        Option.SHARK -> Color(0xFF708090)
+        Option.OCTOPUS -> Color(0xFF9370DB)
+        Option.RAY -> Color(0xFFADD8E6)
+        Option.TURTLE -> Color(0xFF556B2F)
+        Option.BAT -> Color(0xFF2F4F4F)
+        Option.SCORPION -> Color(0xFFB22222)
+        Option.SPIDER -> Color(0xFF424242)
+        Option.RAVEN -> Color(0xFF212121)
+        Option.SWAN -> Color(0xFFFFFFFF)
+        Option.HUMMINGBIRD -> Color(0xFF00FF7F)
+        Option.KOALA -> Color(0xFFBDBDBD)
+        Option.PANDA -> Color(0xFFF5F5F5)
 
         // Phase 4 - Elements
         Option.FIRE -> Color(0xFFFF6B6B)
@@ -219,6 +338,22 @@ private fun getOptionShadowColor(option: Option): Color {
         Option.SNOW -> Color(0xFFFFFAFA)
         Option.SUN -> Color(0xFFFDB813)
         Option.MOON -> Color(0xFFF0E68C)
+        Option.STORM -> Color(0xFF485563)
+        Option.THUNDER -> Color(0xFFF7971E)
+        Option.CLOUD -> Color(0xFFECE9E6)
+        Option.FOG -> Color(0xFFBDC3C7)
+        Option.RIVER -> Color(0xFF2193B0)
+        Option.LAKE -> Color(0xFF00C6FF)
+        Option.CAVE -> Color(0xFF434343)
+        Option.CANYON -> Color(0xFFD38312)
+        Option.STAR -> Color(0xFFFFF9B0)
+        Option.GALAXY -> Color(0xFF6A11CB)
+        Option.NEBULA -> Color(0xFFE94057)
+        Option.COMET -> Color(0xFF7474BF)
+        Option.LEAF -> Color(0xFF91E842)
+        Option.FLOWER -> Color(0xFFFF5F6D)
+        Option.ROOT -> Color(0xFFDAE2F8)
+        Option.SEED -> Color(0xFFFBD3E9)
 
         // Phase 5 - Dimensions
         Option.LIGHT -> Color(0xFFFFE66D)
@@ -237,6 +372,22 @@ private fun getOptionShadowColor(option: Option): Color {
         Option.FUTURE -> Color(0xFF00CED1)
         Option.PRESENT -> Color(0xFF32CD32)
         Option.ETERNITY -> Color(0xFFFFD700)
+        Option.MIND -> Color(0xFF00B4DB)
+        Option.SOUL -> Color(0xFFFF00CC)
+        Option.SPIRIT -> Color(0xFFE0EAFC)
+        Option.BODY -> Color(0xFFF12711)
+        Option.DREAM -> Color(0xFFFC466B)
+        Option.REALITY -> Color(0xFF2193B0)
+        Option.TRUTH -> Color(0xFFECE9E6)
+        Option.ILLUSION -> Color(0xFFEB3349)
+        Option.ORDER -> Color(0xFF1D2B64)
+        Option.CHAOS -> Color(0xFF000000)
+        Option.HARMONY -> Color(0xFF00F2FE)
+        Option.DISCORD -> Color(0xFFCB3066)
+        Option.WISDOM -> Color(0xFFF7971E)
+        Option.KNOWLEDGE -> Color(0xFF200122)
+        Option.INSTINCT -> Color(0xFF3CA55C)
+        Option.REASON -> Color(0xFF4CA1AF)
 
         // Default
         else -> Color.Gray
@@ -256,15 +407,31 @@ private fun getOptionEmoji(option: Option): String {
         Option.PURPLE -> "🟣"
         Option.ORANGE -> "🟠"
         Option.PINK -> "🩷"
-        Option.CYAN -> "🩵"
-        Option.MAGENTA -> "🔴"
-        Option.LIME -> "🟢"
-        Option.TEAL -> "🩵"
-        Option.CORAL -> "🧡"
-        Option.INDIGO -> "🟣"
-        Option.MINT -> "💚"
-        Option.LAVENDER -> "💜"
-        Option.GOLD -> "🟡"
+        Option.CYAN -> "🫧"
+        Option.MAGENTA -> "🔮"
+        Option.LIME -> "🍏"
+        Option.TEAL -> "🧿"
+        Option.CORAL -> "🪸"
+        Option.INDIGO -> "🫐"
+        Option.MINT -> "🧊"
+        Option.LAVENDER -> "🪻"
+        Option.GOLD -> "📀"
+        Option.SILVER -> "🔘"
+        Option.BRONZE -> "🥉"
+        Option.EMERALD -> "✳️"
+        Option.RUBY -> "🏮"
+        Option.SAPPHIRE -> "💎"
+        Option.AMBER -> "🍯"
+        Option.TURQUOISE -> "💠"
+        Option.VIOLET -> "🌆"
+        Option.BEIGE -> "📜"
+        Option.MAROON -> "🧱"
+        Option.OLIVE -> "🫒"
+        Option.NAVY -> "⚓"
+        Option.SLATE -> "🗿"
+        Option.CRIMSON -> "🩸"
+        Option.CHARCOAL -> "🖤"
+        Option.IVORY -> "🦷"
 
         // Animals
         Option.LION -> "🦁"
@@ -283,6 +450,22 @@ private fun getOptionEmoji(option: Option): String {
         Option.WHALE -> "🐋"
         Option.HAWK -> "🦅"
         Option.PEACOCK -> "🦚"
+        Option.CAT -> "🐱"
+        Option.DOG -> "🐶"
+        Option.RABBIT -> "🐰"
+        Option.DEER -> "🦌"
+        Option.SHARK -> "🦈"
+        Option.OCTOPUS -> "🐙"
+        Option.RAY -> "🐟"
+        Option.TURTLE -> "🐢"
+        Option.BAT -> "🦇"
+        Option.SCORPION -> "🦂"
+        Option.SPIDER -> "🕷️"
+        Option.RAVEN -> "🐦‍⬛"
+        Option.SWAN -> "🦢"
+        Option.HUMMINGBIRD -> "🐦"
+        Option.KOALA -> "🐨"
+        Option.PANDA -> "🐼"
 
         // Elements & Nature
         Option.FIRE -> "🔥"
@@ -301,6 +484,22 @@ private fun getOptionEmoji(option: Option): String {
         Option.SNOW -> "☃️"
         Option.SUN -> "☀️"
         Option.MOON -> "🌙"
+        Option.STORM -> "🌩️"
+        Option.THUNDER -> "⚡"
+        Option.CLOUD -> "☁️"
+        Option.FOG -> "🌫️"
+        Option.RIVER -> "🏞️"
+        Option.LAKE -> "🛶"
+        Option.CAVE -> "🕳️"
+        Option.CANYON -> "🏜️"
+        Option.STAR -> "⭐"
+        Option.GALAXY -> "🌌"
+        Option.NEBULA -> "🌀"
+        Option.COMET -> "☄️"
+        Option.LEAF -> "🍃"
+        Option.FLOWER -> "🌸"
+        Option.ROOT -> "🪵"
+        Option.SEED -> "🌱"
 
         // Dimensions & Abstract
         Option.LIGHT -> "✨"
@@ -319,5 +518,21 @@ private fun getOptionEmoji(option: Option): String {
         Option.FUTURE -> "⏩"
         Option.PRESENT -> "⏺️"
         Option.ETERNITY -> "∞"
+        Option.MIND -> "🧠"
+        Option.SOUL -> "☯️"
+        Option.SPIRIT -> "👻"
+        Option.BODY -> "🧘"
+        Option.DREAM -> "🛌"
+        Option.REALITY -> "🏢"
+        Option.TRUTH -> "⚖️"
+        Option.ILLUSION -> "🪄"
+        Option.ORDER -> "📐"
+        Option.CHAOS -> "💥"
+        Option.HARMONY -> "🤝"
+        Option.DISCORD -> "⚡"
+        Option.WISDOM -> "📜"
+        Option.KNOWLEDGE -> "📚"
+        Option.INSTINCT -> "🐾"
+        Option.REASON -> "💡"
     }
 }

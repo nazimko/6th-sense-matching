@@ -1,6 +1,7 @@
 package com.mhmtn.a6thsense.similarity.presentation
 
 import com.mhmtn.a6thsense.auth.domain.AuthUser
+import com.mhmtn.a6thsense.core.presentation.UiText
 
 object SimilarityContract {
 
@@ -12,7 +13,7 @@ object SimilarityContract {
         val roomId: String? = null,
         val conversationId: String = "",
         val hasMatched: Boolean = false,
-        val error: String? = null
+        val error: UiText? = null
     )
 
     sealed interface Action {

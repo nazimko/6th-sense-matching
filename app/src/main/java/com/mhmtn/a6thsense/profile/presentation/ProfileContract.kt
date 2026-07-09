@@ -1,6 +1,7 @@
 package com.mhmtn.a6thsense.profile.presentation
 
 import com.mhmtn.a6thsense.auth.domain.AuthUser
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.profile.domain.Badge
 import com.mhmtn.a6thsense.profile.domain.ProfileStats
 
@@ -29,6 +30,7 @@ object ProfileContract {
         object NavigateToMatchHistory : Action()
         object onInviteClick : Action()
         object NavigateToFriends : Action()
+        data class Error (val message: UiText): Action()
     }
 
     sealed class Effect {
@@ -37,5 +39,6 @@ object ProfileContract {
         object NavigateToMatchHistory : Effect()
         object NavigateToInvite : Effect()
         object NavigateToFriends : Effect()
+        data class ProfileImageUploaded (val message: UiText): Effect()
     }
 }

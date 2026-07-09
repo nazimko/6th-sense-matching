@@ -4,8 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.mhmtn.a6thsense.R
+import com.mhmtn.a6thsense.auth.domain.AuthRepository
+import com.mhmtn.a6thsense.billing.domain.BillingRepository
 import com.mhmtn.a6thsense.core.domain.analytics.AnalyticsHelper
+import com.mhmtn.a6thsense.core.domain.model.UiTextException
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.settings.domain.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -17,6 +22,8 @@ class SettingsViewModel @Inject constructor(
     private val repository: SettingsRepository,
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    private val billingRepository: BillingRepository,
+    private val authRepository: AuthRepository,
     private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel() {
 
@@ -25,6 +32,8 @@ class SettingsViewModel @Inject constructor(
 
     private val _effect = MutableSharedFlow<SettingsContract.Effect>(extraBufferCapacity = 1)
     val effect = _effect.asSharedFlow()
+
+    private var userDataListenerRegistration: ListenerRegistration? = null
 
     init {
         observeSettings()
@@ -37,7 +46,7 @@ class SettingsViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true, error = null) }
             repository.getSettings()
                 .catch { e ->
-                    _state.update { it.copy(error = e.message,isLoading = false) }
+                    _state.update { it.copy(error = e.message, isLoading = false) }
                 }
                 .collect { settings ->
                     _state.update {
@@ -56,7 +65,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val uid = auth.currentUser?.uid ?: return@launch
 
-            firestore.collection("users")
+            userDataListenerRegistration = firestore.collection("users")
                 .document(uid)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
@@ -77,6 +86,34 @@ class SettingsViewModel @Inject constructor(
                 viewModelScope.launch {
                     repository.updateTheme(action.isDark)
                     analyticsHelper.logThemeChanged(action.isDark)
+                }
+            }
+
+            is SettingsContract.Action.OnLogoutClick -> {
+                _state.update { it.copy(showLogoutDialog = true) }
+            }
+
+            is SettingsContract.Action.OnLogoutDismiss -> {
+                _state.update { it.copy(showLogoutDialog = false) }
+            }
+
+            is SettingsContract.Action.OnLogoutConfirm -> {
+                _state.update { it.copy(showLogoutDialog = false, isLoggingOut = true) }
+                viewModelScope.launch {
+                    try {
+                        userDataListenerRegistration?.remove()
+                        billingRepository.resetPremiumState()
+                        authRepository.signOut()
+                        _effect.emit(SettingsContract.Effect.NavigateToLogin)
+                    } catch (e: Exception) {
+                        _state.update { it.copy(isLoggingOut = false, error = e.message) }
+                    }
+                }
+            }
+
+            SettingsContract.Action.OnContactUsClick -> {
+                viewModelScope.launch {
+                    _effect.emit(SettingsContract.Effect.NavigateToContactUs)
                 }
             }
 
@@ -128,12 +165,14 @@ class SettingsViewModel @Inject constructor(
                             )
                         }
                         _effect.emit(
-                            SettingsContract.Effect.ShowMessage(R.string.name_updated.toString())
+                            SettingsContract.Effect.ShowMessage(UiText.StringResource(R.string.name_updated))
                         )
                     } catch (e: Exception) {
                         _state.update { it.copy(isSavingName = false) }
+                        val message = if (e is UiTextException) e.uiText
+                        else UiText.StringResource(R.string.error_occurred)
                         _effect.emit(
-                            SettingsContract.Effect.ShowMessage("Error: ${e.message}")
+                            SettingsContract.Effect.ShowMessage(message)
                         )
                     }
                 }
@@ -148,5 +187,9 @@ class SettingsViewModel @Inject constructor(
                 }
             }
         }
+    }
+    override fun onCleared() {
+        super.onCleared()
+        userDataListenerRegistration?.remove()
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mhmtn.a6thsense.R
@@ -23,9 +24,9 @@ import kotlinx.coroutines.delay
 @Composable
 fun AnimatedSubtitle() {
     val subtitles = listOf(
-        R.string.auth_subtitle_1.toString(),
-        R.string.auth_subtitle_2.toString(),
-        R.string.auth_subtitle_3.toString(),
+        stringResource(R.string.auth_subtitle_1),
+        stringResource(R.string.auth_subtitle_2),
+        stringResource(R.string.auth_subtitle_3),
     )
 
     var currentIndex by remember { mutableStateOf(0) }

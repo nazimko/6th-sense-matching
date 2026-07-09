@@ -59,6 +59,21 @@ class ConversationListViewModel @Inject constructor(
                     )
                 }
             }
+            is ConversationListContract.Action.OnDeleteConversation -> {
+                _state.update { it.copy(conversationToDelete = action.item) }
+            }
+            ConversationListContract.Action.ConfirmDelete -> {
+                val conversation = _state.value.conversationToDelete ?: return
+                val uid = auth.currentUser?.uid ?: return
+                
+                viewModelScope.launch {
+                    repository.deleteConversation(uid, conversation.conversationId)
+                    _state.update { it.copy(conversationToDelete = null) }
+                }
+            }
+            ConversationListContract.Action.DismissDeleteDialog -> {
+                _state.update { it.copy(conversationToDelete = null) }
+            }
             ConversationListContract.Action.Reload -> loadConversations()
         }
     }

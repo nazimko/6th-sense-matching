@@ -1,5 +1,6 @@
 package com.mhmtn.a6thsense.matchhistory.presentation
 
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.matchhistory.domain.MatchHistoryItem
 
 object MatchHistoryContract {
@@ -11,7 +12,8 @@ object MatchHistoryContract {
         val isPremium: Boolean = false,
         val totalCount: Int = 0,
         val hasMoreMatches: Boolean = false,
-        val error: String? = null
+        val error: String? = null,
+        val matchToDelete: MatchHistoryItem? = null // 👇 Silme onayı için
     )
 
     sealed class Action {
@@ -19,6 +21,9 @@ object MatchHistoryContract {
         object Reload : Action()
         object OnUpgradeToPremium : Action()
         data class OnSendFriendRequest(val matchedUserId: String) : Action()
+        data class OnDeleteMatch(val item: MatchHistoryItem) : Action() // 👇 Yeni
+        object ConfirmDelete : Action() // 👇 Yeni
+        object DismissDeleteDialog : Action() // 👇 Yeni
     }
 
     sealed class Effect {
@@ -29,6 +34,6 @@ object MatchHistoryContract {
             val matchedUserId: String
         ) : Effect()
         object NavigateToPaywall : Effect()
-        data class ShowToast(val message: String) : Effect()
+        data class ShowToast(val message: UiText) : Effect()
     }
 }

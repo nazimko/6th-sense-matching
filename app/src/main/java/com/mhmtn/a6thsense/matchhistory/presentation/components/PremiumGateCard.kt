@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,8 @@ import com.mhmtn.a6thsense.core.presentation.floating
 
 @Composable
 fun PremiumGateCard(
+    text: String,
+    desc: String,
     onUpgradeClick: () -> Unit,
     modifier:
     Modifier = Modifier
@@ -110,7 +113,7 @@ fun PremiumGateCard(
             )
 
             Text(
-                text = R.string.more_matches.toString(),
+                text = text,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
@@ -118,7 +121,7 @@ fun PremiumGateCard(
             )
 
             Text(
-                text = R.string.gate_card_subtitle.toString(),
+                text = desc,
                 fontSize = 14.sp,
                 color = Color.White.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center,
@@ -147,7 +150,7 @@ fun PremiumGateCard(
                 ) {
                     Text(text = "👑", fontSize = 20.sp)
                     Text(
-                        text = R.string.upgrade.toString(),
+                        text = stringResource(R.string.upgrade),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White

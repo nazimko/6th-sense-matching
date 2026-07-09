@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,29 +29,40 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mhmtn.a6thsense.R
 import com.mhmtn.a6thsense.core.presentation.bounceClick
+import com.mhmtn.a6thsense.ui.theme._6thSenseTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun AnswerInputScreen(
     question: String,
+    isDark: Boolean,
     onSubmit: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var answer by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
+    val colorScheme = MaterialTheme.colorScheme
 
     LaunchedEffect(Unit) {
         delay(300)
         focusRequester.requestFocus()
+    }
+
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E))
+    } else {
+        listOf(Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF))
     }
 
     Box(
@@ -58,11 +70,7 @@ fun AnswerInputScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
-                    )
+                    colors = gradientColors
                 )
             ),
         contentAlignment = Alignment.Center
@@ -77,7 +85,7 @@ fun AnswerInputScreen(
                 text = question,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White,
+                color = colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
@@ -88,10 +96,10 @@ fun AnswerInputScreen(
                     .shadow(
                         elevation = 20.dp,
                         shape = RoundedCornerShape(24.dp),
-                        ambientColor = Color(0xFF7B5EA7).copy(alpha = 0.5f)
+                        ambientColor = Color(0xFF7B5EA7).copy(alpha = if (isDark) 0.5f else 0.2f)
                     )
                     .clip(RoundedCornerShape(24.dp))
-                    .background(Color(0xFF2A2A3E))
+                    .background(colorScheme.surfaceVariant)
                     .border(
                         width = 2.dp,
                         brush = Brush.linearGradient(
@@ -108,13 +116,13 @@ fun AnswerInputScreen(
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     textStyle = TextStyle(
-                        color = Color.White,
+                        color = colorScheme.onSurface,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     ),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
+                    cursorBrush = SolidColor(colorScheme.onSurface),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done,
                         capitalization = KeyboardCapitalization.Words
@@ -129,8 +137,8 @@ fun AnswerInputScreen(
                     decorationBox = { innerTextField ->
                         if (answer.isEmpty()) {
                             Text(
-                                text = R.string.answer.toString(),
-                                color = Color.White.copy(alpha = 0.4f),
+                                text = stringResource( R.string.answer),
+                                color = colorScheme.onSurface.copy(alpha = 0.4f),
                                 fontSize = 28.sp,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.fillMaxWidth()
@@ -142,22 +150,27 @@ fun AnswerInputScreen(
             }
 
             // Submit button
+            val buttonBackground = if (answer.isNotBlank()) {
+                if (isDark) {
+                    Brush.linearGradient(listOf(Color(0xFF7B5EA7), Color(0xFF4568DC)))
+                } else {
+                    // Light mode'da daha homojen bir görünüm için tek renk veya çok yakın tonlar
+                    SolidColor(Color(0xFF7B5EA7))
+                }
+            } else {
+                SolidColor(colorScheme.onSurface.copy(alpha = 0.12f))
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .shadow(
-                        elevation = 16.dp,
-                        shape = RoundedCornerShape(20.dp)
+                        elevation = if (answer.isNotBlank()) 12.dp else 0.dp,
+                        shape = RoundedCornerShape(20.dp),
+                        spotColor = if (isDark) Color.Transparent else Color(0xFF7B5EA7).copy(alpha = 0.5f)
                     )
                     .clip(RoundedCornerShape(20.dp))
-                    .background(
-                        Brush.linearGradient(
-                            if (answer.isNotBlank())
-                                listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
-                            else
-                                listOf(Color.Gray, Color.Gray)
-                        )
-                    )
+                    .background(buttonBackground)
                     .bounceClick(
                         enabled = answer.isNotBlank(),
                         onClick = { onSubmit(answer) }
@@ -166,12 +179,36 @@ fun AnswerInputScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "${R.string.submit.toString()} ✨",
+                    text = "${stringResource(R.string.submit)} ✨",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = if (answer.isNotBlank()) Color.White else colorScheme.onSurface.copy(alpha = 0.38f)
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AnswerInputScreenPreview() {
+    _6thSenseTheme(darkTheme = false) {
+        AnswerInputScreen(
+            question = "Favorite color?",
+            isDark = false,
+            onSubmit = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AnswerInputScreenDarkPreview() {
+    _6thSenseTheme(darkTheme = true) {
+        AnswerInputScreen(
+            question = "Favorite color?",
+            isDark = true,
+            onSubmit = {}
+        )
     }
 }

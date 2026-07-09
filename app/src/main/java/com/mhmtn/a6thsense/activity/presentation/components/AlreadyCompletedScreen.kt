@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,6 +25,7 @@ import com.mhmtn.a6thsense.R
 
 @Composable
 fun AlreadyCompletedScreen(
+    isDark: Boolean,
     onNavigateHome: () -> Unit
 ) {
     val scale = remember { Animatable(0f) }
@@ -62,10 +65,10 @@ fun AlreadyCompletedScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
+                    colors = if (isDark) listOf(
+                        Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E)
+                    ) else listOf(
+                        Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF)
                     )
                 )
             ),
@@ -103,17 +106,17 @@ fun AlreadyCompletedScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text =R.string.completed_today_text.toString() ,
+                text = stringResource( R.string.completed_today_text) ,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
             Text(
-                text = R.string.come_tomorrow_text.toString(),
+                text = stringResource(R.string.come_tomorrow_text),
                 fontSize = 16.sp,
-                color = Color.White.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center,
                 lineHeight = 24.sp
             )
@@ -134,7 +137,7 @@ fun AlreadyCompletedScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = R.string.home.toString(),
+                    text = stringResource(R.string.home),
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold

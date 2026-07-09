@@ -3,6 +3,7 @@ package com.mhmtn.a6thsense.activity.presentation.components
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.mhmtn.a6thsense.activity.domain.DailyActivityContract
 import com.mhmtn.a6thsense.activity.domain.QuestionType
@@ -101,7 +102,7 @@ fun RenderPreferenceMode(
     } else {
         // Fallback
         Text(
-            text = R.string.questions_loading.toString(),
+            text = stringResource( R.string.questions_loading),
             color = Color.White,
             fontSize = 18.sp
         )

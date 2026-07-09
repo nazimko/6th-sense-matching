@@ -9,14 +9,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.automirrored.filled.Send
+import com.mhmtn.a6thsense.R
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +37,7 @@ import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MessageBubble(
     message: Message,
@@ -50,6 +49,7 @@ fun MessageBubble(
 ) {
 
     /* ---------------- ANIMATION STATES ---------------- */
+    val colorScheme = MaterialTheme.colorScheme
 
     var isPressed by remember { mutableStateOf(false) }
     var showReactionPulse by remember { mutableStateOf(false) }
@@ -86,24 +86,19 @@ fun MessageBubble(
 
     val bubbleGradient = if (isOwnMessage) {
         Brush.linearGradient(
-            listOf(
-                Color(0xFF7B5EA7),
-                Color(0xFF5E4A7E)
-            )
+            listOf(Color(0xFF7B5EA7), Color(0xFF5E4A7E))
         )
     } else {
         Brush.linearGradient(
-            listOf(
-                Color(0xFF2A2A3E),
-                Color(0xFF1F1F2E)
-            )
+            listOf(colorScheme.surface, colorScheme.surface)
         )
     }
 
     val time = message.timestamp?.let {
         SimpleDateFormat("HH:mm", Locale.getDefault())
             .format(Date(it))
-    } ?: "Gönderiliyor..."
+    } ?: stringResource(R.string.sending)
+
 
     /* ---------------- LAYOUT ---------------- */
 
@@ -144,7 +139,7 @@ fun MessageBubble(
                         color = if (isOwnMessage)
                             Color.White.copy(alpha = 0.15f)
                         else
-                            Color.White.copy(alpha = 0.05f),
+                            colorScheme.outline.copy(alpha = 0.05f),
                         shape = bubbleShape
                     )
                     .pointerInput(message.id) {
@@ -195,7 +190,7 @@ fun MessageBubble(
 
                     Text(
                         text = message.text,
-                        color = Color.White,
+                        color = if (isOwnMessage) Color.White else colorScheme.onSurface,
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
                         style = MaterialTheme.typography.bodyMedium,
@@ -214,7 +209,7 @@ fun MessageBubble(
                         Text(
                             text = time,
                             fontSize = 11.sp,
-                            color = Color.White.copy(alpha = 0.6f)
+                            color = if (isOwnMessage) Color.White.copy(alpha = 0.6f) else colorScheme.onSurface.copy(alpha = 0.6f),
                         )
 
                         if (isOwnMessage) {
@@ -232,7 +227,7 @@ fun MessageBubble(
                                 tint = if (message.reactions.isNotEmpty())
                                     Color(0xFF43E97B)
                                 else
-                                    Color.White.copy(alpha = 0.5f)
+                                    colorScheme.onSurface.copy(alpha = 0.5f)
                             )
                         }
                     }
@@ -306,7 +301,7 @@ fun MessageBubble(
                                             Color(0xFF7B5EA7)
                                                 .copy(alpha = 0.4f)
                                         else
-                                            Color.White.copy(alpha = 0.1f)
+                                            colorScheme.surfaceVariant
                                     )
                                     .bounceClick {
                                         onReactionClick(emoji)
@@ -334,7 +329,7 @@ fun MessageBubble(
                                             text =
                                                 users.size.toString(),
                                             fontSize = 12.sp,
-                                            color = Color.White
+                                            color = colorScheme.onSurface
                                         )
                                     }
                                 }
@@ -349,7 +344,9 @@ fun MessageBubble(
 @Preview
 @Composable
 fun MessageBubblePreview() {
-    _6thSenseTheme {
+    _6thSenseTheme(
+        darkTheme = false
+    ) {
         MessageBubble(
             message = Message(
                 id = "123",
@@ -360,7 +357,7 @@ fun MessageBubblePreview() {
             ),
             isOwnMessage = true,
             currentUserId = "454541615",
-            onLongPress = {  },
+            onLongPress = { },
             onReactionClick = {},
             modifier = Modifier,
         )

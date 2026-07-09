@@ -31,21 +31,9 @@ class SoulSyncRepositoryImpl @Inject constructor(
     private val roomsRef: DatabaseReference
 
     init {
-        // 👇 Explicit database URL
-        val databaseUrl = "https://sixth-sense-9647e-default-rtdb.europe-west1.firebasedatabase.app" // 👈 Kendi URL'ini koy
-
+        val databaseUrl = "https://sixth-sense-9647e-default-rtdb.europe-west1.firebasedatabase.app"
         database = Firebase.database(databaseUrl).reference
         roomsRef = database.child("soul_sync_rooms")
-
-        Log.d("SoulSyncRepo", "Database initialized: $databaseUrl")
-
-        // Test read
-        roomsRef.get().addOnSuccessListener { snapshot ->
-            Log.d("SoulSyncRepo", "Test read successful: ${snapshot.exists()}")
-            Log.d("SoulSyncRepo", "Children count: ${snapshot.childrenCount}")
-        }.addOnFailureListener { e ->
-            Log.e("SoulSyncRepo", "Test read failed: ${e.message}", e)
-        }
     }
 
     override suspend fun createRoom(matchId: String, player1: Player, player2: Player): String {
@@ -55,14 +43,14 @@ class SoulSyncRepositoryImpl @Inject constructor(
             "matchId" to matchId,
             "players" to mapOf(
                 player1.uid to mapOf(
-                    "uid" to player1.uid, // 👈 Eklendi
+                    "uid" to player1.uid,
                     "name" to player1.name,
                     "photoUrl" to player1.photoUrl,
                     "status" to "invited",
                     "score" to 0
                 ),
                 player2.uid to mapOf(
-                    "uid" to player2.uid, // 👈 Eklendi
+                    "uid" to player2.uid,
                     "name" to player2.name,
                     "photoUrl" to player2.photoUrl,
                     "status" to "invited",
@@ -85,78 +73,39 @@ class SoulSyncRepositoryImpl @Inject constructor(
             .await()
     }
 
+    override suspend fun leaveRoom(roomId: String) {
+        val uid = auth.currentUser?.uid ?: return
+        roomsRef.child(roomId).child("players").child(uid).child("status")
+            .setValue("left")
+            .await()
+    }
+
     override fun observeRoom(roomId: String): Flow<SoulSyncRoom?> = callbackFlow {
-        Log.d("SoulSyncRepo", "Starting to observe room: $roomId")
-
-        // 👇 Önce direct get ile test et
-        roomsRef.child(roomId).get().addOnSuccessListener { snapshot ->
-            Log.d("SoulSyncRepo", "Direct get successful")
-            Log.d("SoulSyncRepo", "Snapshot exists: ${snapshot.exists()}")
-            Log.d("SoulSyncRepo", "Snapshot value: ${snapshot.value}")
-
-            if (snapshot.exists()) {
-                val players = snapshot.child("players")
-                Log.d("SoulSyncRepo", "Players node exists: ${players.exists()}")
-                Log.d("SoulSyncRepo", "Players children: ${players.childrenCount}")
-
-                players.children.forEach { child ->
-                    Log.d("SoulSyncRepo", "Player key: ${child.key}")
-                    Log.d("SoulSyncRepo", "Player value: ${child.value}")
-                }
-            }
-        }.addOnFailureListener { e ->
-            Log.e("SoulSyncRepo", "Direct get failed: ${e.message}", e)
-        }
-
-        // 👇 Sonra listener
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("SoulSyncRepo", "⭐ onDataChange CALLED ⭐")
-                Log.d("SoulSyncRepo", "Snapshot exists: ${snapshot.exists()}")
-                Log.d("SoulSyncRepo", "Snapshot value: ${snapshot.value}")
-
                 if (!snapshot.exists()) {
-                    Log.e("SoulSyncRepo", "Room does not exist!")
                     trySend(null)
                     return
                 }
 
                 try {
-                    // Manuel parse
                     val matchId = snapshot.child("matchId").getValue(String::class.java) ?: ""
                     val gameState = snapshot.child("gameState").getValue(String::class.java) ?: "waiting"
                     val currentRound = snapshot.child("currentRound").getValue(Int::class.java) ?: 1
-                    val currentQuestion = snapshot.child("currentQuestion").getValue(String::class.java) ?: ""
+                    val currentQuestionIndex = snapshot.child("currentQuestionIndex").getValue(Int::class.java) ?: 0
                     val countdownStartTime = snapshot.child("countdownStartTime").getValue(Long::class.java) ?: 0L
                     val createdAt = snapshot.child("createdAt").getValue(Long::class.java) ?: 0L
 
-                    Log.d("SoulSyncRepo", "Parsed basic fields: gameState=$gameState")
-
-                    // Players
                     val players = mutableMapOf<String, PlayerState>()
-                    val playersSnapshot = snapshot.child("players")
-
-                    Log.d("SoulSyncRepo", "Players snapshot exists: ${playersSnapshot.exists()}")
-                    Log.d("SoulSyncRepo", "Players children count: ${playersSnapshot.childrenCount}")
-
-                    playersSnapshot.children.forEach { playerSnapshot ->
-                        val uid = playerSnapshot.key
-                        Log.d("SoulSyncRepo", "Processing player with key: $uid")
-
-                        if (uid == null) {
-                            Log.e("SoulSyncRepo", "Player UID is null, skipping")
-                            return@forEach
-                        }
-
+                    snapshot.child("players").children.forEach { playerSnapshot ->
+                        val uid = playerSnapshot.key ?: return@forEach
+                        
                         val playerUid = playerSnapshot.child("uid").getValue(String::class.java) ?: uid
                         val name = playerSnapshot.child("name").getValue(String::class.java) ?: ""
                         val photoUrl = playerSnapshot.child("photoUrl").getValue(String::class.java) ?: ""
                         val status = playerSnapshot.child("status").getValue(String::class.java) ?: "invited"
                         val score = playerSnapshot.child("score").getValue(Int::class.java) ?: 0
 
-                        Log.d("SoulSyncRepo", "Player data: uid=$playerUid, name=$name, status=$status")
-
-                        // Answers
                         val answers = mutableMapOf<String, String>()
                         playerSnapshot.child("answers").children.forEach { answerSnapshot ->
                             val roundKey = answerSnapshot.key ?: return@forEach
@@ -164,7 +113,7 @@ class SoulSyncRepositoryImpl @Inject constructor(
                             answers[roundKey] = answer
                         }
 
-                        val playerState = PlayerState(
+                        players[uid] = PlayerState(
                             uid = playerUid,
                             name = name,
                             photoUrl = photoUrl,
@@ -172,69 +121,47 @@ class SoulSyncRepositoryImpl @Inject constructor(
                             score = score,
                             answers = answers
                         )
-
-                        players[uid] = playerState
-                        Log.d("SoulSyncRepo", "Added player to map: $uid")
                     }
 
-                    Log.d("SoulSyncRepo", "Total players parsed: ${players.size}")
-
-                    val room = SoulSyncRoom(
+                    trySend(SoulSyncRoom(
                         matchId = matchId,
                         players = players,
                         gameState = gameState,
                         currentRound = currentRound,
-                        currentQuestion = currentQuestion,
+                        currentQuestionIndex = currentQuestionIndex,
                         countdownStartTime = countdownStartTime,
                         createdAt = createdAt
-                    )
-
-                    Log.d("SoulSyncRepo", "Sending room with ${room.players.size} players")
-                    trySend(room)
-
+                    ))
                 } catch (e: Exception) {
-                    Log.e("SoulSyncRepo", "Error parsing room: ${e.message}", e)
-                    e.printStackTrace()
                     trySend(null)
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("SoulSyncRepo", "Room observation cancelled: ${error.message}")
-                Log.e("SoulSyncRepo", "Error code: ${error.code}")
-                Log.e("SoulSyncRepo", "Error details: ${error.details}")
                 close(error.toException())
             }
         }
 
         roomsRef.child(roomId).addValueEventListener(listener)
-        Log.d("SoulSyncRepo", "Listener attached to room: $roomId")
-
-        awaitClose {
-            Log.d("SoulSyncRepo", "Removing listener from room: $roomId")
-            roomsRef.child(roomId).removeEventListener(listener)
-        }
+        awaitClose { roomsRef.child(roomId).removeEventListener(listener) }
     }
 
     override suspend fun setGameState(roomId: String, gameState: String) {
-        roomsRef.child(roomId).child("gameState")
-            .setValue(gameState)
-            .await()
+        roomsRef.child(roomId).child("gameState").setValue(gameState).await()
     }
 
     override suspend fun setGameStateToPlaying(roomId: String) {
-        roomsRef.child(roomId).child("gameState")
-            .setValue("playing")
-            .await()
-        Log.d("SoulSyncRepo", "Game state set to 'playing'")
+        roomsRef.child(roomId).child("gameState").setValue("playing").await()
     }
-    override suspend fun startGame(roomId: String, context: Context) {
-        val question = getRandomQuestion(context)
 
+    override suspend fun startGame(roomId: String, context: Context) {
+        val questions = context.resources.getStringArray(R.array.profile_questions_array)
+        val randomIndex = questions.indices.random()
+        
         roomsRef.child(roomId).updateChildren(
             mapOf(
                 "gameState" to "countdown",
-                "currentQuestion" to question,
+                "currentQuestionIndex" to randomIndex,
                 "countdownStartTime" to ServerValue.TIMESTAMP
             )
         ).await()
@@ -242,7 +169,6 @@ class SoulSyncRepositoryImpl @Inject constructor(
 
     override suspend fun submitAnswer(roomId: String, round: Int, answer: String) {
         val uid = auth.currentUser?.uid ?: return
-
         roomsRef.child(roomId)
             .child("players")
             .child(uid)
@@ -268,26 +194,20 @@ class SoulSyncRepositoryImpl @Inject constructor(
     }
 
     override suspend fun nextRound(roomId: String, nextRound: Int, context: Context) {
-        val question = getRandomQuestion(context)
+        val questions = context.resources.getStringArray(R.array.profile_questions_array)
+        val randomIndex = questions.indices.random()
 
         roomsRef.child(roomId).updateChildren(
             mapOf(
                 "gameState" to "countdown",
                 "currentRound" to nextRound,
-                "currentQuestion" to question,
+                "currentQuestionIndex" to randomIndex,
                 "countdownStartTime" to ServerValue.TIMESTAMP
             )
         ).await()
     }
 
     override suspend fun finishGame(roomId: String) {
-        roomsRef.child(roomId).updateChildren(
-            mapOf("gameState" to "finished")
-        ).await()
-    }
-
-    private fun getRandomQuestion(context: Context): String {
-        val questions = context.resources.getStringArray(R.array.profile_questions_array).toList()
-        return questions.random()
+        roomsRef.child(roomId).child("gameState").setValue("finished").await()
     }
 }

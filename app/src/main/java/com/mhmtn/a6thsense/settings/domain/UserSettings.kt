@@ -5,5 +5,6 @@ data class UserSettings(
     val matchNotificationsEnabled: Boolean = true,
     val messageNotificationsEnabled: Boolean = true,
     val displayName: String = "",
-    val photoUrl: String = ""
+    val photoUrl: String = "",
+    val minSimilarity: Int = 40 // ✅ NEW
 )

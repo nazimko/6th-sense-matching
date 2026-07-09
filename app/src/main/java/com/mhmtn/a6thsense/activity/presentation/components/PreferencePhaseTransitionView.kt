@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
-import com.mhmtn.a6thsense.R
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,22 +17,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mhmtn.a6thsense.activity.domain.DailyActivityContract
+import com.mhmtn.a6thsense.activity.domain.Phase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun PreferencePhaseTransitionView(
+    modifier: Modifier = Modifier,
     phase: DailyActivityContract.Phase,
     onTransitionEnd: () -> Unit,
-    modifier: Modifier = Modifier
+    phaseInfo: Phase? = null
 ) {
+    /*
     val phaseTitle = when (phase) {
-        DailyActivityContract.Phase.PHASE_1 -> R.string.elements.toString()
-        DailyActivityContract.Phase.PHASE_2 -> R.string.colors.toString()
-        DailyActivityContract.Phase.PHASE_3 -> R.string.nature.toString()
-        DailyActivityContract.Phase.PHASE_4 -> R.string.moods.toString()
-        DailyActivityContract.Phase.PHASE_5 -> R.string.preferenses.toString()
-        DailyActivityContract.Phase.PHASE_6 -> R.string.last_questions.toString()
+        DailyActivityContract.Phase.PHASE_1 -> stringResource(R.string.elements)
+        DailyActivityContract.Phase.PHASE_2 -> stringResource(R.string.colors)
+        DailyActivityContract.Phase.PHASE_3 -> stringResource(R.string.nature)
+        DailyActivityContract.Phase.PHASE_4 -> stringResource(R.string.moods)
+        DailyActivityContract.Phase.PHASE_5 -> stringResource(R.string.preferenses)
+        DailyActivityContract.Phase.PHASE_6 -> stringResource(R.string.last_questions)
     }
 
     val phaseEmoji = when (phase) {
@@ -53,6 +55,12 @@ fun PreferencePhaseTransitionView(
         DailyActivityContract.Phase.PHASE_5 -> Color(0xFF667eea)
         DailyActivityContract.Phase.PHASE_6 -> Color(0xFFf5576c)
     }
+
+     */
+
+    val phaseTitle = phaseInfo?.title?.asString() ?: getFallbackTitle(phase)
+    val phaseEmoji = phaseInfo?.emoji?.takeIf { it.isNotEmpty() } ?: getFallbackEmoji(phase)
+    val phaseColor = phaseInfo?.color?.let { parseColor(it) } ?: getFallbackColor(phase)
 
     // Animations
     val scale = remember { Animatable(0.3f) }
@@ -204,5 +212,49 @@ fun PreferencePhaseTransitionView(
                 }
             }
         }
+    }
+}
+
+private fun parseColor(colorString: String): Color {
+    return try {
+        Color(android.graphics.Color.parseColor(colorString))
+    } catch (e: Exception) {
+        Color(0xFFf093fb) // Fallback
+    }
+}
+
+// ✅ Fallback emoji (Firebase yüklenene kadar)
+private fun getFallbackEmoji(phase: DailyActivityContract.Phase): String {
+    return when (phase) {
+        DailyActivityContract.Phase.PHASE_1 -> "🔥"
+        DailyActivityContract.Phase.PHASE_2 -> "🎨"
+        DailyActivityContract.Phase.PHASE_3 -> "🌲"
+        DailyActivityContract.Phase.PHASE_4 -> "😌"
+        DailyActivityContract.Phase.PHASE_5 -> "💭"
+        DailyActivityContract.Phase.PHASE_6 -> "✨"
+    }
+}
+
+// ✅ Fallback color
+private fun getFallbackColor(phase: DailyActivityContract.Phase): Color {
+    return when (phase) {
+        DailyActivityContract.Phase.PHASE_1 -> Color(0xFFf093fb)
+        DailyActivityContract.Phase.PHASE_2 -> Color(0xFFa8edea)
+        DailyActivityContract.Phase.PHASE_3 -> Color(0xFF43E97B)
+        DailyActivityContract.Phase.PHASE_4 -> Color(0xFFFFD700)
+        DailyActivityContract.Phase.PHASE_5 -> Color(0xFF667eea)
+        DailyActivityContract.Phase.PHASE_6 -> Color(0xFFf5576c)
+    }
+}
+
+// ✅ Fallback title (Firebase yüklenene kadar veya hata durumunda)
+private fun getFallbackTitle(phase: DailyActivityContract.Phase): String {
+    return when (phase) {
+        DailyActivityContract.Phase.PHASE_1 -> "Phase 1"
+        DailyActivityContract.Phase.PHASE_2 -> "Phase 2"
+        DailyActivityContract.Phase.PHASE_3 -> "Phase 3"
+        DailyActivityContract.Phase.PHASE_4 -> "Phase 4"
+        DailyActivityContract.Phase.PHASE_5 -> "Phase 5"
+        DailyActivityContract.Phase.PHASE_6 -> "Phase 6"
     }
 }

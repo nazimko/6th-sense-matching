@@ -1,6 +1,8 @@
 package com.mhmtn.a6thsense.activity.data
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
@@ -17,6 +19,9 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.mhmtn.a6thsense.R
+import com.mhmtn.a6thsense.core.presentation.UiText
+import java.time.LocalDate
+import java.util.Locale
 
 @Singleton
 class QuestionRepositoryImpl @Inject constructor(
@@ -25,11 +30,15 @@ class QuestionRepositoryImpl @Inject constructor(
 
     private val questionsRef = firestore.collection("daily_questions")
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getQuestions(): Flow<QuestionSet> = callbackFlow {
-        Log.d("QuestionRepo", "Starting to observe questions")
+
+        val today = LocalDate.now()
+        val dayOfWeek = today.dayOfWeek.value
 
         val listener = questionsRef
             .whereEqualTo("active", true)
+            .whereEqualTo("dayOfWeek", dayOfWeek)
             .orderBy("version", Query.Direction.DESCENDING)
             .limit(1)
             .addSnapshotListener { snapshot, error ->
@@ -98,6 +107,11 @@ class QuestionRepositoryImpl @Inject constructor(
         val active = data["active"] as? Boolean ?: true
         val phasesMap = data["phases"] as? Map<String, Any> ?: emptyMap()
 
+        val themeName = localizedString(data["themeName"])
+        val themeEmoji = data["themeEmoji"] as? String ?: ""
+        val themeDescription = localizedString(data["themeDescription"])
+
+
         val phases = phasesMap.mapValues { (phaseKey, phaseData) ->
             parsePhase(phaseData as Map<String, Any>)
         }
@@ -105,20 +119,27 @@ class QuestionRepositoryImpl @Inject constructor(
         return QuestionSet(
             version = version,
             active = active,
-            phases = phases
+            phases = phases,
+            themeName = themeName,
+            themeEmoji = themeEmoji,
+            themeDescription = themeDescription
         )
     }
 
     private fun parsePhase(data: Map<String, Any>): Phase {
-        val title = data["title"] as? String ?: ""
-        val description = data["description"] as? String ?: ""
+        val title = UiText.DynamicString(localizedString(data["title"]))
+        val description = UiText.DynamicString(localizedString(data["description"]))
         val questionsList = data["questions"] as? List<Map<String, Any>> ?: emptyList()
-
         val questions = questionsList.map { parseQuestion(it) }
+        val emoji = data["emoji"] as? String ?: ""
+        val color = data["color"] as? String ?: ""
+
 
         return Phase(
-            title = title,
+            title =title,
             description = description,
+            emoji = emoji,
+            color = color,
             questions = questions
         )
     }
@@ -131,7 +152,7 @@ class QuestionRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             QuestionType.TEXT_CHOICE
         }
-        val question = data["question"] as? String ?: ""
+        val question = UiText.DynamicString(localizedString(data["question"]))
         val imageUrl = data["imageUrl"] as? String
         val optionsList = data["options"] as? List<Map<String, Any>> ?: emptyList()
 
@@ -149,11 +170,25 @@ class QuestionRepositoryImpl @Inject constructor(
     private fun parseOption(data: Map<String, Any>): QuestionOption {
         return QuestionOption(
             id = data["id"] as? String ?: "",
-            text = data["text"] as? String ?: "",
+            text = UiText.DynamicString(localizedString(data["text"])),
             imageUrl = data["imageUrl"] as? String,
             color = data["color"] as? String,
             emoji = data["emoji"] as? String
         )
+    }
+
+    // Repo içinde
+    private fun localizedString(data: Any?): String {
+        val deviceLanguage = Locale.getDefault().language // "tr", "en" vs.
+        return when (data) {
+            is Map<*, *> -> {
+                data[deviceLanguage] as? String  // önce cihaz dili
+                    ?: data["en"] as? String     // yoksa English fallback
+                    ?: ""
+            }
+            is String -> data                    // eski format String gelirse
+            else -> ""
+        }
     }
 
     // 👇 Fallback questions (Firestore'da soru yoksa)
@@ -163,40 +198,40 @@ class QuestionRepositoryImpl @Inject constructor(
             active = true,
             phases = mapOf(
                 "phase1" to Phase(
-                    title = R.string.phase1_title.toString(),
-                    description = R.string.phase1_description.toString(),
+                    title = UiText.StringResource(R.string.phase1_title),
+                    description = UiText.StringResource(R.string.phase1_description),
                     questions = listOf(
                         Question(
                             id = "p1_q1",
                             type = QuestionType.TEXT_CHOICE,
-                            question = R.string.phase1_question1.toString(),
+                            question =  UiText.StringResource(R.string.phase1_question1),
                             options = listOf(
-                                QuestionOption(id = "FREEDOM", text = R.string.p1_q1_option1.toString()),
-                                QuestionOption(id = "BALANCE", text = R.string.p1_q1_option2.toString())
+                                QuestionOption(id = "FREEDOM", text = UiText.StringResource(R.string.p1_q1_option1)),
+                                QuestionOption(id = "BALANCE", text = UiText.StringResource(R.string.p1_q1_option2))
                             )
                         ),
                         Question(
                             id = "p1_q2",
                             type = QuestionType.EMOJI_CHOICE,
-                            question = R.string.phase1_question2.toString(),
+                            question = UiText.StringResource(R.string.phase1_question2),
                             options = listOf(
-                                QuestionOption(id = "FIRE", text = R.string.p1_q2_option1.toString(), emoji = "🔥"),
-                                QuestionOption(id = "WATER", text = R.string.p1_q2_option2.toString(), emoji = "🌊"))
+                                QuestionOption(id = "FIRE", text = UiText.StringResource(R.string.p1_q2_option1), emoji = "🔥"),
+                                QuestionOption(id = "WATER", text = UiText.StringResource(R.string.p1_q2_option2), emoji = "🌊"))
 
                             )
                         )
                 ),
                 "phase2" to Phase(
-                    title = R.string.phase2_title.toString(),
-                    description = R.string.phase2_description.toString(),
+                    title = UiText.StringResource(R.string.phase2_title),
+                    description = UiText.StringResource(R.string.phase2_description),
                     questions = listOf(
                         Question(
                             id = "p2_q1",
                             type = QuestionType.COLOR_CHOICE,
-                            question = R.string.phase2_question1.toString(),
+                            question = UiText.StringResource(R.string.phase2_question1),
                             options = listOf(
-                                QuestionOption(id = "WARM", text = R.string.p2_q1_option1.toString(), color = "#FF6B6B"),
-                                QuestionOption(id = "COLD", text = R.string.p2_q1_option2.toString(), color = "#4ECDC4")
+                                QuestionOption(id = "WARM", text = UiText.StringResource(R.string.p2_q1_option1), color = "#FF6B6B"),
+                                QuestionOption(id = "COLD", text = UiText.StringResource(R.string.p2_q1_option2), color = "#4ECDC4")
                             )
                         )
                     )

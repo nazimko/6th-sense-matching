@@ -8,4 +8,5 @@ interface MatchHistoryRepository {
         currentUserId: String,
         matchedUserId: String
     ): String
+    suspend fun deleteMatch(matchId: String): Result<Unit> // 👇 Yeni
 }

@@ -1,13 +1,19 @@
 package com.mhmtn.a6thsense.friends.data
 
 import android.util.Log
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.database
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Filter
 import com.mhmtn.a6thsense.friends.domain.FriendsRepository
 import com.mhmtn.a6thsense.friends.domain.model.*
 import kotlinx.coroutines.channels.awaitClose
 import com.mhmtn.a6thsense.R
+import com.mhmtn.a6thsense.core.domain.model.UiTextException
+import com.mhmtn.a6thsense.core.presentation.UiText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
@@ -19,17 +25,16 @@ import kotlin.random.Random
 
 @Singleton
 class FriendsRepositoryImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : FriendsRepository {
 
-    // 👇 FRIEND REQUEST
     override suspend fun sendFriendRequest(fromUid: String, toUid: String): Result<String> {
         return try {
             if (fromUid == toUid) {
-                return Result.failure(Exception(R.string.error_same_user.toString()))
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_same_user)))
             }
 
-            // Zaten arkadaş mı kontrol et
             val existingFriendship = firestore.collection("friends")
                 .whereIn("user1", listOf(fromUid, toUid))
                 .whereIn("user2", listOf(fromUid, toUid))
@@ -37,7 +42,7 @@ class FriendsRepositoryImpl @Inject constructor(
                 .await()
 
             if (!existingFriendship.isEmpty) {
-                return Result.failure(Exception(R.string.error_already_friend.toString()))
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_already_friend)))
             }
 
             val friendshipRef = firestore.collection("friends").document()
@@ -50,11 +55,8 @@ class FriendsRepositoryImpl @Inject constructor(
             )
 
             friendshipRef.set(friendship).await()
-
-            Log.d("FriendsRepo", "Friend request sent: ${friendshipRef.id}")
             Result.success(friendshipRef.id)
         } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error sending friend request: ${e.message}", e)
             Result.failure(e)
         }
     }
@@ -69,11 +71,8 @@ class FriendsRepositoryImpl @Inject constructor(
                     )
                 )
                 .await()
-
-            Log.d("FriendsRepo", "Friend request accepted: $friendshipId")
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error accepting friend request: ${e.message}", e)
             Result.failure(e)
         }
     }
@@ -83,11 +82,8 @@ class FriendsRepositoryImpl @Inject constructor(
             firestore.collection("friends").document(friendshipId)
                 .update("status", FriendshipStatus.REJECTED.name)
                 .await()
-
-            Log.d("FriendsRepo", "Friend request rejected: $friendshipId")
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error rejecting friend request: ${e.message}", e)
             Result.failure(e)
         }
     }
@@ -95,15 +91,12 @@ class FriendsRepositoryImpl @Inject constructor(
     override suspend fun removeFriend(friendshipId: String): Result<Unit> {
         return try {
             firestore.collection("friends").document(friendshipId).delete().await()
-            Log.d("FriendsRepo", "Friend removed: $friendshipId")
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error removing friend: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-    // 👇 GET FRIENDS
     override fun getFriends(uid: String): Flow<List<Friend>> = callbackFlow {
         val listener = firestore.collection("friends")
             .whereEqualTo("status", FriendshipStatus.ACCEPTED.name)
@@ -119,13 +112,11 @@ class FriendsRepositoryImpl @Inject constructor(
                     user1 == uid || user2 == uid
                 } ?: emptyList()
 
-                // Her friendship için friend bilgilerini al
                 val friends = friendships.mapNotNull { doc ->
                     val user1 = doc.getString("user1") ?: return@mapNotNull null
                     val user2 = doc.getString("user2") ?: return@mapNotNull null
                     val friendUid = if (user1 == uid) user2 else user1
 
-                    // Friend bilgisini çek (suspend içinde olduğumuz için runBlocking kullan)
                     kotlinx.coroutines.runBlocking {
                         try {
                             val friendDoc = firestore.collection("users")
@@ -138,28 +129,25 @@ class FriendsRepositoryImpl @Inject constructor(
                             Friend(
                                 uid = friendUid,
                                 name = friendDoc.getString("name") ?: "Unknown",
-                                photoUrl = friendDoc.getString("photoUrl") ?: "",
+                                photoUrl = friendDoc.getString("profileImageUrl") ?: friendDoc.getString("photoUrl") ?: "",
                                 isPremium = friendDoc.getBoolean("isPremium") ?: false,
                                 hasCompletedToday = hasCompletedToday,
                                 friendshipId = doc.id
                             )
                         } catch (e: Exception) {
-                            Log.e("FriendsRepo", "Error fetching friend: ${e.message}", e)
                             null
                         }
                     }
                 }
-
                 trySend(friends)
             }
-
         awaitClose { listener.remove() }
     }
 
     override fun getPendingRequests(uid: String): Flow<List<Friendship>> = callbackFlow {
         val listener = firestore.collection("friends")
             .whereEqualTo("status", FriendshipStatus.PENDING.name)
-            .whereEqualTo("user2", uid) // Sadece bana gelen istekler
+            .whereEqualTo("user2", uid)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
@@ -167,6 +155,7 @@ class FriendsRepositoryImpl @Inject constructor(
                 }
 
                 val requests = snapshot?.documents?.map { doc ->
+                    val timestamp = doc.getTimestamp("createdAt")
                     Friendship(
                         id = doc.id,
                         user1 = doc.getString("user1") ?: "",
@@ -175,13 +164,11 @@ class FriendsRepositoryImpl @Inject constructor(
                             doc.getString("status") ?: FriendshipStatus.PENDING.name
                         ),
                         invitedBy = doc.getString("invitedBy") ?: "",
-                        createdAt = doc.getLong("createdAt") ?: 0L
+                        createdAt = timestamp?.toDate()?.time ?: 0L
                     )
                 } ?: emptyList()
-
                 trySend(requests)
             }
-
         awaitClose { listener.remove() }
     }
 
@@ -189,147 +176,135 @@ class FriendsRepositoryImpl @Inject constructor(
         myUid: String,
         friendUid: String
     ): Result<CompatibilityTestResult> {
+        Log.d("FriendsRepo", "runCompatibilityTest START: myUid=$myUid, friendUid=$friendUid")
         return try {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
-            // 1️⃣ Bugün zaten test yapılmış mı kontrol et
+            
             val existingTest = checkExistingTestToday(myUid, friendUid, today)
             if (existingTest != null) {
-                Log.d("FriendsRepo", "Using existing test from today")
+                Log.d("FriendsRepo", "Existing test found for today: ${existingTest.similarity}%")
                 return Result.success(existingTest)
             }
 
-            // 2️⃣ İki kullanıcının da bugünkü session'larını al
-            val mySessions = firestore.collection("sessions")
+            val mySessionsSnapshot = firestore.collection("sessions")
                 .whereEqualTo("uid", myUid)
                 .whereEqualTo("date", today)
-                .get()
-                .await()
+                .get().await()
 
-            val friendSessions = firestore.collection("sessions")
+            val friendSessionsSnapshot = firestore.collection("sessions")
                 .whereEqualTo("uid", friendUid)
                 .whereEqualTo("date", today)
-                .get()
-                .await()
+                .get().await()
 
-            if (mySessions.isEmpty) {
-                return Result.failure(Exception(R.string.error_no_today_session.toString()))
+            if (mySessionsSnapshot.isEmpty) {
+                Log.w("FriendsRepo", "My sessions empty for today")
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_no_today_session)))
             }
 
-            if (friendSessions.isEmpty) {
-                return Result.failure(Exception(R.string.error_no_today_friend_session.toString()))
+            if (friendSessionsSnapshot.isEmpty) {
+                Log.w("FriendsRepo", "Friend sessions empty for today")
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_no_today_friend_session)))
             }
 
-            val mySession = mySessions.documents.first()
-            val friendSession = friendSessions.documents.first()
+            val mySessionsMap = mySessionsSnapshot.documents.associateBy { it.getString("type") ?: "" }
+            val friendSessionsMap = friendSessionsSnapshot.documents.associateBy { it.getString("type") ?: "" }
+            val commonTypes = mySessionsMap.keys.intersect(friendSessionsMap.keys).filter { it.isNotEmpty() }
+            
+            Log.d("FriendsRepo", "Common session types: $commonTypes")
 
-            val myTags = mySession.get("tags") as? List<String> ?: emptyList()
-            val friendTags = friendSession.get("tags") as? List<String> ?: emptyList()
+            if (commonTypes.isEmpty()) {
+                Log.w("FriendsRepo", "No common types found between users")
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_not_same_session)))
+            }
 
-            // 3️⃣ Similarity hesapla
-            val commonTags = myTags.intersect(friendTags.toSet())
-            val totalTags = myTags.union(friendTags.toSet())
-            val similarity = if (totalTags.isNotEmpty()) {
-                (commonTags.size * 100) / totalTags.size
-            } else 0
+            var totalCommonCount = 0
+            var totalPossibleCount = 0
+            val commonTagsList = mutableListOf<String>()
+            val aggregatedMyTags = mutableListOf<String>()
+            val aggregatedFriendTags = mutableListOf<String>()
 
-            // 4️⃣ Friend bilgisini al
-            val friendDoc = firestore.collection("users")
-                .document(friendUid)
-                .get()
-                .await()
+            for (type in commonTypes) {
+                val s1 = mySessionsMap[type]!!
+                val s2 = friendSessionsMap[type]!!
 
+                val tags1 = s1.get("tags") as? List<String> ?: emptyList()
+                val tags2 = s2.get("tags") as? List<String> ?: emptyList()
+                val free1 = s1.get("freeTextAnswers") as? Map<String, String> ?: emptyMap()
+                val free2 = s2.get("freeTextAnswers") as? Map<String, String> ?: emptyMap()
+
+                aggregatedMyTags.addAll(tags1)
+                aggregatedFriendTags.addAll(tags2)
+
+                val tagLen = minOf(tags1.size, tags2.size)
+                for (i in 0 until tagLen) {
+                    if (tags1[i] == tags2[i]) {
+                        commonTagsList.add(tags1[i])
+                        totalCommonCount++
+                    }
+                }
+                totalPossibleCount += maxOf(tags1.size, tags2.size)
+
+                free1.forEach { (qid, ans1) ->
+                    val ans2 = free2[qid]
+                    if (ans2 != null) {
+                        val n1 = ans1.trim().lowercase(Locale.getDefault())
+                        val n2 = ans2.trim().lowercase(Locale.getDefault())
+                        if (n1 == n2 && n1.isNotEmpty()) {
+                            totalCommonCount++
+                        }
+                    }
+                }
+                totalPossibleCount += (free1.keys + free2.keys).distinct().size
+            }
+
+            val similarity = if (totalPossibleCount > 0) (totalCommonCount * 100 / totalPossibleCount) else 0
+            Log.d("FriendsRepo", "Calculated similarity: $similarity% ($totalCommonCount/$totalPossibleCount)")
+
+            val friendDoc = firestore.collection("users").document(friendUid).get().await()
             val friendName = friendDoc.getString("name") ?: "Unknown"
-            val friendPhoto = friendDoc.getString("photoUrl") ?: ""
+            val friendPhoto = friendDoc.getString("profileImageUrl") ?: friendDoc.getString("photoUrl") ?: ""
 
-            // 5️⃣ Test sonucunu kaydet (sadece bir kez)
             val testRef = firestore.collection("compatibility_tests").document()
             val testData = hashMapOf(
                 "user1" to myUid,
                 "user2" to friendUid,
                 "date" to today,
                 "similarity" to similarity,
-                "commonSelections" to commonTags.toList(),
-                "totalSelections" to totalTags.size,
+                "commonSelections" to commonTagsList,
+                "totalSelections" to totalPossibleCount,
                 "timestamp" to System.currentTimeMillis(),
+                "visibleFor" to listOf(myUid, friendUid), // 👈 UID'leri listeye ekle
                 "details" to mapOf(
-                    "user1Selections" to myTags,
-                    "user2Selections" to friendTags
+                    "user1Selections" to aggregatedMyTags,
+                    "user2Selections" to aggregatedFriendTags
                 )
             )
 
             testRef.set(testData).await()
 
-            val result = CompatibilityTestResult(
+            return Result.success(CompatibilityTestResult(
                 testId = testRef.id,
                 friendName = friendName,
                 friendPhotoUrl = friendPhoto,
                 similarity = similarity,
-                commonSelections = commonTags.toList(),
-                totalSelections = totalTags.size,
-                mySelections = myTags,
-                theirSelections = friendTags,
+                commonSelections = commonTagsList,
+                totalSelections = totalPossibleCount,
+                mySelections = aggregatedMyTags,
+                theirSelections = aggregatedFriendTags,
+                visibleFor = listOf(myUid, friendUid),
                 timestamp = System.currentTimeMillis()
-            )
-
-            Log.d("FriendsRepo", "✅ New compatibility test saved: $similarity% similarity")
-            Result.success(result)
+            ))
         } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error running compatibility test: ${e.message}", e)
+            Log.e("FriendsRepo", "Error in runCompatibilityTest: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-    // 👇 YENİ: Bugünkü mevcut testi kontrol et
-    private suspend fun checkExistingTestToday(
-        myUid: String,
-        friendUid: String,
-        today: String
-    ): CompatibilityTestResult? {
-        return try {
-            // Her iki yönü de kontrol et (user1-user2 veya user2-user1)
-            val existingTests = firestore.collection("compatibility_tests")
-                .whereEqualTo("date", today)
-                .get()
-                .await()
-
-            val relevantTest = existingTests.documents.firstOrNull { doc ->
-                val user1 = doc.getString("user1")
-                val user2 = doc.getString("user2")
-
-                (user1 == myUid && user2 == friendUid) || (user1 == friendUid && user2 == myUid)
-            }
-
-            if (relevantTest != null) {
-                // Mevcut test bulundu
-                val friendDoc = firestore.collection("users")
-                    .document(friendUid)
-                    .get()
-                    .await()
-
-                CompatibilityTestResult(
-                    testId = relevantTest.id,
-                    friendName = friendDoc.getString("name") ?: "Unknown",
-                    friendPhotoUrl = friendDoc.getString("photoUrl") ?: "",
-                    similarity = relevantTest.getLong("similarity")?.toInt() ?: 0,
-                    commonSelections = relevantTest.get("commonSelections") as? List<String> ?: emptyList(),
-                    totalSelections = relevantTest.getLong("totalSelections")?.toInt() ?: 0,
-                    mySelections = emptyList(), // Details gerekirse çek
-                    theirSelections = emptyList(),
-                    timestamp = relevantTest.getLong("timestamp") ?: 0L
-                )
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error checking existing test: ${e.message}", e)
-            null
-        }
-    }
-
     override fun getCompatibilityHistory(uid: String): Flow<List<CompatibilityTestResult>> = callbackFlow {
+        Log.d("FriendsRepo", "getCompatibilityHistory START for uid: $uid")
+        
         val listener = firestore.collection("compatibility_tests")
-            .whereEqualTo("user1", uid)
+            .whereArrayContains("visibleFor", uid) // 👈 Sadece kendi UID'si olanları getir
             .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -337,16 +312,19 @@ class FriendsRepositoryImpl @Inject constructor(
                     return@addSnapshotListener
                 }
 
-                val tests = snapshot?.documents?.map { doc ->
-                    val friendUid = doc.getString("user2") ?: ""
+                if (snapshot == null || snapshot.isEmpty) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
 
-                    // Friend bilgisini çek
+                val tests = snapshot.documents.map { doc ->
+                    val user1Id = doc.getString("user1") ?: ""
+                    val user2Id = doc.getString("user2") ?: ""
+                    val friendUid = if (user1Id == uid) user2Id else user1Id
+
                     val friendDoc = kotlinx.coroutines.runBlocking {
                         try {
-                            firestore.collection("users")
-                                .document(friendUid)
-                                .get()
-                                .await()
+                            firestore.collection("users").document(friendUid).get().await()
                         } catch (e: Exception) {
                             null
                         }
@@ -355,98 +333,91 @@ class FriendsRepositoryImpl @Inject constructor(
                     CompatibilityTestResult(
                         testId = doc.id,
                         friendName = friendDoc?.getString("name") ?: "Unknown",
-                        friendPhotoUrl = friendDoc?.getString("photoUrl") ?: "",
+                        friendPhotoUrl = friendDoc?.getString("profileImageUrl") ?: friendDoc?.getString("photoUrl") ?: "",
                         similarity = doc.getLong("similarity")?.toInt() ?: 0,
                         commonSelections = doc.get("commonSelections") as? List<String> ?: emptyList(),
                         totalSelections = doc.getLong("totalSelections")?.toInt() ?: 0,
+                        visibleFor = doc.get("visibleFor") as? List<String> ?: emptyList(),
                         timestamp = doc.getLong("timestamp") ?: 0L
                     )
-                } ?: emptyList()
-
+                }
                 trySend(tests)
             }
-
         awaitClose { listener.remove() }
     }
 
-    override suspend fun getOrCreateInviteCode(uid: String): String {
-        try {
-            // 1. Referrals'tan mevcut kodu kontrol et
-            val referralDoc = firestore.collection("referrals")
-                .document(uid)
-                .get()
-                .await()
+    override suspend fun deleteCompatibilityTest(testId: String): Result<Unit> {
+        return try {
+            val uid = auth.currentUser?.uid ?: return Result.failure(Exception("Not logged in"))
+            val docRef = firestore.collection("compatibility_tests").document(testId)
+            val doc = docRef.get().await()
+            
+            if (!doc.exists()) return Result.success(Unit)
 
-            // Mevcut kod varsa döndür
-            if (referralDoc.exists()) {
-                val existingCode = referralDoc.getString("referralCode")
-                if (!existingCode.isNullOrBlank()) {
-                    Log.d("FriendsRepo", "Existing referral code found: $existingCode")
-                    return existingCode
-                }
+            val visibleFor = doc.get("visibleFor") as? MutableList<String> ?: mutableListOf()
+            visibleFor.remove(uid)
+
+            if (visibleFor.isEmpty()) {
+                docRef.delete().await()
+            } else {
+                docRef.update("visibleFor", visibleFor).await()
             }
-
-            // 2. Kod yoksa yeni oluştur (8 haneli)
-            val newCode = generateRandomCode()
-
-            firestore.collection("referrals").document(uid)
-                .set(
-                    mapOf(
-                        "referralCode" to newCode,
-                        "referredBy" to null,
-                        "referredUsers" to emptyList<String>(),
-                        "totalReferrals" to 0,
-                        "premiumDaysEarned" to 0,
-                        "createdAt" to FieldValue.serverTimestamp()
-                    ),
-                    SetOptions.merge() // Mevcut data'yı korur
-                )
-                .await()
-
-            Log.d("FriendsRepo", "New referral code created: $newCode")
-            return newCode
-
+            
+            Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error getting/creating referral code: ${e.message}", e)
-            throw e
+            Result.failure(e)
         }
     }
 
-    // 👇 DEĞİŞTİ: acceptInviteCode - Hem arkadaş hem referral ekle
+    override suspend fun getOrCreateInviteCode(uid: String): String {
+        val referralDoc = firestore.collection("referrals").document(uid).get().await()
+        if (referralDoc.exists()) {
+            val existingCode = referralDoc.getString("referralCode")
+            if (!existingCode.isNullOrBlank()) return existingCode
+        }
+
+        val newCode = generateRandomCode()
+        firestore.collection("referrals").document(uid)
+            .set(
+                mapOf(
+                    "referralCode" to newCode,
+                    "referredBy" to null,
+                    "referredUsers" to emptyList<String>(),
+                    "totalReferrals" to 0,
+                    "premiumDaysEarned" to 0,
+                    "createdAt" to FieldValue.serverTimestamp()
+                ),
+                SetOptions.merge()
+            )
+            .await()
+        return newCode
+    }
+
     override suspend fun acceptInviteCode(code: String, accepterUid: String): Result<String> {
         return try {
-            // Kodu referrals'tan bul
             val referralsSnapshot = firestore.collection("referrals")
                 .whereEqualTo("referralCode", code)
                 .get()
                 .await()
 
             if (referralsSnapshot.isEmpty) {
-                return Result.failure(Exception(R.string.error_invalid_invite_code.toString()))
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_invalid_invite_code)))
             }
 
             val referralDoc = referralsSnapshot.documents.first()
-            val inviterUid = referralDoc.id // Document ID = UID
+            val inviterUid = referralDoc.id
 
             if (inviterUid == accepterUid) {
-                return Result.failure(Exception(R.string.error_own_code.toString()))
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_own_code)))
             }
 
-            // Zaten kullanılmış mı kontrol et
-            val accepterReferralDoc = firestore.collection("referrals")
-                .document(accepterUid)
-                .get()
-                .await()
-
+            val accepterReferralDoc = firestore.collection("referrals").document(accepterUid).get().await()
             if (accepterReferralDoc.exists() && accepterReferralDoc.getString("referredBy") != null) {
-                return Result.failure(Exception(R.string.error_already_used_code.toString()))
+                return Result.failure(UiTextException(UiText.StringResource(R.string.error_already_used_code)))
             }
 
-            // 1️⃣ Arkadaşlık isteği gönder
             sendFriendRequest(inviterUid, accepterUid)
 
-            // 2️⃣ Referral sistemi güncelle (premium reward)
-            // Davet eden kullanıcıya reward
             firestore.collection("referrals").document(inviterUid).update(
                 mapOf(
                     "referredUsers" to FieldValue.arrayUnion(accepterUid),
@@ -455,10 +426,9 @@ class FriendsRepositoryImpl @Inject constructor(
                 )
             ).await()
 
-            // Davet edilen kullanıcıya kayıt
             firestore.collection("referrals").document(accepterUid).set(
                 mapOf(
-                    "referralCode" to generateRandomCode(), // Kendi kodu
+                    "referralCode" to generateRandomCode(),
                     "referredBy" to inviterUid,
                     "referredUsers" to emptyList<String>(),
                     "totalReferrals" to 0,
@@ -467,26 +437,122 @@ class FriendsRepositoryImpl @Inject constructor(
                 )
             ).await()
 
-            // 3️⃣ Premium ekle (her ikisine de)
             addPremiumDays(accepterUid, 7)
             addPremiumDays(inviterUid, 7)
 
             Result.success(inviterUid)
         } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error accepting invite code: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-    // 👇 8 haneli kod (referrals ile tutarlı)
-    private fun generateRandomCode(): String {
-        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return (1..8)
-            .map { chars[Random.nextInt(chars.length)] }
-            .joinToString("")
+    override suspend fun startSoulSyncWithFriend(myUid: String, friendUid: String): Result<String> {
+        return try {
+            val meDoc = firestore.collection("users").document(myUid).get().await()
+            val friendDoc = firestore.collection("users").document(friendUid).get().await()
+            
+            val myName = meDoc.getString("name") ?: "You"
+            val myPhoto = meDoc.getString("profileImageUrl") ?: meDoc.getString("photoUrl") ?: ""
+            val friendName = friendDoc.getString("name") ?: "Friend"
+            val friendPhoto = friendDoc.getString("profileImageUrl") ?: friendDoc.getString("photoUrl") ?: ""
+
+            val friendshipSnapshot = firestore.collection("friends")
+                .whereIn("user1", listOf(myUid, friendUid))
+                .whereIn("user2", listOf(myUid, friendUid))
+                .get()
+                .await()
+
+            val friendshipDoc = friendshipSnapshot.documents.firstOrNull() 
+                ?: return Result.failure(Exception("Friendship not found"))
+
+            val roomId = friendshipDoc.id
+            
+            friendshipDoc.reference.update(
+                mapOf(
+                    "soulSyncRoomId" to roomId,
+                    "soulSyncScore" to 0,
+                    "soulSyncCompleted" to false
+                )
+            ).await()
+
+            val databaseUrl = "https://sixth-sense-9647e-default-rtdb.europe-west1.firebasedatabase.app"
+            val roomsRef = Firebase.database(databaseUrl).reference.child("soul_sync_rooms")
+            
+            val roomData = mapOf(
+                "matchId" to roomId,
+                "players" to mapOf(
+                    myUid to mapOf(
+                        "uid" to myUid,
+                        "name" to myName,
+                        "photoUrl" to myPhoto,
+                        "status" to "invited", // 👈 Host is invited too, will join via VM
+                        "score" to 0
+                    ),
+                    friendUid to mapOf(
+                        "uid" to friendUid,
+                        "name" to friendName,
+                        "photoUrl" to friendPhoto,
+                        "status" to "invited",
+                        "score" to 0
+                    )
+                ),
+                "gameState" to "waiting",
+                "currentRound" to 1,
+                "createdAt" to com.google.firebase.database.ServerValue.TIMESTAMP
+            )
+            
+            roomsRef.child(roomId).setValue(roomData).await()
+
+            Result.success(roomId)
+        } catch (e: Exception) {
+            Log.e("FriendsRepo", "Error starting soul sync with friend", e)
+            Result.failure(e)
+        }
     }
 
-    // 👇 Premium ekle helper
+    private suspend fun checkExistingTestToday(
+        myUid: String,
+        friendUid: String,
+        today: String
+    ): CompatibilityTestResult? {
+        return try {
+            val existingTests = firestore.collection("compatibility_tests")
+                .whereEqualTo("date", today)
+                .get()
+                .await()
+
+            val relevantTest = existingTests.documents.firstOrNull { doc ->
+                val user1 = doc.getString("user1")
+                val user2 = doc.getString("user2")
+                (user1 == myUid && user2 == friendUid) || (user1 == friendUid && user2 == myUid)
+            }
+
+            if (relevantTest != null) {
+                val friendDoc = firestore.collection("users").document(friendUid).get().await()
+                return CompatibilityTestResult(
+                    testId = relevantTest.id,
+                    friendName = friendDoc.getString("name") ?: "Unknown",
+                    friendPhotoUrl = friendDoc.getString("profileImageUrl") ?: friendDoc.getString("photoUrl") ?: "",
+                    similarity = relevantTest.getLong("similarity")?.toInt() ?: 0,
+                    commonSelections = relevantTest.get("commonSelections") as? List<String> ?: emptyList(),
+                    totalSelections = relevantTest.getLong("totalSelections")?.toInt() ?: 0,
+                    mySelections = emptyList(),
+                    theirSelections = emptyList(),
+                    visibleFor = relevantTest.get("visibleFor") as? List<String> ?: emptyList(),
+                    timestamp = relevantTest.getLong("timestamp") ?: 0L
+                )
+            }
+            null
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun generateRandomCode(): String {
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return (1..8).map { chars[Random.nextInt(chars.length)] }.joinToString("")
+    }
+
     private suspend fun addPremiumDays(uid: String, days: Int) {
         try {
             val userDoc = firestore.collection("users").document(uid).get().await()
@@ -499,14 +565,9 @@ class FriendsRepositoryImpl @Inject constructor(
                     "premiumExpiryDate" to newExpiry
                 )
             ).await()
-
-            Log.d("FriendsRepo", "Added $days premium days to user: $uid")
-        } catch (e: Exception) {
-            Log.e("FriendsRepo", "Error adding premium: ${e.message}", e)
-        }
+        } catch (e: Exception) {}
     }
 
-    // Helper functions
     private suspend fun checkTodaySession(uid: String): Boolean {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val sessions = firestore.collection("sessions")

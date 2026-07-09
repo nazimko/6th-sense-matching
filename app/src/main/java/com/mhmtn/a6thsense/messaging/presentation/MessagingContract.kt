@@ -1,5 +1,6 @@
 package com.mhmtn.a6thsense.messaging.presentation
 
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.messaging.domain.model.Message
 
 object MessagingContract {
@@ -8,6 +9,7 @@ object MessagingContract {
         val messages: List<Message> = emptyList(),
         val currentInput: String = "",
         val isLoading: Boolean = true,
+        val isSendingMessage: Boolean = false,
         val reactionTargetMessageId: String? = null, // Reaksiyon seçici açık mı
         val matchedUserName: String = "",
         val matchedUserPhotoUrl: String = "",
@@ -33,6 +35,8 @@ object MessagingContract {
         object ScrollToBottom : Effect()
         object ShowPaywall : Effect()
         object NavigateBack : Effect()
-        data class ShowToast(val message: String) : Effect()
+        data object PlayIncomingMessageSound : Effect()
+        data class ShowError(val message: UiText) : Effect()
+        data class ShowToast(val message: UiText) : Effect()
     }
 }

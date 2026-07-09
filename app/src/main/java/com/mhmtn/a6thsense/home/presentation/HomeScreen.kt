@@ -1,6 +1,8 @@
 package com.mhmtn.a6thsense.home.presentation
 
+import android.content.Context
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.core.*
 import com.mhmtn.a6thsense.R
 import androidx.compose.foundation.*
@@ -23,36 +25,43 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.firebase.auth.FirebaseAuth
-import com.mhmtn.a6thsense.activity.domain.DailyActivityContract.SessionType
 import com.mhmtn.a6thsense.auth.domain.AuthUser
 import com.mhmtn.a6thsense.core.presentation.*
 import com.mhmtn.a6thsense.home.components.CompactMatchCard
-import com.mhmtn.a6thsense.home.components.CompletionBadge
 import com.mhmtn.a6thsense.home.components.ExpandableSessionSection
-import com.mhmtn.a6thsense.home.components.SessionCard
 import com.mhmtn.a6thsense.messaging.presentation.PremiumEntryPoint
 import com.mhmtn.a6thsense.home.components.UserStatsCard
 import com.mhmtn.a6thsense.premium.domain.PremiumStatus
+import com.mhmtn.a6thsense.activity.presentation.components.MatchThresholdPicker
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.flowOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     state: HomeUiState,
+    isDark: Boolean,
+    showSheet: Boolean,
+    onDismiss: () -> Unit,
+    onShowSheet: () -> Unit,
     onAction: (HomeAction) -> Unit
 ) {
     if (state.error != null) {
         NetworkErrorView(
-            message = state.error,
+            message = state.error.asString(),
             onRetry = { onAction(HomeAction.Load) }
         )
         return
@@ -60,15 +69,17 @@ fun HomeScreen(
 
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+
+    val isTablet = configuration.screenWidthDp > 600
+    val contentModifier = if (isTablet) Modifier.widthIn(max = 850.dp) else Modifier.fillMaxWidth()
+    val horizontalPadding = if (isTablet) 32.dp else 24.dp
 
     val premiumStatus by remember {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null) {
             EntryPointAccessors
-                .fromApplication(
-                    context.applicationContext,
-                    PremiumEntryPoint::class.java
-                )
+                .fromApplication(context.applicationContext, PremiumEntryPoint::class.java)
                 .premiumRepository()
                 .getPremiumStatus(uid)
         } else {
@@ -81,20 +92,22 @@ fun HomeScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
+                    colors = if (isDark) listOf(
                         Color(0xFF0F0C29),
                         Color(0xFF1A1A2E),
                         Color(0xFF24243E)
                     )
+                    else listOf(Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF))
                 )
-            )
+            ),
+        contentAlignment = Alignment.TopCenter
     ) {
-        // Dekoratif bloblar
         HomeBackgroundBlobs()
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .then(contentModifier)
+                .fillMaxHeight()
                 .verticalScroll(scrollState)
                 .statusBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -102,17 +115,16 @@ fun HomeScreen(
             // Header
             HomeHeader(
                 onSettingsClick = { onAction(HomeAction.OnSettingsClick) },
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
+                modifier = Modifier.padding(horizontal = horizontalPadding, vertical = 20.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Premium CTA (eğer premium değilse)
             if (!state.isPremium) {
                 PremiumCTA(
-                    onUpgradeClick = { /* Navigate to paywall */ },
+                    onUpgradeClick = { onAction(HomeAction.OnUpgradeClick) },
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = horizontalPadding)
                         .revealFromBottom(delayMillis = 0)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -120,48 +132,50 @@ fun HomeScreen(
 
             UserStatsCard(
                 isPremium = state.isPremium,
+                isDark = isDark,
                 swipesUsed = premiumStatus.dailySwipesUsed,
                 swipeLimit = premiumStatus.dailySwipeLimit,
                 messagesUsed = premiumStatus.dailyMessagesUsed,
                 messageLimit = premiumStatus.dailyMessageLimit,
+                soulSyncUsed = premiumStatus.dailySoulSyncUsed,
+                soulSyncLimit = premiumStatus.dailySoulSyncLimit,
                 onUpgradeClick = { onAction(HomeAction.OnUpgradeClick) },
                 modifier = Modifier
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = horizontalPadding)
                     .revealFromBottom(delayMillis = 50)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Günlük aktivite stat kartı
             DailyActivityStatCard(
                 streak = state.currentStreak,
                 completedToday = state.completedToday,
+                isDark = isDark,
                 modifier = Modifier
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = horizontalPadding)
                     .revealFromBottom(delayMillis = 100)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // home/presentation/HomeScreen.kt içinde
-
-// Match Section
+            // ✅ ACTIVE MATCHES (Frozen or Daily)
             if (state.todayMatches.isNotEmpty()) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(horizontal = 24.dp)
+                    modifier = Modifier.padding(horizontal = horizontalPadding)
                 ) {
-                    // Header
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = if (state.todayMatches.size == 1) R.string.today_match.toString() else R.string.today_matches.toString(),
+                            text = if (state.todayMatches.size == 1) stringResource(R.string.today_match) else stringResource(
+                                R.string.today_matches
+                            ),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onBackground
                         )
 
                         if (state.isPremium && state.todayMatches.size > 1) {
@@ -180,120 +194,108 @@ fun HomeScreen(
                         }
                     }
 
-                    // Cards
                     if (state.todayMatches.size == 1) {
-                        // Single match - büyük kart
                         EnhancedMatchCard(
                             matchedUser = state.matchedUser!!,
                             similarity = state.similarity ?: 0,
+                            isDark = isDark,
                             onClick = { onAction(HomeAction.OnMatchClick()) },
                             modifier = Modifier.revealFromBottom(delayMillis = 150)
                         )
+                        Log.d("HomeScreen", "todayMatches size: ${state.similarity}")
                     } else {
-                        // Multiple matches - horizontal carousel
                         LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(vertical = 4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(vertical = 8.dp)
                         ) {
                             items(state.todayMatches) { match ->
                                 CompactMatchCard(
                                     match = match,
-                                    onClick = {
-                                        onAction(HomeAction.OnMatchClick(matchId = match.matchId))
-                                    }
+                                    modifier = Modifier.width(if (isTablet) 320.dp else 240.dp),
+                                    onClick = { onAction(HomeAction.OnMatchClick(matchId = match.matchId)) }
                                 )
                             }
                         }
                     }
                 }
             } else {
-                // Empty state
                 EmptyMatchState(
+                    isDark = isDark,
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = horizontalPadding)
                         .revealFromBottom(delayMillis = 150)
                 )
             }
-
-            /*
-            // Match kartı veya boş durum
-            if (state.matchedUser != null) {
-                Log.d("HomeScreen", "state.matchedUser: ${state.matchedUser}")
-                Log.d("HomeScreen", "state.similarity: ${state.similarity}")
-                EnhancedMatchCard(
-                    matchedUser = state.matchedUser,
-                    similarity = state.similarity ?: 0,
-                    onClick = { onAction(HomeAction.OnMatchClick) },
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .revealFromBottom(delayMillis = 200)
-                )
-            } else {
-                EmptyMatchState(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .revealFromBottom(delayMillis = 200)
-                )
-            }
-
-             */
+            val sheetState = rememberModalBottomSheetState()
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            if (showSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { onDismiss() },
+                    sheetState = sheetState
+                ) {
+                    // ✅ Match Threshold Picker
+                    MatchThresholdPicker(
+                        currentValue = state.minSimilarity,
+                        onValueChange = { onAction(HomeAction.OnThresholdChange(it)) },
+                        modifier = Modifier.padding(horizontal = horizontalPadding).revealFromBottom(delayMillis = 180)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             ExpandableSessionSection(
                 hasCompletedIntuition = state.hasCompletedIntuitionToday,
                 hasCompletedPreference = state.hasCompletedPreferenceToday,
-                onStartSession = { sessionType ->
-                    onAction(HomeAction.OnStartSession(sessionType))
-                },
-                modifier = Modifier.revealFromBottom(delayMillis = 200)
+                onStartSession = { sessionType -> onAction(HomeAction.OnStartSession(sessionType)) },
+                modifier = Modifier
+                    .padding(horizontal = horizontalPadding)
+                    .revealFromBottom(delayMillis = 200)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(40.dp))
+        }
+
+        FloatingActionButton(
+            onClick = onShowSheet,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 32.dp, end = 24.dp)
+                .revealFromBottom(delayMillis = 300)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.speed_24px),
+                contentDescription = "Ayarı Aç",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
-
-    /* Başlat butonu
-    EnhancedStartButton(
-        onClick = { onAction(HomeAction.OnStartDailyClick) },
-        modifier = Modifier
-            .padding(horizontal = 24.dp)
-            .revealFromBottom(delayMillis = 300)
-    )
-
-    Spacer(modifier = Modifier.height(40.dp))
-
-     */
 }
-
 
 @Composable
 private fun HomeBackgroundBlobs() {
     Box(
         modifier = Modifier
-            .size(350.dp)
-            .offset(x = (-100).dp, y = (-80).dp)
-            .blur(80.dp)
-            .background(
-                Color(0xFF7B5EA7).copy(alpha = 0.15f),
-                CircleShape
-            )
+            .size(450.dp)
+            .offset(x = (-150).dp, y = (-100).dp)
+            .blur(100.dp)
+            .background(Color(0xFF7B5EA7).copy(alpha = 0.12f), CircleShape)
     )
     Box(
         modifier = Modifier
-            .size(280.dp)
-            .offset(x = 250.dp, y = 150.dp)
-            .blur(70.dp)
-            .background(
-                Color(0xFF4568DC).copy(alpha = 0.12f),
-                CircleShape
-            )
+            .size(400.dp)
+            .offset(x = 300.dp, y = 200.dp)
+            .blur(90.dp)
+            .background(Color(0xFF4568DC).copy(alpha = 0.1f), CircleShape)
     )
 }
 
 @Composable
 private fun HomeHeader(
     onSettingsClick: () -> Unit,
+    context: Context = LocalContext.current,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -301,28 +303,34 @@ private fun HomeHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Logo + Tagline
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = "🔮",
-                    fontSize = 32.sp,
-                    modifier = Modifier.floating(offsetY = 8f, duration = 2500)
+                Image(
+                    painter = rememberDrawablePainter(
+                        AppCompatResources.getDrawable(
+                            context,
+                            R.mipmap.ic_launcher
+                        )
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .floating(offsetY = 8f, duration = 2500)
                 )
                 Column {
                     Text(
-                        text = "VibeTribe",
-                        fontSize = 26.sp,
+                        text = "Aurania",
+                        fontSize = 28.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
                         text = "Soul Connections",
-                        fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.5f),
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                         fontWeight = FontWeight.Medium,
                         letterSpacing = 1.sp
                     )
@@ -330,19 +338,18 @@ private fun HomeHeader(
             }
         }
 
-        // Settings butonu
         IconButton(
             onClick = onSettingsClick,
             modifier = Modifier
-                .size(44.dp)
+                .size(48.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.1f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f))
         ) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(24.dp)
             )
         }
     }
@@ -355,10 +362,9 @@ private fun PremiumCTA(
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "premium_shine")
     val shimmer by infiniteTransition.animateFloat(
-        initialValue = -1f,
-        targetValue = 1f,
+        initialValue = -1f, targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
+            animation = tween(2500, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
         label = "shimmer"
@@ -368,25 +374,18 @@ private fun PremiumCTA(
         modifier = modifier
             .fillMaxWidth()
             .shadow(
-                elevation = 20.dp,
+                elevation = 16.dp,
                 shape = RoundedCornerShape(24.dp),
-                ambientColor = Color(0xFFFFD700).copy(alpha = 0.3f)
+                ambientColor = Color(0xFFFFD700).copy(alpha = 0.2f)
             )
             .clip(RoundedCornerShape(24.dp))
-            .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF2D1B69),
-                        Color(0xFF1A1A2E)
-                    )
-                )
-            )
+            .background(Brush.linearGradient(colors = listOf(Color(0xFF2D1B69), Color(0xFF1A1A2E))))
             .border(
-                width = 1.5.dp,
+                width = 1.dp,
                 brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFFFFD700).copy(alpha = 0.5f),
-                        Color(0xFFFFA500).copy(alpha = 0.3f)
+                    listOf(
+                        Color(0xFFFFD700).copy(alpha = 0.4f),
+                        Color(0xFFFFA500).copy(alpha = 0.2f)
                     )
                 ),
                 shape = RoundedCornerShape(24.dp)
@@ -394,18 +393,15 @@ private fun PremiumCTA(
             .bounceClick(onClick = onUpgradeClick)
             .padding(20.dp)
     ) {
-        // Shimmer overlay
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .graphicsLayer {
-                    translationX = shimmer * size.width
-                }
+                .graphicsLayer { translationX = shimmer * size.width }
                 .background(
                     Brush.horizontalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Color.White.copy(alpha = 0.1f),
+                            Color.White.copy(alpha = 0.08f),
                             Color.Transparent
                         )
                     )
@@ -419,30 +415,29 @@ private fun PremiumCTA(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "👑", fontSize = 32.sp)
+                Text(text = "👑", fontSize = 34.sp)
                 Column {
                     Text(
-                        text = R.string.upgrade.toString(),
+                        text = stringResource(R.string.upgrade),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     Text(
-                        text = R.string.use_limitless.toString(),
+                        text = stringResource(R.string.use_limitless),
                         fontSize = 13.sp,
                         color = Color.White.copy(alpha = 0.7f)
                     )
                 }
             }
-
             Icon(
                 imageVector = Icons.Outlined.Face,
                 contentDescription = null,
                 tint = Color(0xFFFFD700),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(26.dp)
             )
         }
     }
@@ -452,92 +447,95 @@ private fun PremiumCTA(
 private fun DailyActivityStatCard(
     streak: Int,
     completedToday: Boolean,
+    isDark: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // Streak kartı
+    val cardBackground = if (isDark) Brush.linearGradient(
+        listOf(
+            Color(0xFF24243E).copy(alpha = 0.85f),
+            Color(0xFF1A1A2E).copy(alpha = 0.95f)
+        )
+    )
+    else Brush.linearGradient(
+        listOf(
+            Color.White.copy(alpha = 0.95f),
+            Color(0xFFF8F5FF).copy(alpha = 0.9f)
+        )
+    )
+
+    val borderColor =
+        if (isDark) Color(0xFF7B5EA7).copy(alpha = 0.3f) else Color(0xFF7B5EA7).copy(alpha = 0.1f)
+
+    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         Box(
             modifier = Modifier
                 .weight(1f)
                 .shadow(
-                    elevation = 12.dp,
-                    shape = RoundedCornerShape(20.dp),
-                    ambientColor = Color(0xFFFF6B6B).copy(alpha = 0.2f)
+                    8.dp,
+                    RoundedCornerShape(20.dp),
+                    ambientColor = Color(0xFFFF6B6B).copy(alpha = 0.1f)
                 )
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color.White.copy(alpha = 0.08f))
-                .border(
-                    width = 1.dp,
-                    color = Color.White.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(16.dp)
+                .background(cardBackground)
+                .border(1.dp, borderColor, RoundedCornerShape(20.dp))
+                .padding(20.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "🔥", fontSize = 28.sp)
+                Text(text = "🔥", fontSize = 30.sp)
                 Text(
                     text = "$streak",
-                    fontSize = 24.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Black,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = pluralStringResource(
+                    text = if (streak == 0) stringResource(R.string.no_streak) else pluralStringResource(
                         id = R.plurals.days_streak,
                         count = streak,
                         streak
                     ),
-                    fontSize = 11.sp,
-                    color = Color.White.copy(alpha = 0.6f)
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
             }
         }
-
-        // Bugün tamamlandı kartı
         Box(
             modifier = Modifier
                 .weight(1f)
                 .shadow(
-                    elevation = 12.dp,
-                    shape = RoundedCornerShape(20.dp),
-                    ambientColor = if (completedToday)
-                        Color(0xFF43E97B).copy(alpha = 0.2f)
-                    else
-                        Color(0xFF7B5EA7).copy(alpha = 0.2f)
+                    8.dp,
+                    RoundedCornerShape(20.dp),
+                    ambientColor = if (completedToday) Color(0xFF43E97B).copy(alpha = 0.1f) else Color(
+                        0xFF7B5EA7
+                    ).copy(alpha = 0.1f)
                 )
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color.White.copy(alpha = 0.08f))
-                .border(
-                    width = 1.dp,
-                    color = Color.White.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(16.dp)
+                .background(cardBackground)
+                .border(1.dp, borderColor, RoundedCornerShape(20.dp))
+                .padding(20.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
+                Text(text = if (completedToday) "✅" else "⏳", fontSize = 30.sp)
                 Text(
-                    text = if (completedToday) "✅" else "⏳",
-                    fontSize = 28.sp
-                )
-                Text(
-                    text = R.string.today.toString(),
-                    fontSize = 14.sp,
+                    text = stringResource(R.string.today),
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = if (completedToday) R.string.completed.toString() else R.string.waiting.toString(),
-                    fontSize = 11.sp,
-                    color = Color.White.copy(alpha = 0.6f)
+                    text = if (completedToday) stringResource(R.string.completed) else stringResource(
+                        R.string.waiting
+                    ),
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
             }
         }
@@ -548,53 +546,44 @@ private fun DailyActivityStatCard(
 private fun EnhancedMatchCard(
     matchedUser: AuthUser,
     similarity: Int,
+    isDark: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // 3D tilt efekti
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
+    val cardBackground = if (isDark) Brush.linearGradient(
+        listOf(
+            Color(0xFF2D1B69),
+            Color(0xFF1A1A2E),
+            Color(0xFF0F0C29)
+        )
+    )
+    else Brush.linearGradient(listOf(Color(0xFF7B5EA7), Color(0xFF4568DC)))
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            // .aspectRatio(1.5f)
             .wrapContentHeight()
-            .graphicsLayer {
-                rotationY = offsetX * 5f
-                rotationX = -offsetY * 5f
-                shadowElevation = 30f
-            }
             .shadow(
-                elevation = 24.dp,
-                shape = RoundedCornerShape(28.dp),
+                24.dp,
+                RoundedCornerShape(28.dp),
                 ambientColor = Color(0xFF7B5EA7).copy(alpha = 0.4f),
                 spotColor = Color(0xFF4568DC).copy(alpha = 0.3f)
             )
             .clip(RoundedCornerShape(28.dp))
-            .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF2D1B69),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF0F0C29)
-                    )
-                )
-            )
+            .background(cardBackground)
             .border(
-                width = 2.dp,
-                brush = Brush.linearGradient(
-                    colors = listOf(
+                1.5.dp,
+                Brush.linearGradient(
+                    listOf(
                         Color(0xFF7B5EA7).copy(alpha = 0.5f),
                         Color(0xFF4568DC).copy(alpha = 0.3f)
                     )
                 ),
-                shape = RoundedCornerShape(28.dp)
+                RoundedCornerShape(28.dp)
             )
             .bounceClick(onClick = onClick)
             .padding(24.dp)
     ) {
-
         Box(
             modifier = Modifier
                 .align(Alignment.TopStart)
@@ -608,22 +597,19 @@ private fun EnhancedMatchCard(
             ) {
                 Text(text = "✨", fontSize = 12.sp)
                 Text(
-                    text = R.string.today_match.toString(),
+                    text = stringResource(R.string.today_match),
                     fontSize = 11.sp,
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold
                 )
             }
         }
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxWidth()
         ) {
-            // Avatar + glow
             Box(contentAlignment = Alignment.Center) {
-                // Glow efekti
                 Box(
                     modifier = Modifier
                         .size(130.dp)
@@ -633,54 +619,35 @@ private fun EnhancedMatchCard(
                                     Color(0xFF7B5EA7).copy(alpha = 0.4f),
                                     Color.Transparent
                                 )
-                            ),
-                            CircleShape
+                            ), CircleShape
                         )
                         .blur(20.dp)
                 )
-
-                // Avatar
                 Box(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
-                        .background(
-                            Brush.linearGradient(
-                                listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
-                            )
-                        )
-                        .border(
-                            width = 3.dp,
-                            brush = Brush.linearGradient(
-                                listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
-                            ),
-                            shape = CircleShape
-                        ),
+                        .background(Color.White.copy(alpha = 0.1f))
+                        .border(3.dp, Color.White.copy(alpha = 0.2f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (matchedUser.photoUrl?.isNotBlank() == true) {
-                        AsyncImage(
-                            model = matchedUser.photoUrl,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Text(
-                            text = matchedUser.name.firstOrNull()?.uppercase() ?: "?",
-                            color = Color.White,
-                            fontSize = 36.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    if (matchedUser.photoUrl?.isNotBlank() == true) AsyncImage(
+                        model = matchedUser.photoUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                    else Text(
+                        text = matchedUser.name.firstOrNull()?.uppercase() ?: "?",
+                        color = Color.White,
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
-
             Spacer(modifier = Modifier.height(20.dp))
-
-            // İsim
             Text(
                 text = matchedUser.name,
                 fontSize = 24.sp,
@@ -688,17 +655,11 @@ private fun EnhancedMatchCard(
                 color = Color.White,
                 textAlign = TextAlign.Center
             )
-
             Spacer(modifier = Modifier.height(12.dp))
-
-            // Similarity badge
             SimilarityIndicator(similarity = similarity)
-
             Spacer(modifier = Modifier.height(16.dp))
-
-            // CTA
             Text(
-                text = R.string.view_details.toString(),
+                text = stringResource(R.string.view_details),
                 fontSize = 13.sp,
                 color = Color.White.copy(alpha = 0.6f)
             )
@@ -712,22 +673,17 @@ private fun SimilarityIndicator(similarity: Int) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Log.d("SimilarityIndicator", "similarity: $similarity")
-        // Başlık
         Text(
-            text = R.string.spiritual_harmony.toString(),
+            text = stringResource(R.string.spiritual_harmony),
             fontSize = 11.sp,
             color = Color.White.copy(alpha = 0.5f),
             fontWeight = FontWeight.Medium,
             letterSpacing = 1.sp
         )
-
-        // Progress bar + skor
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            // Circular progress veya bar
             Box(
                 modifier = Modifier
                     .width(200.dp)
@@ -743,48 +699,48 @@ private fun SimilarityIndicator(similarity: Int) {
                         .background(
                             Brush.linearGradient(
                                 colors = when {
-                                    similarity >= 80 -> listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
-                                    similarity >= 60 -> listOf(Color(0xFF7B5EA7), Color(0xFF4568DC))
-                                    else -> listOf(Color(0xFFFFD700), Color(0xFFFF9A56))
+                                    similarity >= 80 -> listOf(
+                                        Color(0xFF43E97B),
+                                        Color(0xFF38F9D7)
+                                    ); similarity >= 60 -> listOf(
+                                        Color(0xFF610DE7),
+                                        Color(0xFF4568DC)
+                                    ); else -> listOf(Color(0xFFFFD700), Color(0xFFFF9A56))
                                 }
                             )
                         )
                 )
             }
-
-            // Yüzde + açıklama
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Büyük yüzde
                 Text(
                     text = "$similarity%",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Black,
                     color = when {
-                        similarity >= 80 -> Color(0xFF43E97B)
-                        similarity >= 60 -> Color(0xFF7B5EA7)
-                        else -> Color(0xFFFFD700)
+                        similarity >= 80 -> Color(0xFF43E97B); similarity >= 60 -> Color(0xFFCEB8FF); else -> Color(
+                            0xFFFFD700
+                        )
                     }
                 )
-
-                // Emoji + açıklama
                 Column {
                     Text(
                         text = when {
-                            similarity >= 80 -> "${R.string.perfect_harmony.toString()} 🔥"
-                            similarity >= 60 -> "${R.string.very_good_harmony.toString()} ✨"
-                            similarity >= 40 -> "${R.string.good_harmony.toString()} 💫"
-                            similarity >= 20 -> "${R.string.interesting.toString()} 🌟"
-                            else -> "✨ ${R.string.no_harmony.toString()}"
-                        },
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                            similarity >= 80 -> "${stringResource(R.string.perfect_harmony)} 🔥"; similarity >= 60 -> "${
+                                stringResource(
+                                    R.string.very_good_harmony
+                                )
+                            } ✨"; similarity >= 40 -> "${stringResource(R.string.good_harmony)} 💫"; similarity >= 20 -> "${
+                                stringResource(
+                                    R.string.interesting
+                                )
+                            } 🌟"; else -> "✨ ${stringResource(R.string.no_harmony)}"
+                        }, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White
                     )
                     Text(
-                        text = R.string.connection.toString(),
+                        text = stringResource(R.string.connection),
                         fontSize = 11.sp,
                         color = Color.White.copy(alpha = 0.5f)
                     )
@@ -796,6 +752,7 @@ private fun SimilarityIndicator(similarity: Int) {
 
 @Composable
 private fun EmptyMatchState(
+    isDark: Boolean,
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "empty")
@@ -809,21 +766,33 @@ private fun EmptyMatchState(
         label = "scale"
     )
 
+    val cardBackground = if (isDark) Brush.linearGradient(
+        listOf(
+            Color(0xFF24243E).copy(alpha = 0.85f),
+            Color(0xFF1A1A2E).copy(alpha = 0.95f)
+        )
+    )
+    else Brush.linearGradient(
+        listOf(
+            Color.White.copy(alpha = 0.95f),
+            Color(0xFFF8F5FF).copy(alpha = 0.9f)
+        )
+    )
+
+    val borderColor =
+        if (isDark) Color(0xFF7B5EA7).copy(alpha = 0.3f) else Color(0xFF7B5EA7).copy(alpha = 0.1f)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .shadow(
-                elevation = 12.dp,
-                shape = RoundedCornerShape(28.dp),
-                ambientColor = Color(0xFF7B5EA7).copy(alpha = 0.15f)
+                8.dp,
+                RoundedCornerShape(28.dp),
+                ambientColor = Color(0xFF7B5EA7).copy(alpha = 0.1f)
             )
             .clip(RoundedCornerShape(28.dp))
-            .background(Color.White.copy(alpha = 0.05f))
-            .border(
-                width = 1.dp,
-                color = Color.White.copy(alpha = 0.1f),
-                shape = RoundedCornerShape(28.dp)
-            )
+            .background(cardBackground)
+            .border(1.dp, borderColor, RoundedCornerShape(28.dp))
             .padding(40.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -834,19 +803,18 @@ private fun EmptyMatchState(
             Text(
                 text = "🔮",
                 fontSize = 64.sp,
-                modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
-            )
+                modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale })
             Text(
-                text = R.string.home_no_matches.toString(),
+                text = stringResource(R.string.home_no_matches),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
             Text(
-                text = R.string.home_subtitle.toString(),
+                text = stringResource(R.string.home_subtitle),
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                 textAlign = TextAlign.Center,
                 lineHeight = 20.sp
             )

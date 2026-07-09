@@ -1,6 +1,5 @@
 package com.mhmtn.a6thsense.invite.presentation
 
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +20,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,6 +33,7 @@ import com.mhmtn.a6thsense.invite.presentation.components.CodeInputDialog
 @Composable
 fun InviteFriendsScreen(
     state: InviteFriendsContract.State,
+    isDark: Boolean,
     onAction: (InviteFriendsContract.Action) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -42,10 +43,10 @@ fun InviteFriendsScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
+                    colors = if (isDark) listOf(
+                        Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E)
+                    ) else listOf(
+                        Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF)
                     )
                 )
             )
@@ -110,7 +111,7 @@ fun InviteFriendsScreen(
         if (state.showCodeInput) {
             CodeInputDialog(
                 codeInput = state.codeInput,
-                error = state.error,
+                error = state.error?.asString(),
                 onCodeChange = { onAction(InviteFriendsContract.Action.OnCodeInputChange(it)) },
                 onApply = { onAction(InviteFriendsContract.Action.OnApplyCode) },
                 onDismiss = { onAction(InviteFriendsContract.Action.OnDismissCodeInput) }
@@ -133,15 +134,15 @@ fun InviteHeader(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
 
         Text(
-            text = R.string.invite.toString(),
+            text = stringResource( R.string.invite),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(start = 8.dp)
         )
     }
@@ -222,7 +223,7 @@ fun RewardCard(
             )
 
             Text(
-                text = R.string.earn_premium.toString(),
+                text = stringResource(R.string.earn_premium),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
@@ -233,9 +234,9 @@ fun RewardCard(
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                RewardItem(emoji = "👑", text = R.string.reward_item1.toString())
-                RewardItem(emoji = "🔄", text = R.string.reward_item2.toString())
-                RewardItem(emoji = "✨", text = R.string.reward_item3.toString())
+                RewardItem(emoji = "👑", text = stringResource(R.string.reward_item1))
+                RewardItem(emoji = "🔄", text = stringResource(R.string.reward_item2))
+                RewardItem(emoji = "✨", text = stringResource(R.string.reward_item3))
             }
         }
     }
@@ -263,17 +264,17 @@ fun ShareSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
-            text = R.string.share.toString(),
+            text = stringResource(R.string.share),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             ShareButton(
                 emoji = "📱",
                 platform = "WhatsApp",
-                description = R.string.wp_desc.toString(),
+                description = stringResource(R.string.wp_desc),
                 color = Color(0xFF25D366),
                 onClick = { onPlatformClick(SharePlatform.WHATSAPP) }
             )
@@ -281,7 +282,7 @@ fun ShareSection(
             ShareButton(
                 emoji = "📷",
                 platform = "Instagram",
-                description = R.string.ig_desc.toString(),
+                description = stringResource(R.string.ig_desc),
                 color = Color(0xFFE4405F),
                 onClick = { onPlatformClick(SharePlatform.INSTAGRAM) }
             )
@@ -289,22 +290,22 @@ fun ShareSection(
             ShareButton(
                 emoji = "👥",
                 platform = "Facebook",
-                description = R.string.fb_desc.toString(),
+                description = stringResource(R.string.fb_desc),
                 color = Color(0xFF1877F2),
                 onClick = { onPlatformClick(SharePlatform.FACEBOOK) }
             )
             ShareButton(
                 emoji = "🐦",
                 platform = "Twitter",
-                description = R.string.tw_desc.toString(),
+                description = stringResource(R.string.tw_desc),
                 color = Color(0xFF1DA1F2),
                 onClick = { onPlatformClick(SharePlatform.TWITTER) }
             )
 
             ShareButton(
                 emoji = "💬",
-                platform = "Mesaj",
-                description = R.string.share_via_sms.toString(),
+                platform = stringResource(R.string.message_text),
+                description = stringResource(R.string.share_via_sms),
                 color = Color(0xFF0084FF),
                 onClick = { onPlatformClick(SharePlatform.MESSAGE) }
             )
@@ -312,15 +313,15 @@ fun ShareSection(
             ShareButton(
                 emoji = "✉️",
                 platform = "Mail",
-                description = R.string.share_via_email.toString(),
+                description = stringResource(R.string.share_via_email),
                 color = Color(0xFFEA4335),
                 onClick = { onPlatformClick(SharePlatform.EMAIL) }
             )
 
             ShareButton(
                 emoji = "🔗",
-                platform = R.string.copy_code.toString(),
-                description = R.string.copy_desc.toString(),
+                platform = stringResource(R.string.copy_code),
+                description = stringResource(R.string.copy_desc),
                 color = Color(0xFF7B5EA7),
                 onClick = { onPlatformClick(SharePlatform.OTHER) }
             )
@@ -370,12 +371,12 @@ fun ShareButton(
                     text = platform,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = description,
                     fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
             }
 
@@ -397,10 +398,10 @@ fun ReferralCodeCard(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
-            text = "🎟️ ${R.string.my_code.toString()}",
+            text = "🎟️ ${stringResource(R.string.my_code)}",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Box(
@@ -411,7 +412,7 @@ fun ReferralCodeCard(
                     shape = RoundedCornerShape(20.dp)
                 )
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color(0xFF2A2A3E))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(
                     width = 1.dp,
                     color = Color(0xFF7B5EA7).copy(alpha = 0.5f),
@@ -428,7 +429,7 @@ fun ReferralCodeCard(
                     text = code,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Black,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     letterSpacing = 4.sp
                 )
 
@@ -484,10 +485,10 @@ fun EnterCodeButton(
         ) {
             Text(text = "🎫", fontSize = 20.sp)
             Text(
-                text = R.string.enter_invite_code.toString(),
+                text = stringResource(R.string.enter_invite_code),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -499,20 +500,20 @@ fun StatsCard(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
-            text = "📊 ${R.string.statistics.toString()}",
+            text = "📊 ${stringResource(R.string.statistics)}",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color(0xFF2A2A3E).copy(alpha = 0.5f))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
                 .border(
                     width = 1.dp,
-                    color = Color.White.copy(alpha = 0.1f),
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
                     shape = RoundedCornerShape(20.dp)
                 )
                 .padding(20.dp)
@@ -520,20 +521,20 @@ fun StatsCard(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 StatItem(
                     emoji = "👥",
-                    label = R.string.invitation_sent.toString(),
-                    value = "${referralInfo?.totalReferrals ?: 0} ${R.string.people.toString()}"
+                    label = stringResource(R.string.invitation_sent),
+                    value = "${referralInfo?.totalReferrals ?: 0} ${stringResource(R.string.people)}"
                 )
 
                 StatItem(
                     emoji = "✅",
-                    label = R.string.invitation_accepted.toString(),
-                    value = "${referralInfo?.referredUsers?.size ?: 0} ${R.string.people.toString()}"
+                    label = stringResource(R.string.invitation_accepted),
+                    value = "${referralInfo?.referredUsers?.size ?: 0} ${stringResource(R.string.people)}"
                 )
 
                 StatItem(
                     emoji = "🎁",
-                    label = R.string.premium_days_earned.toString(),
-                    value = "${referralInfo?.premiumDaysEarned ?: 0} ${R.string.days.toString()}"
+                    label = stringResource(R.string.premium_days_earned),
+                    value = "${referralInfo?.premiumDaysEarned ?: 0} ${stringResource(R.string.days)}"
                 )
             }
         }
@@ -555,7 +556,7 @@ fun StatItem(emoji: String, label: String, value: String) {
             Text(
                 text = label,
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
         }
 
@@ -563,7 +564,7 @@ fun StatItem(emoji: String, label: String, value: String) {
             text = value,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,8 +56,8 @@ fun BadgeItem(badge: Badge) {
             .scale(scale.value)
             .clip(RoundedCornerShape(16.dp))
             .background(
-                if (badge.isUnlocked) Color.White
-                else Color(0xFFF0F0F0)
+                if (badge.isUnlocked) MaterialTheme.colorScheme.surface
+                else MaterialTheme.colorScheme.surfaceVariant
             )
             .border(
                 width = if (badge.isUnlocked) 2.dp else 0.dp,
@@ -77,13 +78,17 @@ fun BadgeItem(badge: Badge) {
                 .background(
                     if (badge.isUnlocked)
                         Brush.linearGradient(
-                            listOf(Color(0xFF7B5EA7).copy(alpha = 0.15f),
-                                Color(0xFF4568DC).copy(alpha = 0.15f))
+                            listOf(
+                                Color(0xFF7B5EA7).copy(alpha = 0.15f),
+                                Color(0xFF4568DC).copy(alpha = 0.15f)
+                            )
                         )
                     else
                         Brush.linearGradient(
-                            listOf(Color.Gray.copy(alpha = 0.1f),
-                                Color.Gray.copy(alpha = 0.1f))
+                            listOf(
+                                Color.Gray.copy(alpha = 0.1f),
+                                Color.Gray.copy(alpha = 0.1f)
+                            )
                         )
                 ),
             contentAlignment = Alignment.Center
@@ -100,16 +105,15 @@ fun BadgeItem(badge: Badge) {
         // Bilgi
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = badge.title,
+                text = badge.title.asString(),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (badge.isUnlocked) Color(0xFF2D1B69) else Color.Gray
+                color = if (badge.isUnlocked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = badge.description,
+                text = badge.description.asString(),
                 fontSize = 12.sp,
-                color = if (badge.isUnlocked)
-                    Color(0xFF9E9E9E) else Color.Gray.copy(alpha = 0.6f)
+                color = if (badge.isUnlocked) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
 
             if (!badge.isUnlocked) {
@@ -127,7 +131,7 @@ fun BadgeItem(badge: Badge) {
                 Text(
                     text = "${badge.currentValue}/${badge.requiredValue}",
                     fontSize = 10.sp,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -145,7 +149,12 @@ fun BadgeItem(badge: Badge) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "✓", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "✓",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

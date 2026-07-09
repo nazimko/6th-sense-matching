@@ -25,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,20 +38,26 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.mhmtn.a6thsense.R
 import com.mhmtn.a6thsense.core.presentation.bounceClick
+import com.mhmtn.a6thsense.ui.theme._6thSenseTheme
 import kotlinx.coroutines.delay
+
 @Composable
 fun ResultsScreen(
     myScore: Int,
     theirScore: Int,
     compatibility: Int,
+    isDark: Boolean,
+    otherPlayerName: String,
     showConfetti: Boolean,
     onContinue: () -> Unit,
     modifier: Modifier = Modifier
@@ -61,12 +68,19 @@ fun ResultsScreen(
         initialValue = -1f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween (2000, easing = LinearEasing),
+            animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
         label = "shimmer"
     )
 
+    val colorScheme = MaterialTheme.colorScheme
+
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E))
+    } else {
+        listOf(Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF))
+    }
 
     LaunchedEffect(Unit) {
         delay(500)
@@ -77,11 +91,7 @@ fun ResultsScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
-                    )
+                    colors = gradientColors
                 )
             )
     ) {
@@ -118,10 +128,10 @@ fun ResultsScreen(
 
             // Title
             Text(
-                text = R.string.test_over.toString(),
+                text = stringResource(R.string.test_over),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White
+                color = colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -141,13 +151,13 @@ fun ResultsScreen(
             ) {
                 ScoreCard(
                     score = myScore,
-                    label = R.string.you.toString(),
+                    label = stringResource(R.string.you),
                     modifier = Modifier.weight(1f)
                 )
 
                 ScoreCard(
                     score = theirScore,
-                    label = R.string.your_match.toString(),
+                    label = otherPlayerName,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -178,7 +188,7 @@ fun ResultsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = R.string.continue_messaging_text.toString(),
+                    text = stringResource(R.string.back_to_home),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -260,7 +270,7 @@ fun CompatibilityCircle(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
-                        translationX = shimmer * size.width * 2
+                        translationX = shimmer * 200.dp.value
                     }
                     .background(
                         Brush.horizontalGradient(
@@ -292,7 +302,7 @@ fun CompatibilityCircle(
                 )
 
                 Text(
-                    text = R.string.similarity_text.toString(),
+                    text = stringResource(R.string.similarity_text),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White.copy(alpha = 0.9f)
@@ -308,6 +318,9 @@ fun ScoreCard(
     label: String,
     modifier: Modifier = Modifier
 ) {
+
+    val colorScheme = MaterialTheme.colorScheme
+
     Box(
         modifier = modifier
             .shadow(
@@ -316,12 +329,7 @@ fun ScoreCard(
             )
             .clip(RoundedCornerShape(20.dp))
             .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF2D1B69).copy(alpha = 0.8f),
-                        Color(0xFF1A1A2E).copy(alpha = 0.8f)
-                    )
-                )
+                colorScheme.surface
             )
             .border(
                 width = 1.dp,
@@ -338,7 +346,7 @@ fun ScoreCard(
             Text(
                 text = label,
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.6f),
+                color = colorScheme.onBackground.copy(alpha = 0.6f),
                 fontWeight = FontWeight.Medium
             )
 
@@ -346,13 +354,13 @@ fun ScoreCard(
                 text = "$score",
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White
+                color = colorScheme.onBackground
             )
 
             Text(
-                text = R.string.score.toString(),
+                text = stringResource(R.string.score),
                 fontSize = 12.sp,
-                color = Color.White.copy(alpha = 0.6f)
+                color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
         }
     }
@@ -363,33 +371,32 @@ fun ResultMessage(compatibility: Int) {
     val (emoji, title, message) = when {
         compatibility >= 90 -> Triple(
             "🔥",
-            R.string.comp_legendary_title.toString(),
-            R.string.comp_legendary_msg.toString()
+            stringResource(R.string.comp_legendary_title),
+            stringResource(R.string.comp_legendary_msg)
         )
         compatibility >= 80 -> Triple(
             "✨",
-            R.string.comp_perfect_title.toString(),
-            R.string.comp_perfect_msg.toString()
+            stringResource(R.string.comp_perfect_title),
+            stringResource(R.string.comp_perfect_msg)
         )
         compatibility >= 60 -> Triple(
             "💫",
-            R.string.comp_strong_title.toString(),
-            R.string.comp_strong_msg.toString()
+            stringResource(R.string.comp_strong_title),
+            stringResource(R.string.comp_strong_msg)
         )
         compatibility >= 40 -> Triple(
             "🌟",
-            R.string.comp_good_title.toString(),
-            R.string.comp_good_msg.toString()
+            stringResource(R.string.comp_good_title),
+            stringResource(R.string.comp_good_msg)
         )
         else -> Triple(
             "💭",
-            R.string.comp_different_title.toString(),
-            R.string.comp_different_msg.toString()
+            stringResource(R.string.comp_different_title),
+            stringResource(R.string.comp_different_msg)
         )
     }
 
-    // UI kodların buraya gelecek (Column, Text vs.)
-
+    val colorScheme = MaterialTheme.colorScheme
 
     Box(
         modifier = Modifier
@@ -398,8 +405,8 @@ fun ResultMessage(compatibility: Int) {
             .background(
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.1f),
-                        Color.White.copy(alpha = 0.05f)
+                        colorScheme.onBackground.copy(alpha = 0.1f),
+                        colorScheme.onBackground.copy(alpha = 0.05f)
                     )
                 )
             )
@@ -415,16 +422,50 @@ fun ResultMessage(compatibility: Int) {
                 text = title,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White,
+                color = colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
             Text(
                 text = message,
                 fontSize = 16.sp,
-                color = Color.White.copy(alpha = 0.8f),
+                color = colorScheme.onBackground.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ResultsScreenPreview() {
+    _6thSenseTheme(
+        darkTheme = false
+    ) {
+        ResultsScreen(
+            myScore = 85,
+            theirScore = 70,
+            compatibility = 0,
+            isDark = false,
+            showConfetti = true,
+            onContinue = {},
+            otherPlayerName = "Other Player"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ResultsScreenDarkPreview() {
+    _6thSenseTheme(darkTheme = true) {
+        ResultsScreen(
+            myScore = 85,
+            theirScore = 70,
+            compatibility = 88,
+            isDark = true,
+            showConfetti = true,
+            onContinue = {},
+            otherPlayerName = "Other Player"
+        )
     }
 }

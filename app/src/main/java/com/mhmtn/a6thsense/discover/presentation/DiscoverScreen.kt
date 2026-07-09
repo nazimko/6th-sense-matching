@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import com.mhmtn.a6thsense.R
 @Composable
 fun DiscoverScreen(
     state: DiscoverContract.State,
+    isDark: Boolean,
     showPremiumSnackbar: Boolean, // 👈 Parametre
     onDismissSnackbar: () -> Unit,
     onUpgradeClick: () -> Unit,
@@ -42,10 +44,10 @@ fun DiscoverScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
+                    colors = if (isDark) listOf(
+                        Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E)
+                    ) else listOf(
+                        Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF)
                     )
                 )
             )
@@ -73,7 +75,7 @@ fun DiscoverScreen(
                 contentAlignment = Alignment.Center
             ) {
                 when {
-                    state.isLoading -> DiscoverLoadingSkeleton()
+                    state.isLoading -> DiscoverLoadingSkeleton(isDark = isDark)
 
                     state.isEmpty || state.currentIndex >= state.users.size -> {
                         EmptyDiscoverView(
@@ -141,7 +143,7 @@ fun DiscoverScreen(
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             PremiumLimitSnackbar(
-                message = R.string.reached_daily_discover.toString(),
+                message = stringResource(R.string.reached_daily_discover),
                 onUpgradeClick = onUpgradeClick,
                 onDismiss = onDismissSnackbar
             )
@@ -163,15 +165,15 @@ private fun DiscoverHeader(
     ) {
         Column {
             Text(
-                text = R.string.discover.toString(),
+                text = stringResource(R.string.discover),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = "$activeCount ${R.string.active_today.toString()}",
+                text = "$activeCount ${stringResource(R.string.active_today)}",
                 fontSize = 13.sp,
-                color = Color.White.copy(alpha = 0.5f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
             )
         }
 
@@ -179,12 +181,12 @@ private fun DiscoverHeader(
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color.White.copy(alpha = 0.1f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Text(
-                text = "$remaining ${R.string.card.toString()}",
-                color = Color.White,
+                text = "$remaining ${stringResource(R.string.card)}",
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -193,7 +195,7 @@ private fun DiscoverHeader(
 }
 
 @Composable
-private fun DiscoverLoadingSkeleton() {
+private fun DiscoverLoadingSkeleton(isDark: Boolean) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,7 +203,8 @@ private fun DiscoverLoadingSkeleton() {
     ) {
         ShimmerBox(
             modifier = Modifier.fillMaxSize(),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(28.dp)
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(28.dp),
+            isDark = isDark
         )
     }
 }
@@ -232,17 +235,17 @@ private fun EmptyDiscoverView(onReload: () -> Unit) {
         )
 
         Text(
-            text = R.string.no_active_users.toString(),
+            text = stringResource(R.string.no_active_users),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = R.string.invite_your_friends.toString(),
+            text = stringResource(R.string.invite_your_friends),
             fontSize = 14.sp,
-            color = Color.White.copy(alpha = 0.5f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             textAlign = TextAlign.Center
         )
 
@@ -260,7 +263,7 @@ private fun EmptyDiscoverView(onReload: () -> Unit) {
                 .padding(horizontal = 32.dp, vertical = 16.dp)
         ) {
             Text(
-                text = R.string.refresh.toString(),
+                text = stringResource(R.string.refresh),
                 color = Color.White,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold

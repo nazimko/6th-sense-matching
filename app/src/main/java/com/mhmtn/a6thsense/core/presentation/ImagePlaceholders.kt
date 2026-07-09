@@ -4,6 +4,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.mhmtn.a6thsense.R
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,8 +40,8 @@ fun LoadingImagePlaceholder(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF2A2A3E),
-                        Color(0xFF1A1A2E)
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.colorScheme.surface
                     )
                 )
             ),
@@ -56,8 +58,8 @@ fun LoadingImagePlaceholder(
             )
 
             Text(
-                text = R.string.loading_text.toString(),
-                color = Color.White.copy(alpha = alpha),
+                text = stringResource(R.string.loading_text),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -75,8 +77,8 @@ fun ErrorImagePlaceholder(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF2A2A3E),
-                        Color(0xFF1A1A2E)
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.colorScheme.surface
                     )
                 )
             ),
@@ -88,8 +90,8 @@ fun ErrorImagePlaceholder(
         ) {
             Text(text = "⚠️", fontSize = 32.sp)
             Text(
-                text = R.string.image_failed_text.toString(),
-                color = Color.White.copy(alpha = 0.7f),
+                text = stringResource(R.string.image_failed_text),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 fontSize = 12.sp
             )
         }

@@ -21,10 +21,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mhmtn.a6thsense.core.presentation.floating
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun FriendsTab(
@@ -34,7 +38,7 @@ fun FriendsTab(
     modifier: Modifier = Modifier
 ) {
     if (friends.isEmpty()) {
-        // Empty state
+
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -50,16 +54,16 @@ fun FriendsTab(
                 )
 
                 Text(
-                    text = R.string.no_friends.toString(),
+                    text = stringResource(R.string.no_friends),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
 
                 Text(
-                    text = R.string.friends_subtext.toString(),
+                    text = stringResource(R.string.friends_subtext),
                     fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center,
                     lineHeight = 20.sp
                 )
@@ -82,6 +86,7 @@ fun FriendsTab(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FriendCard(
     friend: Friend,
@@ -101,6 +106,23 @@ fun FriendCard(
         label = "pulse"
     )
 
+    var profileImageUrl by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(friend.uid) {
+        try {
+            val userDoc = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(friend.uid)
+                .get()
+                .await()
+            
+            profileImageUrl = userDoc.getString("profileImageUrl")
+                ?: userDoc.getString("photoUrl")
+        } catch (e: Exception) {
+            profileImageUrl = friend.photoUrl
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -112,14 +134,14 @@ fun FriendCard(
             .background(
                 Brush.horizontalGradient(
                     colors = listOf(
-                        Color(0xFF2D1B69),
-                        Color(0xFF1A1A2E)
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surface
                     )
                 )
             )
             .border(
                 width = 1.dp,
-                color = Color.White.copy(alpha = 0.1f),
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(24.dp)
             )
             .combinedClickable(
@@ -153,12 +175,20 @@ fun FriendCard(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = friend.name.firstOrNull()?.uppercase() ?: "?",
-                        color = Color.White,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (!profileImageUrl.isNullOrBlank()) {
+                        AsyncImage(
+                            model = profileImageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Text(
+                            text = friend.name.firstOrNull()?.uppercase() ?: "?",
+                            color = Color.White,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
                 // Status indicator
@@ -175,7 +205,7 @@ fun FriendCard(
                             .background(Color(0xFF43E97B))
                             .border(
                                 width = 2.dp,
-                                color = Color(0xFF1A1A2E),
+                                color = MaterialTheme.colorScheme.surface,
                                 shape = CircleShape
                             )
                     )
@@ -195,7 +225,7 @@ fun FriendCard(
                         text = friend.name,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     if (friend.isPremium) {
@@ -218,17 +248,17 @@ fun FriendCard(
                     )
 
                     Text(
-                        text = if (friend.hasCompletedToday) R.string.active.toString() else R.string.passive.toString(),
+                        text = if (friend.hasCompletedToday) stringResource(R.string.active) else stringResource(R.string.passive),
                         fontSize = 13.sp,
-                        color = Color.White.copy(alpha = 0.7f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
                 }
 
                 Text(
-                    text = if (friend.hasCompletedToday) R.string.friend_completed_today.toString()
-                    else R.string.error_no_today_friend_session.toString(),
+                    text = if (friend.hasCompletedToday) stringResource(R.string.friend_completed_today)
+                    else stringResource(R.string.error_no_today_friend_session),
                     fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                 )
             }
 
@@ -244,7 +274,10 @@ fun FriendCard(
                             )
                         else
                             Brush.linearGradient(
-                                listOf(Color(0xFF4A4A5E), Color(0xFF3A3A4E))
+                                listOf(
+                                    MaterialTheme.colorScheme.surfaceVariant,
+                                    MaterialTheme.colorScheme.surfaceVariant
+                                )
                             )
                     )
                     .shadow(

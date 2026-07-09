@@ -22,16 +22,15 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mhmtn.a6thsense.core.presentation.bounceClick
-import com.mhmtn.a6thsense.ui.theme._6thSenseTheme
 
 @Composable
 fun PaywallScreen(
     state: PaywallContract.State,
     activity: Activity? = null,
+    isDark: Boolean,
     onAction: (PaywallContract.Action) -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -41,10 +40,10 @@ fun PaywallScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF2D1B69)
+                    colors = if (isDark) listOf(
+                        Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF2D1B69)
+                    ) else listOf(
+                        Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF)
                     )
                 )
             )
@@ -86,12 +85,12 @@ fun PaywallScreen(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.1f))
+                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close",
-                        tint = Color.White.copy(alpha = 0.6f)
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -109,7 +108,12 @@ fun PaywallScreen(
             // Plan seçimi
             PlanSelector(
                 selectedPlan = state.selectedPlan,
-                onPlanSelected = { onAction(PaywallContract.Action.SelectPlan(it)) }
+                onPlanSelected = { onAction(PaywallContract.Action.SelectPlan(it)) },
+                yearlyBadge = state.yearlyBadge,
+                price_monthly = state.monthlyPrice,
+                price_yearly = state.yearlyPrice,
+                quarterlyBadge = state.quarterlyBadge,
+                price_quarterly = state.quarterlyPrice
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -147,27 +151,14 @@ fun PaywallScreen(
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = if (state.selectedPlan == PaywallContract.Plan.MONTHLY)
-                                R.string.start_monthly.toString()
-                            else
-                                R.string.start_yearly.toString(),
+                            text = when (state.selectedPlan) {
+                                PaywallContract.Plan.MONTHLY -> stringResource(R.string.start_monthly)
+                                PaywallContract.Plan.QUARTERLY -> stringResource(R.string.start_quarterly) // 👈 YENİ
+                                PaywallContract.Plan.YEARLY -> stringResource(R.string.start_yearly)
+                            },
                             color = Color.White,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = if (state.selectedPlan == PaywallContract.Plan.MONTHLY)
-                                stringResource(
-                                    R.string.price_per_month,
-                                    state.monthlyPrice
-                                )
-                            else
-                                stringResource(
-                                    R.string.price_per_year,
-                                    state.yearlyPrice
-                                ),
-                            color = Color.White.copy(alpha = 0.8f),
-                            fontSize = 13.sp
                         )
                     }
                 }
@@ -176,9 +167,9 @@ fun PaywallScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = R.string.cancel_anytime.toString(),
+                text = stringResource(R.string.cancel_anytime),
                 fontSize = 12.sp,
-                color = Color.White.copy(alpha = 0.4f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -213,14 +204,14 @@ private fun PaywallHero() {
             text = "Aurania Premium",
             fontSize = 28.sp,
             fontWeight = FontWeight.Black,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = R.string.paywall_subtitle.toString(),
+            text = stringResource(R.string.paywall_subtitle),
             fontSize = 16.sp,
-            color = Color.White.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center
         )
     }
@@ -230,11 +221,37 @@ private fun PaywallHero() {
 private fun PaywallFeatures() {
 
     val features = listOf(
-        Triple("🔄", R.string.premium_feature_explore_title.toString(), R.string.premium_feature_explore_desc.toString()),
-        Triple("💬", R.string.premium_feature_messaging_title.toString(), R.string.premium_feature_messaging_desc.toString()),
-        Triple("💫", R.string.premium_feature_matches_title.toString(), R.string.premium_feature_matches_desc.toString()),
-        Triple("👑", R.string.premium_feature_badge_title.toString(), R.string.premium_feature_badge_desc.toString()),
-        Triple("🚫", R.string.premium_feature_ads_title.toString(), R.string.premium_feature_ads_desc.toString())
+        Triple(
+            "🔄",
+            stringResource(R.string.premium_feature_explore_title),
+            stringResource(R.string.premium_feature_explore_desc)
+        ),
+        Triple(
+            "🔮",
+            stringResource(R.string.premium_gate_title_soul_sync),
+            stringResource(R.string.paywall_deep_desc),
+        )
+        ,
+        Triple(
+            "💬",
+            stringResource(R.string.premium_feature_messaging_title),
+            stringResource(R.string.premium_feature_messaging_desc)
+        ),
+        Triple(
+            "💫",
+            stringResource(R.string.premium_feature_matches_title),
+            stringResource(R.string.premium_feature_matches_desc)
+        ),
+        Triple(
+            "👑",
+            stringResource(R.string.premium_feature_badge_title),
+            stringResource(R.string.premium_feature_badge_desc)
+        ),
+        Triple(
+            "🚫",
+            stringResource(R.string.premium_feature_ads_title),
+            stringResource(R.string.premium_feature_ads_desc)
+        )
     )
 
     Column(
@@ -264,7 +281,7 @@ private fun PaywallFeatures() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color.White.copy(alpha = 0.07f))
+                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.07f))
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -291,12 +308,12 @@ private fun PaywallFeatures() {
                             text = title,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
                             text = desc,
                             fontSize = 12.sp,
-                            color = Color.White.copy(alpha = 0.5f)
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                         )
                     }
 
@@ -317,6 +334,11 @@ private fun PaywallFeatures() {
 @Composable
 private fun PlanSelector(
     selectedPlan: PaywallContract.Plan,
+    price_monthly: String,
+    price_quarterly: String,
+    price_yearly: String,
+    quarterlyBadge: String?,
+    yearlyBadge: String?,
     onPlanSelected: (PaywallContract.Plan) -> Unit
 ) {
     Column(
@@ -326,29 +348,41 @@ private fun PlanSelector(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = R.string.choose_plan.toString(),
+            text = stringResource(R.string.choose_plan),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(start = 4.dp)
         )
 
         // Aylık
         PlanCard(
-            title = R.string.monthly.toString(),
-            price = "₺49.99",
-            period = "/ ay",
+            title = stringResource(R.string.monthly),
+            price = price_monthly,
+            period = stringResource(R.string.price_per_month),
             badge = null,
             isSelected = selectedPlan == PaywallContract.Plan.MONTHLY,
             onClick = { onPlanSelected(PaywallContract.Plan.MONTHLY) }
         )
 
+        PlanCard(
+            title = stringResource(R.string.quarterly), // 👈 YENİ
+            price = price_quarterly,
+            period = stringResource(R.string.price_per_quarter), // 👈 YENİ
+            badge = quarterlyBadge?.let { "$it ${stringResource(R.string.save_badge)}" }
+                ?: stringResource(R.string.most_popular), // 👈 Badge yoksa "Most Popular"
+            badgeColor = Color(0xFFFFD700), // 👈 Gold badge (Most Popular)
+            isSelected = selectedPlan == PaywallContract.Plan.QUARTERLY,
+            onClick = { onPlanSelected(PaywallContract.Plan.QUARTERLY) }
+        )
+
         // Yıllık
         PlanCard(
-            title = R.string.yearly.toString(),
-            price = "₺299.99",
-            period = "/ yıl",
-            badge = "%50 Tasarruf",
+            title = stringResource(R.string.yearly),
+            price = price_yearly,
+            period = stringResource(R.string.price_per_year),
+            badge = yearlyBadge?.let { "$it ${stringResource(R.string.save_badge)}" },
+            badgeColor = Color(0xFF43E97B),
             isSelected = selectedPlan == PaywallContract.Plan.YEARLY,
             onClick = { onPlanSelected(PaywallContract.Plan.YEARLY) }
         )
@@ -361,6 +395,7 @@ private fun PlanCard(
     price: String,
     period: String,
     badge: String?,
+    badgeColor: Color = Color(0xFF43E97B),
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -369,8 +404,8 @@ private fun PlanCard(
     } else {
         Brush.linearGradient(
             listOf(
-                Color.White.copy(alpha = 0.2f),
-                Color.White.copy(alpha = 0.2f)
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
             )
         )
     }
@@ -378,10 +413,11 @@ private fun PlanCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(min = 84.dp) // TÜM kartların en az bu yükseklikte olmasını sağlar
             .clip(RoundedCornerShape(16.dp))
             .background(
-                if (isSelected) Color.White.copy(alpha = 0.12f)
-                else Color.White.copy(alpha = 0.05f)
+                if (isSelected) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.12f)
+                else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f)
             )
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
@@ -389,40 +425,39 @@ private fun PlanCard(
                 shape = RoundedCornerShape(16.dp)
             )
             .bounceClick(onClick = onClick)
-            .padding(16.dp)
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterStart // İçeriği dikeyde ortalar
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // SOL: Radio ve Başlık
             Row(
+                modifier = Modifier.weight(1f), // Başlığın genişlemesine izin verir
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Radio button
+                // Radio button (Boyutu sabit)
                 Box(
                     modifier = Modifier
                         .size(20.dp)
                         .clip(CircleShape)
-                        .background(
-                            if (isSelected) Color(0xFF7B5EA7)
-                            else Color.Transparent
-                        )
+                        .background(if (isSelected) Color(0xFF7B5EA7) else Color.Transparent)
                         .border(
                             width = 2.dp,
-                            color = if (isSelected) Color(0xFF7B5EA7)
-                            else Color.White.copy(alpha = 0.4f),
+                            color = if (isSelected) Color(0xFF7B5EA7) else MaterialTheme.colorScheme.onBackground.copy(
+                                alpha = 0.4f
+                            ),
                             shape = CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     if (isSelected) {
-                        Box(
-                            modifier = Modifier
-                                .size(8.dp)
-                                .background(Color.White, CircleShape)
-                        )
+                        Box(modifier = Modifier
+                            .size(8.dp)
+                            .background(Color.White, CircleShape))
                     }
                 }
 
@@ -430,10 +465,13 @@ private fun PlanCard(
                     text = title,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground,
+                    // maxLines ve overflow kullanmıyoruz, başlık sığmazsa 2 satıra geçer
+                    // ve heightIn sayesinde kart yüksekliği hemen değişmez
                 )
             }
 
+            // SAĞ: Badge ve Fiyat Grubu
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -442,34 +480,38 @@ private fun PlanCard(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(
-                                Brush.linearGradient(
-                                    listOf(Color(0xFF43E97B), Color(0xFF38F9D7))
-                                )
-                            )
+                            .background(badgeColor)
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = it,
                             fontSize = 11.sp,
                             color = Color.White,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
                         )
                     }
                 }
 
-                Row(verticalAlignment = Alignment.Bottom) {
+                // Fiyat ve Periyodu dikeyde hizalamak, "/ 3 months" gibi uzun metinlerde
+                // yatay alanı korur ve Row'un patlamasını engeller.
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(
                         text = price,
-                        fontSize = 18.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground,
+                        maxLines = 1
                     )
                     Text(
                         text = period,
-                        fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.5f),
-                        modifier = Modifier.padding(bottom = 2.dp, start = 2.dp)
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                        maxLines = 1,
+                        softWrap = false // Metnin kendi içinde kırılmasını engeller
                     )
                 }
             }

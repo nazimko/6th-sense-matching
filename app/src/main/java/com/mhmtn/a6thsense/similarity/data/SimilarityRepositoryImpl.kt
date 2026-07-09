@@ -19,60 +19,63 @@ class SimilarityRepositoryImpl @Inject constructor(
         val uid = auth.currentUser!!.uid
         val doc = firestore.collection("users").document(uid).get().await()
 
+        val photo = doc.getString("profileImageUrl") ?: doc.getString("photoUrl")
+
         return AuthUser(
             uid = uid,
             name = doc.getString("name") ?: "You",
-            photoUrl = doc.getString("photoUrl")
+            photoUrl = photo
         )
     }
 
-    override suspend fun getMatchedUser(): AuthUser? {
+    override suspend fun getMatchedUser(matchId: String): AuthUser? {
         val uid = auth.currentUser!!.uid
 
+        // ✅ Artık matchId ile tam olarak hangi eşleşme olduğunu biliyoruz
         val matchDoc = firestore
             .collection("matches")
-            .whereArrayContains("participants", uid)
+            .document(matchId)
             .get()
             .await()
-            .documents
-            .firstOrNull() ?: return null
+
+        if (!matchDoc.exists()) return null
 
         val otherUid = (matchDoc.get("participants") as? List<*>)
             ?.firstOrNull { it != uid }?.toString() ?: return null
 
+        val matchedUserDoc = firestore.collection("users").document(otherUid).get().await()
+        
+        val photo = matchedUserDoc.getString("profileImageUrl")
+            ?: matchDoc.getString("matchedUserPhoto_$uid")
+            ?: matchedUserDoc.getString("photoUrl")
+
         return AuthUser(
             uid = otherUid,
-            name = matchDoc.getString("matchedUserName_$uid") ?: "Unknown",
-            photoUrl = matchDoc.getString("matchedUserPhoto_$uid")
+            name = matchDoc.getString("matchedUserName_$uid") ?: matchedUserDoc.getString("name") ?: "Unknown",
+            photoUrl = photo
         )
     }
 
-    override suspend fun getSimilarity(): Int? {
-        val uid = auth.currentUser!!.uid
-
-        // 👇 Aynı şekilde güncellendi
+    override suspend fun getSimilarity(matchId: String): Int? {
         val matchDoc = firestore
             .collection("matches")
-            .whereArrayContains("participants", uid)
+            .document(matchId)
             .get()
             .await()
-            .documents
-            .firstOrNull() ?: return null
 
-        return matchDoc.getLong("similarity")?.toInt() ?: 0
+        return if (matchDoc.exists()) matchDoc.getLong("similarity")?.toInt() ?: 0 else null
     }
 
-    override suspend fun getSimilarityResult(): SimilarityResult? {
+    override suspend fun getSimilarityResult(matchId: String): SimilarityResult? {
         val uid = auth.currentUser!!.uid
 
-        // 👇 participants array'e göre ara
         val matchDoc = firestore
             .collection("matches")
-            .whereArrayContains("participants", uid)
+            .document(matchId)
             .get()
             .await()
-            .documents
-            .firstOrNull() ?: return null
+
+        if (!matchDoc.exists()) return null
 
         val similarity = matchDoc.getLong("similarity")?.toInt() ?: return null
 
@@ -82,36 +85,39 @@ class SimilarityRepositoryImpl @Inject constructor(
         val meDoc = firestore.collection("users").document(uid).get().await()
         val matchedDoc = firestore.collection("users").document(otherUid).get().await()
 
+        val myPhoto = meDoc.getString("profileImageUrl") ?: meDoc.getString("photoUrl")
+        val otherPhoto = matchedDoc.getString("profileImageUrl") 
+            ?: matchDoc.getString("matchedUserPhoto_$uid") 
+            ?: matchedDoc.getString("photoUrl")
+
         return SimilarityResult(
             similarity = similarity,
             currentUser = AuthUser(
                 uid = uid,
                 name = meDoc.getString("name") ?: "",
-                photoUrl = meDoc.getString("photoUrl")
+                photoUrl = myPhoto
             ),
             matchedUser = AuthUser(
                 uid = otherUid,
-                name = matchDoc.getString("matchedUserName_$uid") ?: "",
-                photoUrl = matchDoc.getString("matchedUserPhoto_$uid")
+                name = matchDoc.getString("matchedUserName_$uid") ?: matchedDoc.getString("name") ?: "",
+                photoUrl = otherPhoto
             )
         )
     }
 
-    override suspend fun getMatchDocument(uid: String): DocumentSnapshot? {
-        return firestore
+    override suspend fun getMatchDocument(matchId: String): DocumentSnapshot? {
+        val doc = firestore
             .collection("matches")
-            .whereArrayContains("participants", uid)
+            .document(matchId)
             .get()
             .await()
-            .documents
-            .firstOrNull()
+        return if (doc.exists()) doc else null
     }
 
     override suspend fun createConversation(
         currentUserId: String,
         matchedUserId: String
     ): String {
-        // 👇 Önce bu iki kullanıcı arasında conversation var mı kontrol et
         val existing = firestore
             .collection("conversations")
             .whereArrayContains("participants", currentUserId)
@@ -123,13 +129,14 @@ class SimilarityRepositoryImpl @Inject constructor(
                 participants?.contains(matchedUserId) == true
             }
 
-        // Varsa mevcut id'yi döndür
         if (existing != null) return existing.id
 
         val currentUserDoc = firestore.collection("users").document(currentUserId).get().await()
         val matchedUserDoc = firestore.collection("users").document(matchedUserId).get().await()
 
-        // Yoksa yeni oluştur
+        val myPhoto = currentUserDoc.getString("profileImageUrl") ?: currentUserDoc.getString("photoUrl") ?: ""
+        val otherPhoto = matchedUserDoc.getString("profileImageUrl") ?: matchedUserDoc.getString("photoUrl") ?: ""
+
         val conversationRef = firestore.collection("conversations").document()
         val conversation = mapOf(
             "participants" to listOf(currentUserId, matchedUserId),
@@ -142,8 +149,8 @@ class SimilarityRepositoryImpl @Inject constructor(
                 matchedUserId to (currentUserDoc.getString("name") ?: "")
             ),
             "userPhotos" to mapOf(
-                currentUserId to (matchedUserDoc.getString("photoUrl") ?: ""),
-                matchedUserId to (currentUserDoc.getString("photoUrl") ?: "")
+                currentUserId to otherPhoto,
+                matchedUserId to myPhoto
             )
         )
 

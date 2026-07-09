@@ -2,6 +2,7 @@ package com.mhmtn.a6thsense.activity.presentation
 
 import com.mhmtn.a6thsense.activity.domain.FreeTextQuestion
 import com.mhmtn.a6thsense.R
+import com.mhmtn.a6thsense.core.presentation.UiText
 
 object FreeTextQuestionProvider {
 
@@ -9,32 +10,45 @@ object FreeTextQuestionProvider {
         return when (step) {
             0 -> FreeTextQuestion(
                 id = "planet",
-                question = R.string.planet_question.toString(),
-                placeholder = R.string.planet_placeholder.toString(),
+                question = UiText.StringResource(R.string.planet_question),
+                placeholder = UiText.StringResource(R.string.planet_placeholder),
                 emoji = "🪐"
             )
             1 -> FreeTextQuestion(
                 id = "team",
-                question = R.string.team_question.toString(),
-                placeholder = R.string.team_placeholder.toString(),
+                question = UiText.StringResource(R.string.team_question),
+                placeholder = UiText.StringResource(R.string.team_placeholder),
                 emoji = "⚽"
             )
             2 -> FreeTextQuestion(
                 id = "name",
-                question = R.string.male_name_question.toString(),
-                placeholder = R.string.male_name_placeholder.toString(),
+                question = UiText.StringResource(R.string.male_name_question),
+                placeholder = UiText.StringResource(R.string.male_name_placeholder),
                 emoji = "👤"
             )
             3 -> FreeTextQuestion(
                 id = "city",
-                question = R.string.city_question.toString(),
-                placeholder = R.string.city_placeholder.toString(),
+                question = UiText.StringResource(R.string.city_question),
+                placeholder = UiText.StringResource(R.string.city_placeholder),
                 emoji = "🌆"
             )
+            4 -> FreeTextQuestion(
+                "food",
+                UiText.StringResource(R.string.food_question),
+                UiText.StringResource(R.string.food_placeholder),
+                "🍕"
+            )
+            5 -> FreeTextQuestion(
+                "movie",
+                UiText.StringResource(R.string.movie_question),
+                UiText.StringResource(R.string.movie_placeholder),
+                "🎬"
+            )
+
             else -> FreeTextQuestion(
                 id = "default",
-                question = R.string.first_word.toString(),
-                placeholder = "...",
+                question = UiText.StringResource(R.string.first_word),
+                placeholder = UiText.DynamicString("..."),
                 emoji = "💭"
             )
         }
@@ -44,51 +58,45 @@ object FreeTextQuestionProvider {
     fun getAllQuestions(): List<FreeTextQuestion> =listOf(
         FreeTextQuestion(
             "planet",
-            R.string.planet_question.toString(),
-            R.string.planet_placeholder.toString(),
+            UiText.StringResource(R.string.planet_question),
+            UiText.StringResource(R.string.planet_placeholder),
             "🪐"
         ),
         FreeTextQuestion(
             "team",
-            R.string.team_question.toString(),
-            R.string.team_placeholder.toString(),
+            UiText.StringResource(R.string.team_question),
+                UiText.StringResource(R.string.team_placeholder),
             "⚽"
         ),
         FreeTextQuestion(
             "name",
-            R.string.male_name_question.toString(),
-            R.string.male_name_placeholder.toString(),
+            UiText.StringResource(R.string.male_name_question),
+                UiText.StringResource(R.string.male_name_placeholder),
             "👤"
         ),
         FreeTextQuestion(
             "city",
-            R.string.city_question.toString(),
-            R.string.city_placeholder.toString(),
+            UiText.StringResource(R.string.city_question),
+                UiText.StringResource(R.string.city_placeholder),
             "🌆"
         ),
         FreeTextQuestion(
             "food",
-            R.string.food_question.toString(),
-            R.string.food_placeholder.toString(),
+            UiText.StringResource(R.string.food_question),
+                UiText.StringResource(R.string.food_placeholder),
             "🍕"
         ),
         FreeTextQuestion(
             "movie",
-            R.string.movie_question.toString(),
-            R.string.movie_placeholder.toString(),
+            UiText.StringResource(R.string.movie_question),
+                UiText.StringResource(R.string.movie_placeholder),
             "🎬"
         ),
         FreeTextQuestion(
             "song",
-            R.string.song_question.toString(),
-            R.string.song_placeholder.toString(),
+            UiText.StringResource(R.string.song_question),
+                UiText.StringResource(R.string.song_placeholder),
             "🎵"
-        ),
-        FreeTextQuestion(
-            "book",
-            R.string.book_question.toString(),
-            R.string.book_placeholder.toString(),
-            "📚"
         )
     )
 }

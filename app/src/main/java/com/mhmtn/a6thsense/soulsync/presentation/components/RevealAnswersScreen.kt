@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,17 +30,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mhmtn.a6thsense.R
+import com.mhmtn.a6thsense.ui.theme._6thSenseTheme
 
 @Composable
 fun RevealAnswersScreen(
     question: String,
     myAnswer: String,
     theirAnswer: String,
+    isDark: Boolean,
     isMatch: Boolean,
     showConfetti: Boolean,
     pointsEarned: Int,
@@ -47,16 +52,18 @@ fun RevealAnswersScreen(
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "reveal")
 
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E))
+    } else {
+        listOf(Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF))
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
-                    )
+                    colors = gradientColors
                 )
             )
     ) {
@@ -75,7 +82,7 @@ fun RevealAnswersScreen(
                 text = question,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
 
@@ -89,7 +96,7 @@ fun RevealAnswersScreen(
                 // My answer
                 AnswerCard(
                     answer = myAnswer,
-                    label = R.string.your_answer.toString(),
+                    label = stringResource(R.string.your_answer),
                     isMatch = isMatch,
                     modifier = Modifier.weight(1f)
                 )
@@ -97,7 +104,7 @@ fun RevealAnswersScreen(
                 // Their answer
                 AnswerCard(
                     answer = theirAnswer,
-                    label = R.string.your_matches_answer.toString(),
+                    label = stringResource(R.string.your_matches_answer),
                     isMatch = isMatch,
                     modifier = Modifier.weight(1f)
                 )
@@ -158,14 +165,7 @@ fun AnswerCard(
                         ambientColor = Color(0xFF7B5EA7).copy(alpha = 0.5f)
                     )
                     .clip(RoundedCornerShape(20.dp))
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF2D1B69),
-                                Color(0xFF1A1A2E)
-                            )
-                        )
-                    )
+                    .background(MaterialTheme.colorScheme.surface)
                     .border(
                         width = 2.dp,
                         color = Color(0xFF7B5EA7).copy(alpha = 0.5f),
@@ -199,11 +199,11 @@ fun AnswerCard(
                     .background(
                         Brush.linearGradient(
                             colors = if (isMatch) listOf(
-                                Color(0xFF43E97B).copy(alpha = 0.3f),
-                                Color(0xFF38F9D7).copy(alpha = 0.2f)
+                                Color(0xFF43E97B),
+                                Color(0xFF38F9D7)
                             ) else listOf(
-                                Color(0xFF2D1B69),
-                                Color(0xFF1A1A2E)
+                                MaterialTheme.colorScheme.surface,
+                                MaterialTheme.colorScheme.surface
                             )
                         )
                     )
@@ -220,7 +220,8 @@ fun AnswerCard(
                         ),
                         shape = RoundedCornerShape(20.dp)
                     )
-                    .padding(16.dp)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -229,7 +230,7 @@ fun AnswerCard(
                     Text(
                         text = label,
                         fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.6f),
+                        color = if (isMatch) Color.White.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         fontWeight = FontWeight.Medium
                     )
 
@@ -239,7 +240,7 @@ fun AnswerCard(
                         text = answer,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = if (isMatch) Color.White else MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -273,8 +274,10 @@ fun ResultBadge(
                 shape = RoundedCornerShape(24.dp),
                 ambientColor = if (isMatch)
                     Color(0xFF43E97B).copy(alpha = 0.5f)
-                else
+                else if (pointsEarned > 0)
                     Color(0xFFFFD700).copy(alpha = 0.3f)
+                else
+                    Color(0xFF7B5EA7).copy(alpha = 0.2f)
             )
             .clip(RoundedCornerShape(24.dp))
             .background(
@@ -286,12 +289,14 @@ fun ResultBadge(
                         Color(0xFFFFD700),
                         Color(0xFFFFA500)
                     ) else listOf(
-                        Color(0xFF7B5EA7).copy(alpha = 0.5f),
-                        Color(0xFF4568DC).copy(alpha = 0.5f)
+                        // Görsel hataları önlemek için alpha kaldırıldı, solid renkler kullanıldı
+                        Color(0xFF7B5EA7),
+                        Color(0xFF4568DC)
                     )
                 )
             )
-            .padding(horizontal = 32.dp, vertical = 20.dp)
+            .padding(horizontal = 32.dp, vertical = 20.dp),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -310,9 +315,9 @@ fun ResultBadge(
             // Text
             Text(
                 text = when {
-                    isMatch -> R.string.match_perfect.toString()
-                    pointsEarned > 0 -> R.string.match_near.toString()
-                    else -> R.string.match_different.toString()
+                    isMatch -> stringResource(R.string.match_perfect)
+                    pointsEarned > 0 -> stringResource(R.string.match_near)
+                    else -> stringResource(R.string.match_different)
                 },
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Black,
@@ -321,11 +326,59 @@ fun ResultBadge(
 
             // Points
             Text(
-                text = "+$pointsEarned ${R.string.points.toString()}",
+                text = "+$pointsEarned ${stringResource(R.string.points)}",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White.copy(alpha = 0.9f)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RevealAnswersScreenPreview() {
+    _6thSenseTheme(darkTheme = false) {
+        RevealAnswersScreen(
+            question = "En sevdiğin yemek nedir?",
+            myAnswer = "Pizza",
+            theirAnswer = "Pizza",
+            isDark = false,
+            isMatch = true,
+            showConfetti = true,
+            pointsEarned = 100
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RevealAnswersScreenMatchNearPreview() {
+    _6thSenseTheme(darkTheme = false) {
+        RevealAnswersScreen(
+            question = "Hangi mevsimi seversin?",
+            myAnswer = "Yaz",
+            theirAnswer = "İlkbahar",
+            isDark = false,
+            isMatch = false,
+            showConfetti = false,
+            pointsEarned = 50
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RevealAnswersScreenDifferentPreview() {
+    _6thSenseTheme(darkTheme = false) {
+        RevealAnswersScreen(
+            question = "Hangi tür müzik dinlersin?",
+            myAnswer = "Rock",
+            theirAnswer = "Klasik",
+            isDark = false,
+            isMatch = false,
+            showConfetti = false,
+            pointsEarned = 0
+        )
     }
 }

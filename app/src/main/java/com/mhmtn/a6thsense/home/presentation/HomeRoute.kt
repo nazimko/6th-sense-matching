@@ -5,7 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mhmtn.a6thsense.activity.domain.DailyActivityContract.SessionType
@@ -19,12 +21,13 @@ import dagger.hilt.components.SingletonComponent
 @Composable
 fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
+    isDark: Boolean,
     onNavigateToDaily: () -> Unit,
     onNavigateToSimilarity: (String, String, String, Int) -> Unit,
     onNavigateToAuth: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToPaywall: () -> Unit,
-    onNavigatetoSession: (SessionType) -> Unit,
+    onNavigatetoSession: (SessionType, Int) -> Unit,
     onNavigateToMessaging: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
@@ -34,6 +37,8 @@ fun HomeRoute(
             .fromApplication(context, AnalyticsEntryPoint::class.java)
             .analyticsHelper()
     }
+
+    var showSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.onAction(HomeAction.Load)
@@ -62,8 +67,8 @@ fun HomeRoute(
 
                 HomeEffect.NavigateToPaywall -> onNavigateToPaywall()
                 is HomeEffect.NavigateToSession -> {
-                    Log.d("HomeRoute", "Navigate to session: ${effect.type}")
-                    onNavigatetoSession(effect.type)
+                    Log.d("HomeRoute", "Navigate to session: ${effect.type} with threshold: ${effect.threshold}")
+                    onNavigatetoSession(effect.type, effect.threshold)
                 }
             }
         }
@@ -71,6 +76,10 @@ fun HomeRoute(
 
     HomeScreen(
         state = state,
+        isDark = isDark,
+        showSheet = showSheet,
+        onDismiss = { showSheet = false },
+        onShowSheet = { showSheet = true },
         onAction = viewModel::onAction
     )
 }

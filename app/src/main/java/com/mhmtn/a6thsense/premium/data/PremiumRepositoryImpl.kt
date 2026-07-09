@@ -26,6 +26,8 @@ class PremiumRepositoryImpl @Inject constructor(
         val SWIPE_DATE = stringPreferencesKey("swipe_date")
         val MESSAGE_COUNT = intPreferencesKey("message_count")
         val MESSAGE_DATE = stringPreferencesKey("message_date")
+        val SOUL_SYNC_COUNT = intPreferencesKey("soul_sync_count")   // YENİ
+        val SOUL_SYNC_DATE = stringPreferencesKey("soul_sync_date")  // YENİ
     }
 
     override fun getPremiumStatus(uid: String): Flow<PremiumStatus> {
@@ -37,6 +39,9 @@ class PremiumRepositoryImpl @Inject constructor(
 
             val savedMessageDate = prefs[MESSAGE_DATE] ?: ""
             val messagesUsed = if (savedMessageDate == today) prefs[MESSAGE_COUNT] ?: 0 else 0
+
+            val savedSoulSyncDate = prefs[SOUL_SYNC_DATE] ?: ""
+            val soulSyncUsed = if (savedSoulSyncDate == today) prefs[SOUL_SYNC_COUNT] ?: 0 else 0
 
             // Firestore'dan premium durumu kontrol et
             val isPremium = try {
@@ -53,11 +58,23 @@ class PremiumRepositoryImpl @Inject constructor(
             PremiumStatus(
                 isPremium = isPremium,
                 dailySwipesUsed = swipesUsed,
-                dailySwipeLimit = 2,
+                dailySwipeLimit = 3,
                 dailyMessagesUsed = messagesUsed,
-                dailyMessageLimit = 3,
+                dailyMessageLimit = 7,
+                dailySoulSyncUsed = soulSyncUsed,   // YENİ
+                dailySoulSyncLimit = 2,
                 canViewMatchHistory = isPremium
             )
+        }
+    }
+
+    override suspend fun incrementSoulSyncCount(uid: String) {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        context.premiumDataStore.edit { prefs ->
+            val savedDate = prefs[SOUL_SYNC_DATE] ?: ""
+            val current = if (savedDate == today) prefs[SOUL_SYNC_COUNT] ?: 0 else 0
+            prefs[SOUL_SYNC_COUNT] = current + 1
+            prefs[SOUL_SYNC_DATE] = today
         }
     }
 

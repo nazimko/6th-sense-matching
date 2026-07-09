@@ -26,53 +26,68 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Face
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 
 sealed class BottomNavItem(
     val route: String,
-    val label: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector
+    val label: UiText,
+    val selectedIcon: ImageVector? = null,
+    val unselectedIcon: ImageVector? = null,
+    val selectedIconXML: Int? = null,
+    val unselectedIconXML: Int? = null
 ) {
     object Home : BottomNavItem(
         route = Routes.HOME,
-        label = R.string.home.toString(),
+        label = UiText.StringResource(R.string.home),
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home
     )
 
     object Conversations : BottomNavItem(
         route = Routes.CONVERSATIONS,
-        label = R.string.messages_text.toString(),
-        selectedIcon = Icons.Filled.MailOutline,
+        label = UiText.StringResource(R.string.messages_text),
+        selectedIcon = Icons.Filled.Email,
         unselectedIcon = Icons.Outlined.MailOutline
+    )
+
+    object Friends : BottomNavItem(
+        route = Routes.FRIENDS,
+        label = UiText.StringResource(R.string.friends),
+        selectedIconXML = R.drawable.group_24px_outlined,
+        unselectedIconXML = R.drawable.group_24px
     )
 
     object Profile : BottomNavItem(
         route = Routes.PROFILE,
-        label = R.string.profile_text.toString(),
+        label = UiText.StringResource(R.string.profile_text),
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person
     )
 
     object Discover : BottomNavItem(
         route = Routes.DISCOVER,
-        label = R.string.discover_text.toString(),
-        selectedIcon = Icons.Filled.Face,
-        unselectedIcon = Icons.Outlined.Face
+        label = UiText.StringResource(R.string.discover_text),
+        selectedIconXML = R.drawable.discover_filled,
+        unselectedIconXML = R.drawable.outline_explore_24
     )
 }
 
 val bottomNavItems = listOf(
     BottomNavItem.Home,
     BottomNavItem.Discover,
+    BottomNavItem.Friends,
     BottomNavItem.Conversations,
     BottomNavItem.Profile
 )
@@ -81,15 +96,14 @@ val bottomNavItems = listOf(
 fun AppBottomNavigation(
     currentRoute: String?,
     onItemSelected: (String) -> Unit,
-    unreadCount: Int = 0 // 👈 Okunmamış mesaj sayısı
+    unreadCount: Int = 0
 ) {
-
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF0F0C29))
+            .background(MaterialTheme.colorScheme.background)
             .padding(bottom = navigationBarHeight)
             .padding(horizontal = 24.dp, vertical = 12.dp)
     ) {
@@ -97,7 +111,7 @@ fun AppBottomNavigation(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(28.dp))
-                .background(Color(0xFF1A1A2E))
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
@@ -136,25 +150,39 @@ private fun BottomNavItemView(
                         colors = listOf(Color.Transparent, Color.Transparent)
                     )
             )
-            .bounceClick(onClick = onClick)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick
             )
-            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .padding(horizontal = 12.dp, vertical = 10.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box {
-                Icon(
-                    imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-                    contentDescription = item.label,
-                    tint = if (isSelected) Color.White else Color.White.copy(alpha = 0.5f),
-                    modifier = Modifier.size(22.dp)
-                )
+                // ImageVector İkonları için (Home, Messages, Friends, Profile)
+                val iconVector = if (isSelected) item.selectedIcon else item.unselectedIcon
+                if (iconVector != null) {
+                    Icon(
+                        imageVector = iconVector,
+                        contentDescription = item.label.asString(),
+                        tint = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+                // XML İkonları için (Discover vb.)
+                val iconRes = if (isSelected) item.selectedIconXML else item.unselectedIconXML
+                if (iconRes != null) {
+                    Icon(
+                        painter = painterResource(iconRes),
+                        contentDescription = item.label.asString(),
+                        tint = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
 
                 // Badge
                 if (badge > 0) {
@@ -164,30 +192,94 @@ private fun BottomNavItemView(
                             .offset(x = 6.dp, y = (-4).dp)
                             .size(16.dp)
                             .background(Color(0xFFFF4757), CircleShape),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center // İçeriği hem dikey hem yatay ortalar
                     ) {
                         Text(
                             text = if (badge > 9) "9+" else badge.toString(),
                             color = Color.White,
                             fontSize = 9.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center, // Metni kendi alanı içinde ortalar
+                            lineHeight = 9.sp // Dikey kaymaları önlemek için satır yüksekliğini sabitler
                         )
                     }
                 }
             }
 
-            // Label sadece seçiliyken görünür
             AnimatedVisibility(
                 visible = isSelected,
                 enter = fadeIn() + slideInVertically(),
                 exit = fadeOut() + slideOutVertically()
             ) {
                 Text(
-                    text = item.label,
+                    text = item.label.asString(),
                     color = Color.White,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    modifier = Modifier.widthIn(min = 40.dp),
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis
                 )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BottomNavItemViewPreview() {
+    MaterialTheme {
+        Surface(color = Color(0xFF1A1A2E)) { // Koyu arka plan üzerinde daha net görülür
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Normal Durum
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    BottomNavItemView(
+                        item = BottomNavItem.Home,
+                        isSelected = false,
+                        onClick = {}
+                    )
+                    BottomNavItemView(
+                        item = BottomNavItem.Home,
+                        isSelected = true,
+                        onClick = {}
+                    )
+                }
+
+                // Unread Count Durumu (Küçük sayı)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    BottomNavItemView(
+                        item = BottomNavItem.Conversations,
+                        isSelected = false,
+                        badge = 5,
+                        onClick = {}
+                    )
+                    BottomNavItemView(
+                        item = BottomNavItem.Conversations,
+                        isSelected = true,
+                        badge = 5,
+                        onClick = {}
+                    )
+                }
+
+                // Unread Count Durumu (Büyük sayı - 9+)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    BottomNavItemView(
+                        item = BottomNavItem.Conversations,
+                        isSelected = false,
+                        badge = 15,
+                        onClick = {}
+                    )
+                    BottomNavItemView(
+                        item = BottomNavItem.Conversations,
+                        isSelected = true,
+                        badge = 15,
+                        onClick = {}
+                    )
+                }
             }
         }
     }

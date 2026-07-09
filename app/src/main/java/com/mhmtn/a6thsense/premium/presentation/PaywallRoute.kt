@@ -11,6 +11,7 @@ import dagger.hilt.android.EntryPointAccessors
 @Composable
 fun PaywallRoute(
     onDismiss: () -> Unit,
+    isDark: Boolean,
     viewModel: PaywallViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -37,6 +38,7 @@ fun PaywallRoute(
     PaywallScreen(
         state = state,
         activity = activity,
+        isDark = isDark,
         onAction = { action ->
             when (action) {
                 is PaywallContract.Action.Subscribe -> {

@@ -5,11 +5,10 @@ import com.mhmtn.a6thsense.auth.domain.AuthUser
 
 interface SimilarityRepository {
     suspend fun getCurrentUser(): AuthUser
-    suspend fun getMatchedUser(): AuthUser?
-
-    suspend fun getSimilarity(): Int?
-    suspend fun getSimilarityResult(): SimilarityResult?
-    suspend fun getMatchDocument(uid: String): DocumentSnapshot?
+    suspend fun getMatchedUser(matchId: String): AuthUser?
+    suspend fun getSimilarity(matchId: String): Int?
+    suspend fun getSimilarityResult(matchId: String): SimilarityResult?
+    suspend fun getMatchDocument(matchId: String): DocumentSnapshot?
     suspend fun createConversation(
         currentUserId: String,
         matchedUserId: String

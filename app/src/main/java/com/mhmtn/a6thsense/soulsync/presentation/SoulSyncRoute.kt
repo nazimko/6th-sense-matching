@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SoulSyncRoute(
     onExit: () -> Unit,
+    isDark: Boolean,
     viewModel: SoulSyncViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -67,6 +68,10 @@ fun SoulSyncRoute(
                 SoulSyncEffect.PlayGoSound -> {
                     goSound.start()
                 }
+
+                is SoulSyncEffect.ShowToast -> {
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -80,6 +85,7 @@ fun SoulSyncRoute(
 
     SoulSyncScreen(
         state = state,
+        isDark = isDark,
         showConfetti = showConfetti,
         onJoinRoom = { viewModel.joinRoom() },
         onSubmitAnswer = { answer -> viewModel.submitAnswer(answer) },

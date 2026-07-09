@@ -16,11 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mhmtn.a6thsense.R
-import com.mhmtn.a6thsense.activity.domain.DailyActivityContract
 import com.mhmtn.a6thsense.core.presentation.Routes
 import com.mhmtn.a6thsense.home.presentation.AnalyticsEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -29,6 +29,7 @@ import dagger.hilt.android.EntryPointAccessors
 fun SimilarityRoute(
     modifier: Modifier = Modifier,
     onFinish: () -> Unit,
+    isDark: Boolean,
     onNavigateToMessaging: (String) -> Unit,
     onNavigateToSoulSync: (String) -> Unit,
     viewModel: SimilarityViewModel = hiltViewModel()
@@ -83,29 +84,29 @@ fun SimilarityRoute(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = state.error ?: R.string.error_occurred.toString(),
+                    text = state.error!!.asString(),
                     color = Color.White,
                     fontSize = 16.sp
                 )
                 Button(onClick = onFinish) {
-                    Text(R.string.home.toString())
+                    Text(stringResource(R.string.home))
                 }
             }
         }
         return
     }
 
+    val currentUser = state.currentUser
+    val matchedUser = state.matchedUser
 
-    if (state.matchedUser == null)
-        NoMatchYetScreen {
-            viewModel.onAction(SimilarityContract.Action.Continue)
-        } else {
+    if (currentUser != null && matchedUser != null) {
         SimilarityResultScreen(
             modifier = modifier,
             similarity = state.similarity,
-            currentUser = state.currentUser!!,
-            matchedUser = state.matchedUser!!,
+            currentUser = currentUser,
+            matchedUser = matchedUser,
             roomId = state.roomId,
+            isDark = isDark,
             onContinue = {
                 viewModel.onAction(SimilarityContract.Action.Continue)
             },

@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -141,7 +142,7 @@ fun MatchCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = R.string.your_match.toString(),
+                    text = stringResource(R.string.your_match),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.Medium,
                         letterSpacing = 1.5.sp
@@ -235,7 +236,7 @@ fun MatchCard(
                             )
 
                             Text(
-                                text = "$it% ${R.string.similarity_text.toString()}",
+                                text = "$it% ${stringResource(R.string.similarity_text)}",
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Light
                                 ),

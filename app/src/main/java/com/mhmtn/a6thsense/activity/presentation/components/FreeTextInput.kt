@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -71,7 +72,7 @@ fun FreeTextInput(
 
             // Soru
             Text(
-                text = question.question,
+                text = question.question.asString(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.White,
@@ -124,7 +125,7 @@ fun FreeTextInput(
                     ) {
                         if (currentInput.isEmpty()) {
                             Text(
-                                text = question.placeholder,
+                                text = question.placeholder.asString(),
                                 color = Color.White.copy(alpha = 0.4f),
                                 fontSize = 18.sp
                             )
@@ -154,7 +155,7 @@ fun FreeTextInput(
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
-                        text = R.string.continue_text.toString(),
+                        text = stringResource(R.string.continue_text),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White

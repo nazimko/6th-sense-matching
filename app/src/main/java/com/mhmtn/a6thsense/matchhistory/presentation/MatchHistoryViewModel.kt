@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.mhmtn.a6thsense.R
+import com.mhmtn.a6thsense.core.domain.model.UiTextException
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.friends.domain.FriendsRepository
 import com.mhmtn.a6thsense.matchhistory.domain.MatchHistoryRepository
 import com.mhmtn.a6thsense.premium.domain.PremiumRepository
@@ -38,7 +40,7 @@ class MatchHistoryViewModel @Inject constructor(
             try {
                 val uid = auth.currentUser?.uid ?: return@launch
 
-                // 👇 Premium durumunu al
+                // Premium durumunu al
                 val isPremium = premiumRepository.getPremiumStatus(uid).first().isPremium
 
                 repository.getMatchHistory(uid, isPremium).collect { (matches, totalCount) ->
@@ -98,13 +100,27 @@ class MatchHistoryViewModel @Inject constructor(
 
             MatchHistoryContract.Action.Reload -> loadHistory()
 
-            MatchHistoryContract.Action.OnUpgradeToPremium -> { // 👈 Yeni action
+            MatchHistoryContract.Action.OnUpgradeToPremium -> {
                 viewModelScope.launch {
                     _effect.emit(MatchHistoryContract.Effect.NavigateToPaywall)
                 }
             }
-            is MatchHistoryContract.Action.OnSendFriendRequest -> { // 👈 YENİ
+            is MatchHistoryContract.Action.OnSendFriendRequest -> {
                 sendFriendRequest(action.matchedUserId)
+            }
+            // 👇 Yeni branch'ler
+            is MatchHistoryContract.Action.OnDeleteMatch -> {
+                _state.update { it.copy(matchToDelete = action.item) }
+            }
+            MatchHistoryContract.Action.ConfirmDelete -> {
+                val match = _state.value.matchToDelete ?: return
+                viewModelScope.launch {
+                    repository.deleteMatch(match.matchId)
+                    _state.update { it.copy(matchToDelete = null) }
+                }
+            }
+            MatchHistoryContract.Action.DismissDeleteDialog -> {
+                _state.update { it.copy(matchToDelete = null) }
             }
         }
     }
@@ -114,9 +130,11 @@ class MatchHistoryViewModel @Inject constructor(
             val uid = auth.currentUser?.uid ?: return@launch
 
             friendsRepository.sendFriendRequest(uid, toUid).onSuccess {
-                _effect.emit(MatchHistoryContract.Effect.ShowToast( R.string.send_friend_request.toString()))
+                _effect.emit(MatchHistoryContract.Effect.ShowToast( UiText.StringResource(R.string.send_friend_request)))
             }.onFailure { e ->
-                _effect.emit(MatchHistoryContract.Effect.ShowToast(e.message ?: R.string.error_occurred.toString()))
+                val message = if (e is UiTextException) e.uiText
+                else UiText.StringResource(R.string.error_occurred)
+                _effect.emit(MatchHistoryContract.Effect.ShowToast(message))
             }
         }
     }

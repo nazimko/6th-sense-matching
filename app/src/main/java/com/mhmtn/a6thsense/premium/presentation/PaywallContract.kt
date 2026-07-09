@@ -9,12 +9,21 @@ object PaywallContract {
         val premiumStatus: PremiumStatus = PremiumStatus(),
         val isLoading: Boolean = false,
         val selectedPlan: Plan = Plan.MONTHLY,
+
         val monthlyPrice: String = "",
-        val yearlyPrice: String = ""
+        val quarterlyPrice: String = "",
+        val yearlyPrice: String = "",
+
+        val quarterlyPeriod: String = "",
+        val monthlyPeriod: String = "",
+        val yearlyPeriod: String = "",
+
+        val quarterlyBadge: String? = null,
+        val yearlyBadge: String? = null,
     )
 
     enum class Plan {
-        MONTHLY, YEARLY
+        MONTHLY, YEARLY, QUARTERLY
     }
 
     sealed class Action {

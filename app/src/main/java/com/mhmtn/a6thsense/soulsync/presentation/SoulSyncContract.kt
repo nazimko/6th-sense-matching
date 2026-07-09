@@ -1,5 +1,6 @@
 package com.mhmtn.a6thsense.soulsync.presentation
 
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.soulsync.domain.PlayerState
 
 data class SoulSyncState(
@@ -19,7 +20,7 @@ data class SoulSyncState(
 )
 
 enum class GameState {
-    WAITING, COUNTDOWN, PLAYING, WAITING_FOR_OTHER, REVEALING, FINISHED
+    WAITING, COUNTDOWN, PLAYING, WAITING_FOR_OTHER, REVEALING, FINISHED, CANCELLED // 👈 CANCELLED eklendi
 }
 
 sealed class SoulSyncEffect {
@@ -27,4 +28,5 @@ sealed class SoulSyncEffect {
     object PlayCountdownSound : SoulSyncEffect()
     object PlayGoSound : SoulSyncEffect()
     object NavigateBack : SoulSyncEffect()
+    data class ShowToast(val message: UiText) : SoulSyncEffect()
 }

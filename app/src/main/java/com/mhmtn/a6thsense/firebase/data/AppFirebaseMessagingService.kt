@@ -1,15 +1,15 @@
 package com.mhmtn.a6thsense.firebase.data
 
 import android.Manifest
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions.merge
@@ -19,17 +19,12 @@ import com.mhmtn.a6thsense.MainActivity
 import com.mhmtn.a6thsense.R
 import com.mhmtn.a6thsense.firebase.NotificationHelper.showMatchNotification
 import com.mhmtn.a6thsense.firebase.data.FirebaseSelectionDataSource.Companion.CHANNEL_ID
+import com.mhmtn.a6thsense.core.data.DataStoreManager
+import com.mhmtn.a6thsense.firebase.NotificationHelper.showMessageNotification
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 class AppFirebaseMessagingService : FirebaseMessagingService() {
-
-    /*
-    override fun onCreate() {
-        super.onCreate()
-        //createNotificationChannel()
-    }
-
-     */
-
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -38,48 +33,52 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onMessageReceived(message: RemoteMessage) {
-
         val type = message.data["type"]
+        
+        // 👇 Bildirim Tercihlerini Kontrol Et (Cihaz Tarafı Filtreleme)
+        val isAllowed = runBlocking {
+            val key = when (type) {
+                "MATCH" -> booleanPreferencesKey("match_notifications")
+                "SOUL_SYNC_INVITE" -> booleanPreferencesKey("match_notifications") // Soul sync de eşleşme bildirimine dahil edilebilir
+                else -> booleanPreferencesKey("message_notifications")
+            }
+            DataStoreManager.getDataStore(applicationContext).data.first()[key] ?: true
+        }
+
+        if (!isAllowed) {
+            Log.d("FCM", "Bildirim kullanıcı tarafından engellendiği için gösterilmedi (Type: $type)")
+            return
+        }
 
         when (type) {
             "MATCH" -> {
-                val title = message.notification?.title ?: R.string.matched.toString()
-                val body = message.notification?.body ?: R.string.match_notification_body.toString()
+                val title = message.notification?.title ?: getString(R.string.matched)
+                val body = message.notification?.body ?: getString(R.string.match_notification_body)
                 showMatchNotification(applicationContext, title, body)
             }
             "SOUL_SYNC_INVITE" -> {
-                // 👇 Soul Sync davetiyesi
                 val roomId = message.data["roomId"] ?: return
                 val matchId = message.data["matchId"] ?: return
-                val otherUserId = message.data["otherUserId"] ?: ""
-                val otherUserName = message.data["otherUserName"] ?: ""
-
                 showSoulSyncInviteNotification(
                     context = applicationContext,
-                    title = message.notification?.title ?: R.string.soul_sync_notification_title.toString(),
+                    title = message.notification?.title ?: getString(R.string.soul_sync_notification_title),
                     body = message.notification?.body ?: "",
                     roomId = roomId,
                     matchId = matchId
                 )
             }
-        }
-        /*
-        if (type == "MATCH") {
-            showMatchNotification(context = applicationContext,title, body)
-        }
 
-         */
+            "MESSAGE" -> {
+                val matchId = message.data["conversationId"] ?: return
+                val title = message.notification?.title ?: "New Message"
+                val body = message.notification?.body ?: ""
+                showMessageNotification(applicationContext, title, body, matchId)
+            }
+        }
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showSoulSyncInviteNotification(
-        context: Context,
-        title: String,
-        body: String,
-        roomId: String,
-        matchId: String
-    ) {
-        // Deep link intent
+    fun showSoulSyncInviteNotification(context: Context, title: String, body: String, roomId: String, matchId: String) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("navigate_to", "soul_sync")
@@ -87,15 +86,10 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             putExtra("match_id", matchId)
         }
 
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            roomId.hashCode(),
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val pendingIntent = PendingIntent.getActivity(context, roomId.hashCode(), intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
+        val notification = NotificationCompat.Builder(context, "soul_sync") // Updated channel ID
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -105,12 +99,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             .setVibrate(longArrayOf(0, 500, 200, 500))
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-            // Action button
-            .addAction(
-                R.drawable.ic_wifi,
-                R.string.join_the_game.toString(),
-                pendingIntent
-            )
+            .addAction(R.drawable.ic_wifi, getString(R.string.join_the_game), pendingIntent)
             .build()
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -119,33 +108,6 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun saveTokenToFirestore(token: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        FirebaseFirestore.getInstance()
-            .collection("users")
-            .document(uid)
-            .set(
-                mapOf("fcmToken" to token),
-                merge()
-            )
+        FirebaseFirestore.getInstance().collection("users").document(uid).set(mapOf("fcmToken" to token), merge())
     }
-/*
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Match Notifications",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Eşleşme bildirimleri"
-            }
-
-            val manager =
-                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-            manager.createNotificationChannel(channel)
-        }
-    }
-
- */
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +34,7 @@ import com.mhmtn.a6thsense.core.presentation.bounceClick
 @Composable
 fun SoulSyncButton(
     onClick: () -> Unit,
+    isDark: Boolean,
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "soul_sync_pulse")
@@ -55,7 +57,7 @@ fun SoulSyncButton(
             .shadow(
                 elevation = 20.dp,
                 shape = RoundedCornerShape(24.dp),
-                ambientColor = Color(0xFFFFD700).copy(alpha = 0.5f)
+                ambientColor = Color(0xFFFFD700).copy(alpha = if (isDark) 0.5f else 0.3f)
             )
             .clip(RoundedCornerShape(24.dp))
             .background(
@@ -88,13 +90,13 @@ fun SoulSyncButton(
 
             Column(horizontalAlignment = Alignment.Start) {
                 Text(
-                    text = R.string.soul_sync_button_text.toString(),
+                    text = stringResource( R.string.soul_sync_button_text),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White
                 )
                 Text(
-                    text = R.string.soul_sync_subtitle.toString(),
+                    text = stringResource(R.string.soul_sync_subtitle),
                     fontSize = 13.sp,
                     color = Color.White.copy(alpha = 0.9f),
                     fontWeight = FontWeight.Medium

@@ -10,6 +10,7 @@ import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class HomeRepositoryImpl @Inject constructor(
@@ -20,7 +21,6 @@ class HomeRepositoryImpl @Inject constructor(
     override suspend fun getMatchedUser(): AuthUser? {
         val uid = auth.currentUser?.uid ?: return null
 
-        // 👇 participants array'e göre ara
         val matchDoc = firestore
             .collection("matches")
             .whereArrayContains("participants", uid)
@@ -40,10 +40,15 @@ class HomeRepositoryImpl @Inject constructor(
 
         if (!matchedDoc.exists()) return null
 
+        // 👇 Fotoğraf önceliği: profileImageUrl > matchedUserPhoto_$uid > photoUrl
+        val photo = matchedDoc.getString("profileImageUrl")
+            ?: matchDoc.getString("matchedUserPhoto_$uid")
+            ?: matchedDoc.getString("photoUrl")
+
         return AuthUser(
             uid = otherUid,
             name = matchDoc.getString("matchedUserName_$uid") ?: matchedDoc.getString("name") ?: "",
-            photoUrl = matchDoc.getString("matchedUserPhoto_$uid") ?: matchedDoc.getString("photoUrl")
+            photoUrl = photo
         )
     }
 
@@ -67,7 +72,6 @@ class HomeRepositoryImpl @Inject constructor(
     override suspend fun getSimilarity(): Int? {
         val uid = auth.currentUser?.uid ?: return null
 
-        // 👇 participants array'e göre ara
         val matchDoc = firestore
             .collection("matches")
             .whereArrayContains("participants", uid)
@@ -80,37 +84,40 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrentStreak(uid: String): Int {
-        val sessions = firestore
-            .collection("sessions")
-            .whereEqualTo("uid", uid)
-            .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .limit(30)
-            .get()
-            .await()
+        return try {
+            val userDoc = firestore.collection("users").document(uid).get().await()
+            
+            val activityHistory = userDoc.get("activityHistory") as? List<String> ?: emptyList()
+            
+            if (activityHistory.isEmpty()) return 0
 
-        if (sessions.isEmpty) return 0
-
-        var streak = 0
-        var previousDate: String? = null
-
-        for (doc in sessions.documents) {
-            val date = doc.getString("date") ?: continue
-
-            if (previousDate == null) {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val now = System.currentTimeMillis()
+            val oneDayMs = TimeUnit.DAYS.toMillis(1)
+            
+            val uniqueSortedDates = activityHistory.distinct().sortedDescending()
+            
+            var streak = 0
+            val today = dateFormat.format(Date(now))
+            val yesterday = dateFormat.format(Date(now - oneDayMs))
+            
+            if (uniqueSortedDates.first() == today || uniqueSortedDates.first() == yesterday) {
                 streak = 1
-                previousDate = date
-            } else {
-                val dayDiff = calculateDayDifference(previousDate, date)
-                if (dayDiff <= 2) { // 2 gün tolerans
-                    streak++
-                    previousDate = date
-                } else {
-                    break
+                for (i in 0 until uniqueSortedDates.size - 1) {
+                    val d1 = dateFormat.parse(uniqueSortedDates[i])?.time ?: 0L
+                    val d2 = dateFormat.parse(uniqueSortedDates[i+1])?.time ?: 0L
+                    val diff = (d1 - d2) / oneDayMs
+                    
+                    if (diff == 1L) {
+                        streak++
+                    } else break
                 }
             }
+            streak
+        } catch (e: Exception) {
+            Log.e("HomeRepo", "Error calculating streak: ${e.message}")
+            0
         }
-
-        return streak
     }
 
     override suspend fun isCompletedToday(uid: String): Boolean {
@@ -127,19 +134,11 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isPremium(uid: String): Boolean {
-        val userDoc = firestore
-            .collection("users")
+        val userDoc = firestore.collection("users")
             .document(uid)
             .get()
             .await()
 
         return userDoc.getBoolean("isPremium") ?: false
-    }
-
-    private fun calculateDayDifference(date1: String, date2: String): Int {
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val d1 = format.parse(date1)?.time ?: 0L
-        val d2 = format.parse(date2)?.time ?: 0L
-        return ((d1 - d2) / (1000 * 60 * 60 * 24)).toInt()
     }
 }

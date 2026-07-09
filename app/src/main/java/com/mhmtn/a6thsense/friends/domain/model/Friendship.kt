@@ -34,5 +34,6 @@ data class CompatibilityTestResult(
     val totalSelections: Int = 0,
     val mySelections: List<String> = emptyList(),
     val theirSelections: List<String> = emptyList(),
+    val visibleFor: List<String> = emptyList(),
     val timestamp: Long = 0L
 )

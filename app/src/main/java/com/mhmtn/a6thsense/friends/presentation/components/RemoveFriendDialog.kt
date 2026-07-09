@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,8 +69,8 @@ fun RemoveFriendDialog(
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF2D1B69),
-                                Color(0xFF1A1A2E)
+                                MaterialTheme.colorScheme.surface,
+                                MaterialTheme.colorScheme.background
                             )
                         )
                     )
@@ -93,18 +94,18 @@ fun RemoveFriendDialog(
 
                     // Title
                     Text(
-                        text = R.string.remove_friend.toString(),
+                        text = stringResource(R.string.remove_friend),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
 
                     // Message
                     Text(
-                        text = "$friendName ${R.string.remove_friend_subtext.toString()}",
+                        text = "$friendName ${stringResource(R.string.remove_friend_subtext)}",
                         fontSize = 15.sp,
-                        color = Color.White.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                         textAlign = TextAlign.Center,
                         lineHeight = 22.sp
                     )
@@ -131,7 +132,7 @@ fun RemoveFriendDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = R.string.remove.toString(),
+                                text = stringResource(R.string.remove),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -146,7 +147,7 @@ fun RemoveFriendDialog(
                                 .background(Color.Transparent)
                                 .border(
                                     width = 1.dp,
-                                    color = Color.White.copy(alpha = 0.3f),
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .bounceClick(onClick = onDismiss)
@@ -154,10 +155,10 @@ fun RemoveFriendDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = R.string.cancel.toString(),
+                                text = stringResource(R.string.cancel),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.White.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
                     }

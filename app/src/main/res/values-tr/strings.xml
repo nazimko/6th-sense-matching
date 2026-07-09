@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aurania</string>
+    <string name="web_client_id">59601056696-ilhuiccbnp9pumusba4g4bv35l0qg853.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">25926651663696038</string>
+    <string name="fb_login_protocol_scheme">fb25926651663696038</string>
+    <string name="phase1_title">Görsel Sezgi</string>
+    <string name="phase1_description">İlk içgüdünle seç.</string>
+    <string name="phase1_question1">Hangisi sana daha çekici geliyor?</string>
+    <string name="p1_q1_option1">ÖZGÜRLÜK</string>
+    <string name="p1_q1_option2">DENGE</string>
+    <string name="phase1_question2">Seni en iyi hangi emoji temsil eder?</string>
+    <string name="p1_q2_option1">ATEŞ</string>
+    <string name="p1_q2_option2">SU</string>
+    <string name="phase2_title">Renkler</string>
+    <string name="phase2_description">Hangi renk seni çekiyor?</string>
+    <string name="phase2_question1">Hangi tonu tercih edersin?</string>
+    <string name="p2_q1_option1">Sıcak Tonlar</string>
+    <string name="p2_q1_option2">Soğuk Tonlar</string>
+    <string name="questions_loading">Sorular yükleniyor…</string>
+    <string name="intuition">SEZGİ</string>
+    <string name="colors">RENKLER</string>
+    <string name="spirit_animals">RUHSAL HAYVANLAR</string>
+    <string name="elements">ELEMENTLER</string>
+    <string name="dimensions">BOYUTLAR</string>
+    <string name="free_spirit">ÖZGÜR RUH</string>
+    <string name="qustion">"Soru "</string>
+    <string name="phase1_subtitle">Hissettiklerini takip et</string>
+    <string name="phase2_subtitle">Sana ne dokunuyor?</string>
+    <string name="phase3_subtitle">İç rehberin</string>
+    <string name="phase4_subtitle">Element yolunu seç</string>
+    <string name="phase5_subtitle">Zaman ve mekânın ötesinde</string>
+    <string name="phase6_subtitle">Aklına ilk geleni söyle</string>
+    <string name="nature">Doğa</string>
+    <string name="moods">Ruh Halleri</string>
+    <string name="preferenses">Tercihler</string>
+    <string name="last_questions">Son Sorular</string>
+    <string name="choose_feel">Ne hissediyorsan onu seç.</string>
+    <string name="continue_text">Devam Et →</string>
+    <string name="planet_placeholder">Örnek: Mars, Venüs…</string>
+    <string name="team_placeholder">Örnek: Barcelona, Lakers…</string>
+    <string name="male_name_placeholder">Örnek: Ali, Ahmet…</string>
+    <string name="city_placeholder">Örnek: Paris, Tokyo…</string>
+    <string name="planet_question">Bir gezegen söyle</string>
+    <string name="team_question">Bir spor takımı söyle</string>
+    <string name="male_name_question">Bir erkek ismi söyle</string>
+    <string name="city_question">Bir şehir söyle</string>
+    <string name="first_word">Aklına ilk gelen kelime</string>
+    <string name="food_question">Bir yemek söyle</string>
+    <string name="movie_question">Bir film söyle</string>
+    <string name="song_question">Bir şarkı söyle</string>
+    <string name="book_question">Bir kitap söyle</string>
+    <string name="food_placeholder">Örnek: Pizza, Sushi…</string>
+    <string name="movie_placeholder">Örnek: Inception, Avatar…</string>
+    <string name="song_placeholder">Örnek: Bohemian Rhapsody…</string>
+    <string name="book_placeholder">Örnek: 1984, Harry Potter…</string>
+    <string name="no_match_text">Henüz kimseyle eşleşmedin 😔\nBiri seninle eşleşebilir. Kadere bırak.</string>
+    <string name="try_tomorrow_text">Yarın yeniden deneyebilirsin.</string>
+    <string name="home">Ana Sayfa</string>
+    <string name="completed_today_text">Bugün tamamlandı.</string>
+    <string name="come_tomorrow_text">Bugün sezgini kullandın. \nYarın yeni bir keşif seni bekliyor 🔮</string>
+    <string name="auth_subtitle_1">Ruh eşini bul</string>
+    <string name="auth_subtitle_2">Derin bağlar kur</string>
+    <string name="auth_subtitle_3">Uyumu keşfet</string>
+    <string name="feature_item_1">Yapay zeka destekli eşleşme</string>
+    <string name="feature_item_2">Derin uyumluluk analizi</string>
+    <string name="feature_item_3">Gerçek bağlantılar</string>
+    <string name="google_button_text">Google ile Devam Et</string>
+    <string name="no_coversation_text">Henüz bir konuşman yok.</string>
+    <string name="no_conversation_subtext">Eşleştiğinde mesajlaşmaya başlayabilirsin!</string>
+    <string name="conversations_text">Konuşmalar 💬</string>
+    <string name="no_message_text">Henüz mesaj yok.</string>
+    <string name="similarity_text">Benzerlik</string>
+    <string name="messages_text">Mesajlar</string>
+    <string name="profile_text">Profil</string>
+    <string name="discover_text">Keşfet</string>
+    <string name="connection_error_message">Bağlantı hatası</string>
+    <string name="check_internet_text">İnternet bağlantını kontrol et\nve tekrar dene</string>
+    <string name="try_again_text">🔄 Tekrar Dene</string>
+    <string name="loading_text">Yükleniyor…</string>
+    <string name="image_failed_text">Görsel yüklenemedi</string>
+    <string name="no_internet_connection">İnternet Bağlantısı Yok</string>
+    <string name="checklist">"Kontrol listesi: "</string>
+    <string name="wifi_text">Wi-Fi veya mobil veri açık mı?</string>
+    <string name="airplane_mode">Uçuş modu kapalı mı?</string>
+    <string name="signal">Sinyal gücü yeterli mi?</string>
+    <string name="checking">Kontrol ediliyor…</string>
+    <string name="no_internet_subtitle">Sorun devam ederse ayarlarını kontrol et.</string>
+    <string name="hint">İpucu</string>
+    <string name="hint_subtitle">Bazı özellikler çevrimdışı modda çalışır. İnternet olmadan da uygulamayı gezebilirsin.</string>
+    <string name="limit">Limite ulaştın!</string>
+    <string name="later">Sonra</string>
+    <string name="upgrade">Premium\'a Geç</string>
+    <string name="statistics">İstatistikler</string>
+    <string name="reached_daily_discover">Günlük keşif limitine ulaştın</string>
+    <string name="discover">Keşfet 🔭</string>
+    <string name="active_today">Bugün aktif</string>
+    <string name="card">kart</string>
+    <string name="no_active_users">Bugün başka \naktif kullanıcı yok.</string>
+    <string name="invite_your_friends">Yarın tekrar gel \nyahut arkadaşlarını davet et!</string>
+    <string name="refresh">"Yenile 🔄 "</string>
+    <string name="harmony">%% uyum</string>
+    <string name="matched">✨ Eşleşildi</string>
+    <string name="join_the_game">Oyuna Katıl 🎮</string>
+    <string name="match_notification_body">Biriyle yeni bir eşleşmen var.</string>
+    <string name="soul_sync_notification_title">Soul Sync Daveti!</string>
+    <string name="error_same_user">Kendine arkadaşlık isteği gönderemezsin.</string>
+    <string name="error_already_friend">Zaten arkadaşsınız ya da bekleyen bir istek var.</string>
+    <string name="error_no_today_session">Bugün herhangi bir aktiviteyi tamamlamadın.</string>
+    <string name="error_no_today_friend_session">Arkadaşın bugün bir aktivite tamammadı.</string>
+    <string name="error_invalid_invite_code">Geçersiz davet kodu.</string>
+    <string name="error_own_code">Kendi kodunu kullanamazsın.</string>
+    <string name="error_already_used_code">Daha önce bir davet kodu kullandın.</string>
+    <string name="accepted_friend">Arkadaşlık kabul edildi!</string>
+    <string name="error_occurred">Bir hata oluştu.</string>
+    <string name="rejected_friend">Arkadaşlık reddedildi.</string>
+    <string name="removed_friend">Arkadaşlık kaldırıldı</string>
+    <string name="send_friend_request">Arkadaşlık isteği gönderildi!</string>
+    <string name="friends">Arkadaşlar</string>
+    <string name="invite">Davet Et</string>
+    <string name="requests">İstekler</string>
+    <string name="history">Geçmiş</string>
+    <string name="no_requests">Bekleyen istek yok.</string>
+    <string name="no_requests_subtext">Yeni arkadaşlık isteklerin \nburada görünecek.</string>
+    <string name="friend_request_text">Arkadaşlık İsteği Gönder</string>
+    <string name="reject">Reddet</string>
+    <string name="accept">Kabul Et</string>
+    <string name="remove_friend">Arkadaşı Çıkar?</string>
+    <string name="remove_friend_subtext">arkadaş listenizden çıkarılacak. Benzerlik testi geçmişiniz korunacak.</string>
+    <string name="remove">Evet, çıkar</string>
+    <string name="cancel">Vazgeç</string>
+    <string name="enter_invite_code">Davet Kodunu Gir</string>
+    <string name="invite_your_friends_and_test">Davet kodunu paylaş ve arkadaşlarınla benzerlik testi yap!</string>
+    <string name="copied">Kod kopyalandı!</string>
+    <string name="copy_code">Kodu kopyala</string>
+    <string name="or">Veya</string>
+    <string name="back">Geri</string>
+    <string name="submit">Gönder</string>
+    <string name="close">Kapat</string>
+    <string name="no_test_history">Henüz test yapmadın.</string>
+    <string name="history_subtext">Arkadaşınla benzerlik testi yap\nve sonuçları burada gör!</string>
+    <string name="common_choices">Ortak Seçimler</string>
+    <string name="no_friends">Henüz arkadaşın yok.</string>
+    <string name="friends_subtext">Davet Et butonuna tıklayarak arkadaşlarını ekleyebilirsin!</string>
+    <string name="active">Aktif</string>
+    <string name="passive">Pasif</string>
+    <string name="friend_completed_today">Arkadaşın bugün bir aktivite tamamladı.</string>
+    <string name="perfect_harmony">Mükemmel Uyum!</string>
+    <string name="very_good_harmony">Çok İyi Uyum!</string>
+    <string name="good_harmony">İyi Uyum</string>
+    <string name="compatibility_with_friend">%1$s ile benzerliğin</string>
+    <string name="total_choices">Toplam Seçim</string>
+    <string name="great">Harika!</string>
+    <string name="no_progress">Henüz başlamadın.</string>
+    <string name="one_progress">Yarısını tamamladın.</string>
+    <string name="two_progress">Her şey tamam!</string>
+    <string name="todays_activities">Bugünün Aktiviteleri</string>
+    <string name="session_description_preference">Tercihlerini paylaş</string>
+    <string name="session_description_intuition">Sezgine güven ve akışa bırak</string>
+    <string name="welcome">Tekrar hoş geldin</string>
+    <string name="home_header_greeting">Bağlantını Bul</string>
+    <string name="settings">Ayarlar</string>
+    <string name="logout">Çıkış Yap</string>
+    <string name="your_match">Eşleşmen</string>
+    <string name="completed">Tamamlandı</string>
+    <string name="daily_done">Günlük Hedef Tamamlandı!</string>
+    <string name="daily_done_desc">İkisini de bitirdin, harikasın!</string>
+    <string name="premium_member">Premium Üye</string>
+    <string name="daily_limits">Günlük Limitler</string>
+    <string name="all_active">Tüm özellikler aktif.</string>
+    <string name="use_limitless">Limitsiz Kullan</string>
+    <string name="today_match">Bugünün Eşleşmesi</string>
+    <string name="today_matches">Bugünün Eşleşmeleri</string>
+    <plurals name="days_streak">
+        <item quantity="one">%d Günlük Seri</item>
+        <item quantity="other">%d Günlük Seri</item>
+    </plurals>
+    <string name="today">Bugün</string>
+    <string name="waiting">Bekleniyor…</string>
+    <string name="view_details">Detayları Gör →</string>
+    <string name="spiritual_harmony">Ruhsal Uyum</string>
+    <string name="interesting">İlginç</string>
+    <string name="no_harmony">Farklılıklar hayatı zenginleştirir!</string>
+    <string name="connection">Bağlantı</string>
+    <string name="home_no_matches">Bugün için Eşleşme Yok</string>
+    <string name="home_subtitle">Günlük aktivitelerini tamamla \nve sezgine güven.</string>
+    <string name="no_session">Oturum bulunamadı</string>
+    <string name="wp_isnt_loaded">WhatsApp yüklü değil.</string>
+    <string name="ig_isnt_loaded">Instagram yüklü değil.</string>
+    <string name="share_fb_text">Facebook\'ta paylaşmak için tarayıcından giriş yapman gerekiyor.</string>
+    <string name="share_via_sms">SMS ile Gönder</string>
+    <string name="share_via_email">E-posta ile Gönder</string>
+    <string name="share">Paylaş</string>
+    <string name="code_input_subtitle_text">Arkadaşından aldığın davet kodunu gir ve premium kazan!</string>
+    <string name="apply">Uygula 🎁</string>
+    <string name="congrats">Tebrikler!</string>
+    <string name="premium_win_message">%1$d günlük Premium kazandın!</string>
+    <string name="premium_badge">Premium Rozet</string>
+    <string name="unlimited_messaging">Sınırsız Mesajlaşma</string>
+    <string name="unlimited_swipe">Sınırsız Keşif</string>
+    <string name="premium_active_status">Premium %1$d gün daha aktif</string>
+    <string name="share_invite_message">
+🔮 Aurania\'ya katıl!\n\n
+Sezginle örtüşen insanlarla tanış. Günlük aktiviteler ve ruhsal uyum algoritmamızla anlamlı bağlantılar kur.\n\n
+Davet kodum: %1$s\n\n
+%2$s
+</string>
+    <string name="share_aurania">Aurania\'yı Paylaş</string>
+    <string name="shared">Paylaşıldı!</string>
+    <string name="invite_message_simple">🔮 Aurania\'ya katıl! Sezginle uyumlu insanları bul.\nKodum: %1$s \nİndir: %2$s</string>
+    <string name="email_subject">Aurania\'ya davet edildiniz!</string>
+    <string name="invite_email_simple">🔮 Merhaba! \n \n Seni sezgisel eşleşme platformu Aurania\'ya davet ediyorum. \nDavet kodum: %1$s</string>
+    <string name="earn_premium">Premium Kazan!</string>
+    <string name="reward_item1">1 Hafta Premium</string>
+    <string name="reward_item2">+5 gün sınırsız keşif</string>
+    <string name="reward_item3">Özel Rozet</string>
+    <string name="wp_desc">Özel biriyle paylaş.</string>
+    <string name="ig_desc">Hikaye veya DM\'den paylaş</string>
+    <string name="fb_desc">Arkadaşlarını davet et</string>
+    <string name="tw_desc">Tweet olarak paylaş</string>
+    <string name="copy_desc">Bağlantıyı kopyala ve paylaş.</string>
+    <string name="my_code">Davet Kodum</string>
+    <string name="invitation_sent">Davet gönderildi</string>
+    <string name="invitation_accepted">Arkadaş olundu</string>
+    <string name="premium_days_earned">Kazanılan Premium</string>
+    <string name="days">gün</string>
+    <string name="people">kişi</string>
+    <string name="you_are_friends">Arkadaşsınız</string>
+    <string name="add_friend">Arkadaş Ekle</string>
+    <string name="message_text">Mesaj</string>
+    <string name="more_matches">Daha Fazla Eşleşme</string>
+    <string name="gate_card_subtitle">Tüm eşleşme geçmişini görmek için premium üye ol.</string>
+    <string name="matches">Eşleşmeler</string>
+    <string name="premium_limit_reached">Günlük mesaj limitine ulaştın\nSınırsız mesajlaşmak için Premium\'a geç</string>
+    <string name="error_conversation_id">Hata: Konuşma bulunamadı.</string>
+    <string name="match_not_found">Hata: Eşleşme bulunamadı</string>
+    <string name="match_removed">Eşleşme kaldırıldı</string>
+    <string name="onboarding_1">Aurania\'ya Hoş Geldin</string>
+    <string name="onboarding_1_desc">Sezgini kullan, iç dünyanla bağlan ve sana benzeyen insanlarla tanış.</string>
+    <string name="onboarding_2">Günlük Sezgi Aktivitesi</string>
+    <string name="onboarding_2_desc">Her gün farklı bir tema. Renkler, elementler, hayvanlar… Seçimlerin seni tanımlar.</string>
+    <string name="onboarding_3">Ruh Eşi</string>
+    <string name="onboarding_3_desc">Seçimlerin seni benzer ruhlarla buluşturur. Gerçek bağlantı, gerçek sezgi.</string>
+    <string name="skip">Geç</string>
+    <string name="begin">Hadi başlayalım.</string>
+    <string name="start_monthly">Aylık Premium\'a Başla</string>
+    <string name="start_yearly">Yıllık Premium\'a Başla</string>
+    <string name="cancel_anytime">İstediğin zaman iptal edebilirsin.</string>
+    <string name="paywall_subtitle">Sezginin tüm gücünü serbest bırak.</string>
+
+    <string name="premium_feature_explore_title">Sınırsız Keşif</string>
+    <string name="premium_feature_messaging_title">Sınırsız Mesajlaşma</string>
+    <string name="premium_feature_matches_title">Tüm Eşleşmeler</string>
+    <string name="premium_feature_badge_title">Premium Rozet</string>
+    <string name="premium_feature_ads_title">Reklamsız</string>
+
+    <string name="premium_feature_explore_desc">Günlük keşif limitini kaldır</string>
+    <string name="premium_feature_messaging_desc">Günlük 10 mesaj limitini kaldır</string>
+    <string name="premium_feature_matches_desc">Tüm eşleşme geçmişini görüntüle</string>
+    <string name="premium_feature_badge_desc">Profilinde özel rozet</string>
+    <string name="premium_feature_ads_desc">Kesintisiz deneyim</string>
+    <string name="choose_plan">Plan Seç</string>
+    <string name="monthly">Aylık</string>
+    <string name="yearly">Yıllık</string>
+    <string name="price_format">%1$s %2$s</string>
+    <string name="price_per_month">/ ay</string>
+    <string name="price_per_year">/ yıl</string>
+    <string name="save_badge">İNDİRİM</string>
+    <string name="trial_period">%1$d gün ücretsiz deneme</string>
+    <string name="feature_unlimited_matches">Sınırsız günlük eşleşme</string>
+    <string name="feature_soul_sync">Gelişmiş Soul Sync</string>
+    <string name="feature_priority">Öncelikli eşleşme</string>
+    <string name="premium_member_desc">Aurania Premium üyesisin.</string>
+    <string name="first_activity">İlk Adım</string>
+    <string name="first_activity_desc">İlk aktiviteni tamamla.</string>
+    <string name="streak_3">Ateş Başlatıcı</string>
+    <string name="streak_3_desc">3 günlük serini koru</string>
+    <string name="streak_7">Ruhsal Adanmışlık</string>
+    <string name="streak_7_desc">7 günlük serini koru</string>
+    <string name="streak_30">Yükselmiş Ruh</string>
+    <string name="streak_30_desc">30 günlük serini koru</string>
+    <string name="first_match">Kader Karşılaşması</string>
+    <string name="first_match_desc">İlk ruhsal bağlantını kur</string>
+    <string name="matches_5">Sosyal Kahin</string>
+    <string name="matches_5_desc">5 ruh eşiyle bağlantı kur</string>
+    <string name="matches_20">Evrensel Bağlayıcı</string>
+    <string name="matches_20_desc">20 ruh eşiyle bağlantı kur</string>
+    <string name="activities_10">Aktif Arayış</string>
+    <string name="activities_10_desc">10 aktiviteyi tamamla</string>
+    <string name="activities_100">Zen Ustası</string>
+    <string name="activities_100_desc">100 aktiviteyi tamamla</string>
+    <string name="veteran">Kadim Kişi</string>
+    <string name="veteran_desc">30 gündür Aurania üyesisin</string>
+    <string name="legend">Sonsuz Varlık</string>
+    <string name="legend_desc">50 aktivite ve 30 eşleşmeyi tamamla</string>
+
+    <string name="activities">Aktiviteler</string>
+    <string name="member_since">Üyelik Günü</string>
+    <string name="activities_details_text">Aktivite Detayları</string>
+    <string name="total_activities">Toplam Aktivite</string>
+    <string name="last_7_days">Son 7 Gün</string>
+    <string name="badges_text">Rozetler</string>
+    <string name="my_friends">Arkadaşlarım</string>
+    <string name="check_compatibility">Uyumu kontrol et</string>
+    <string name="total_matches">Toplam Eşleşme</string>
+    <string name="next_goal">Sonraki Hedef</string>
+    <string name="name_updated">İsim güncellendi ✓</string>
+    <string name="theme">Tema</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="match_notifications">Eşleşme Bildirimleri</string>
+    <string name="match_notifications_desc">Yeni eşleşmelerimde bana bildir.</string>
+    <string name="message_notifications">Mesaj Bildirimleri</string>
+    <string name="message_notifications_desc">Yeni mesajlarımda bana bildir.</string>
+    <string name="privacy">Gizlilik</string>
+    <string name="show_in_discover">Keşfet\'te Görün</string>
+    <string name="show_in_discover_desc">Profilini diğer kullanıcılara göster</string>
+    <string name="save">Kaydet</string>
+    <string name="edit_name">İsmi düzenle</string>
+    <string name="anonymous">İsimsiz</string>
+    <string name="dark_theme">Koyu Tema</string>
+    <string name="light_theme">Açık Tema</string>
+    <string name="dark_desc">Göz dostu karanlık mod</string>
+    <string name="light_desc">Sade ve aydınlık</string>
+    <string name="soul_sync_button_text">"Deep Soul Sync\'e Gir "</string>
+    <string name="soul_sync_subtitle">Derin uyumluluk testine hazır mısın?</string>
+    <string name="no_match_subtitle">Eşleştiğin kişi testi tamamladığında\naranızdaki benzerlik otomatik hesaplanacak.</string>
+    <string name="answer">Cevabını yaz…</string>
+    <string name="ready">Hazır ol!</string>
+    <string name="test_over">Test Bitti!</string>
+    <string name="you">Sen</string>
+    <string name="continue_messaging_text">Mesajlaşmaya devam et 💬</string>
+    <string name="score">Puan</string>
+
+    <string name="comp_legendary_title">EFSANE UYUM!</string>
+    <string name="comp_legendary_msg">İkiniz de tamamen aynı dalga boyundasınız!</string>
+
+    <string name="comp_perfect_title">MÜKEMMEL EŞLEŞİM!</string>
+    <string name="comp_perfect_msg">Harika bir bağlantınız var!</string>
+
+    <string name="comp_strong_title">GÜÇLÜ VİBE!</string>
+    <string name="comp_strong_msg">Birbirinizi çok iyi anlıyorsunuz!</string>
+
+    <string name="comp_good_title">İYİ SİNERJİ!</string>
+    <string name="comp_good_msg">Bir sürü ortak noktanız var!</string>
+
+    <string name="comp_different_title">FARKLI BAKIŞ AÇILARI</string>
+    <string name="comp_different_msg">Ama bu, aranızdaki dinamiği ilginç kılıyor!</string>
+    <string name="your_answer">Senin Cevabın</string>
+    <string name="your_matches_answer">Eşleşmesinin Cevabı</string>
+    <string name="points">puan</string>
+
+    <string name="match_perfect">TAM UYUM!</string>
+    <string name="match_near">ÇOK YAKINSSINIZ!</string>
+    <string name="match_different">FARKLI</string>
+    <string name="and_text">ve</string>
+
+    <string name="game_status_joining">Oyuna katılınıyor…</string>
+    <string name="game_status_waiting_opponent">Rakip bekleniyor…</string>
+    <string name="game_status_starting">Oyun başlıyor…</string>
+    <string name="sent_answer">Cevap gönderildi</string>
+    <string name="your_match_typing">Eşleşmen cevap yazıyor…</string>
+
+    <string name="questions_updated">Sorular güncellendi.</string>
+    <string name="questions_update_failed">Güncelleme başarısız.</string>
+    <string name="remove_match">Eşleşmeyi Kaldır</string>
+    <string name="unmatch_confirmation_warning">%1$s ile eşleşmen ve tüm mesajların kalıcı olarak silinecek.</string>
+    <string name="sending">Gönderiliyor…</string>
+    <string name="match">Eşleşme</string>
+    <string name="type_message_here">Mesaj yaz…</string>
+    <string name="contact_us">Bize Ulaş</string>
+    <string name="contact_us_subtitle">Geri Bildirim, Öneri ve Şikayetler</string>
+    <string name="contact_us_header">Geri bildirimleriniz ve önerileriniz bizim için çok değerli!</string>
+    <string name="subject">Konu</string>
+    <string name="message">Mesajın</string>
+    <string name="message_placeholder">Mesajını buraya yaz… (en az 10 karakter)</string>
+    <string name="send">Gönder</string>
+
+    <string name="subject_bug_title">Hata Bildirimi</string>
+    <string name="subject_bug_msg">Bir hata mı buldun?</string>
+
+    <string name="subject_feature_title">Özellik İsteği</string>
+    <string name="subject_feature_msg">Yeni bir fikrin mi var?</string>
+
+    <string name="subject_feedback_title">Genel Geri Bildirim</string>
+    <string name="subject_feedback_msg">Düşüncelerini paylaş</string>
+
+    <string name="subject_complaint_title">Şikayet</string>
+    <string name="subject_complaint_msg">Bir sorun mu yaşadın?</string>
+
+    <string name="subject_other_title">Diğer</string>
+    <string name="subject_other_msg">Başka bir konu</string>
+    <string name="logout_title">Çıkış yapmak istiyor musun?</string>
+    <string name="logout_message">Hesabından çıkış yapılacak. Tekrar giriş yapman gerekecek.</string>
+    <string name="quarterly">3 Aylık</string>
+    <string name="price_per_quarter">/ 3 ay</string>
+    <string name="most_popular">En Çok Tercih Edilen</string>
+    <string name="start_quarterly">3 Aylık Premium\'a Başla</string>
+    <string name="message_error">Mesaj gönderilemedi. Lütfen tekrar dene.</string>
+
+    <string name="no_match_title">Eşleşmen Hazırlanıyor</string>
+    <string name="no_match_complete_preference">Eşleşmeyi açmak için Tercih oturumunu tamamla!</string>
+    <string name="no_match_complete_intuition">Eşleşmeyi açmak için Sezgi oturumunu tamamla!</string>
+    <string name="no_match_patience">Sana en uygun ruh bağlantısını arıyoruz</string>
+    <string name="matching_in_progress">Eşleşme Sürüyor</string>
+    <string name="daily_update">Günlük Güncellemeler</string>
+    <string name="back_to_home">Ana Sayfaya Dön</string>
+    <string name="explore_app">Uygulamayı Keşfet</string>
+    <string name="no_match_tip">İpucu: Daha iyi eşleşmeler için her gün iki oturumu da tamamla!</string>
+    <string name="profile_image_uploaded">Profil fotoğrafı güncellendi</string>
+    <string name="no_image_selected">Görsel Seçilmedi</string>
+    <string name="no_streak">Seri Yok</string>
+
+    <string name="message_limit">Mesaj Limiti</string>
+    <string name="swipe_limit">Keşif Limiti</string>
+
+    <string name="delete_conversation_title">Konuşmayı Sil</string>
+    <string name="delete_conversation_message">%1$s ile olan konuşmanı silmek istediğine emin misin?</string>
+    <string name="delete">Sil</string>
+
+    <string name="wants_to_be_friend">seninle arkadaş olmak istiyor.</string>
+    <string name="common_selections_title">Ortak Seçimler</string>
+    <string name="error_not_same_session">Arkadaşınla aynı aktiviteyi tamamlamadın.</string>
+    <string name="your_partner_left">Parteriniz ayrıldı.</string>
+    <string name="game_cancelled">Oyun iptal edildi.</string>
+    <string name="premium_gate_title_soul_sync">Limitsiz Deep Soul Sync</string>
+    <string name="premium_gate_desc">Deep Soul Sync\'e limitsiz erişim için premium üye olun.</string>
+    <string name="paywall_deep_desc">Günlük 2 Deep Soul Sync limitini kaldır</string>
+    <string name="soul_sync_text">Deep Soul Sync</string>
+    <string name="soul_sync_limit">Soul Sync Limiti</string>
+    <plurals name="matches_plural">
+        <item quantity="one">%d Eşleşme</item>
+        <item quantity="other">%d Eşleşme</item>
+    </plurals>
+
+    <string name="mutual_threshold_info">Unutma: Senin kapın %%10 açık olsa bile, karşı tarafın kapısı %%70 kapalıysa içeri giremezsin. Uyum çift taraflıdır! 🤝</string>
+    <string name="match_sensitivity">Eşleşme Hassasiyeti</string>
+    <string name="threshold_desc_open">Açık Kapı: Herkesle eşleşmeye hazırım. 🌍</string>
+    <string name="threshold_desc_balanced">Dengeli: Ortak noktalarımız olsun. 🤝</string>
+    <string name="threshold_desc_selective">Seçici: Gerçek bir uyum arıyorum. 💎</string>
+    <string name="threshold_desc_soulmate">Ruh İkizi: Sadece tam eşleşme! 🔥</string>
+    <string name="deleted_successfully">Listeden kaldırıldı</string>
+    <string name="delete_test_confirmation">Test Geçmişi Silinsin mi?</string>
+
+    <string-array name="days_of_week_short">
+        <item>Pzt</item>
+        <item>Sal</item>
+        <item>Çar</item>
+        <item>Per</item>
+        <item>Cum</item>
+        <item>Cmt</item>
+        <item>Paz</item>
+    </string-array>
+
+    <string-array name="profile_questions_array">
+        <item>Bir hayvan</item>
+        <item>Bir renk</item>
+        <item>Bir yemek</item>
+        <item>Bir şehir</item>
+        <item>Bir meyve</item>
+        <item>Bir meslek</item>
+        <item>Bir duygu</item>
+        <item>Bir mevsim</item>
+        <item>Bir içecek</item>
+        <item>Bir çiçek</item>
+        <item>Bir enstrüman</item>
+        <item>Bir spor</item>
+        <item>Bir gezegen</item>
+        <item>Bir element</item>
+        <item>Bir oyun</item>
+        <item>Bir film</item>
+        <item>Bir kitap</item>
+        <item>Bir şarkı</item>
+        <item>Bir hava durumu</item>
+        <item>Dinlenilecek bir yer</item>
+        <item>Bir yemek türü</item>
+        <item>Bir tatlı</item>
+        <item>Bir tatil</item>
+        <item>Bir süper güç</item>
+        <item>Bir kişilik özelliği</item>
+        <item>Bir hobi</item>
+        <item>Günün bir zamanı</item>
+        <item>Tarihi bir dönem</item>
+        <item>Bir ülke</item>
+        <item>Bir araç</item>
+        <item>Bir uygulama</item>
+        <item>Sosyal bir aktivite</item>
+        <item>Hafta sonu planı</item>
+        <item>Bir koku</item>
+        <item>Bir ses</item>
+        <item>Bir alıntı</item>
+        <item>Hayalindeki bir destinasyon</item>
+        <item>Bir zorluk</item>
+        <item>Bir korku</item>
+        <item>Bir hedef</item>
+        <item>Bir alışkanlık</item>
+        <item>Guilty pleasure (suçlu zevk)</item>
+    </string-array>
+
+
+    <string name="option_a">A</string>
+    <string name="option_b">B</string>
+
+    <string name="color_red">Kırmızı</string>
+    <string name="color_blue">Mavi</string>
+    <string name="color_green">Yeşil</string>
+    <string name="color_yellow">Sarı</string>
+    <string name="color_purple">Mor</string>
+    <string name="color_orange">Turuncu</string>
+    <string name="color_pink">Pembe</string>
+    <string name="color_cyan">Camgöbeği</string>
+    <string name="color_magenta">Macenta</string>
+    <string name="color_lime">Limon Yeşili</string>
+    <string name="color_teal">Teal</string>
+    <string name="color_coral">Mercan</string>
+    <string name="color_indigo">Çivit</string>
+    <string name="color_mint">Nane Yeşili</string>
+    <string name="color_lavender">Lavanta</string>
+    <string name="color_gold">Altın</string>
+    <string name="color_silver">Gümüş</string>
+    <string name="color_bronze">Bronz</string>
+    <string name="color_emerald">Zümrüt</string>
+    <string name="color_ruby">Yakut</string>
+    <string name="color_sapphire">Safir</string>
+    <string name="color_amber">Kehribar</string>
+    <string name="color_turquoise">Turkuaz</string>
+    <string name="color_violet">Menekşe</string>
+    <string name="color_beige">Bej</string>
+    <string name="color_maroon">Bordo</string>
+    <string name="color_olive">Zeytin Yeşili</string>
+    <string name="color_navy">Lacivert</string>
+    <string name="color_slate">Arduvaz Grisi</string>
+    <string name="color_crimson">Koyu Kırmızı</string>
+    <string name="color_charcoal">Kömür Grisi</string>
+    <string name="color_ivory">Fildişi</string>
+
+    <string name="animal_lion">Aslan</string>
+    <string name="animal_eagle">Kartal</string>
+    <string name="animal_dolphin">Yunus</string>
+    <string name="animal_wolf">Kurt</string>
+    <string name="animal_tiger">Kaplan</string>
+    <string name="animal_owl">Baykuş</string>
+    <string name="animal_butterfly">Kelebek</string>
+    <string name="animal_bear">Ayı</string>
+    <string name="animal_horse">At</string>
+    <string name="animal_snake">Yılan</string>
+    <string name="animal_phoenix">Anka Kuşu</string>
+    <string name="animal_fox">Tilki</string>
+    <string name="animal_dragon">Ejderha</string>
+    <string name="animal_whale">Balina</string>
+    <string name="animal_hawk">Şahin</string>
+    <string name="animal_peacock">Tavus Kuşu</string>
+    <string name="animal_cat">Kedi</string>
+    <string name="animal_dog">Köpek</string>
+    <string name="animal_rabbit">Tavşan</string>
+    <string name="animal_deer">Geyik</string>
+    <string name="animal_shark">Köpekbalığı</string>
+    <string name="animal_octopus">Ahtapot</string>
+    <string name="animal_ray">Vatoz</string>
+    <string name="animal_turtle">Kaplumbağa</string>
+    <string name="animal_bat">Yarasa</string>
+    <string name="animal_scorpion">Akrep</string>
+    <string name="animal_spider">Örümcek</string>
+    <string name="animal_raven">Kuzgun</string>
+    <string name="animal_swan">Kuğu</string>
+    <string name="animal_hummingbird">Sinek Kuşu</string>
+    <string name="animal_koala">Koala</string>
+    <string name="animal_panda">Panda</string>
+
+    <string name="nature_fire">Ateş</string>
+    <string name="nature_water">Su</string>
+    <string name="nature_earth">Toprak</string>
+    <string name="nature_air">Hava</string>
+    <string name="nature_lightning">Şimşek</string>
+    <string name="nature_ice">Buz</string>
+    <string name="nature_forest">Orman</string>
+    <string name="nature_desert">Çöl</string>
+    <string name="nature_mountain">Dağ</string>
+    <string name="nature_ocean">Okyanus</string>
+    <string name="nature_volcano">Volkan</string>
+    <string name="nature_wind">Rüzgar</string>
+    <string name="nature_rain">Yağmur</string>
+    <string name="nature_snow">Kar</string>
+    <string name="nature_sun">Güneş</string>
+    <string name="nature_moon">Ay</string>
+    <string name="nature_storm">Fırtına</string>
+    <string name="nature_thunder">Gök Gürültüsü</string>
+    <string name="nature_cloud">Bulut</string>
+    <string name="nature_fog">Sis</string>
+    <string name="nature_river">Nehir</string>
+    <string name="nature_lake">Göl</string>
+    <string name="nature_cave">Mağara</string>
+    <string name="nature_canyon">Kanyon</string>
+    <string name="nature_star">Yıldız</string>
+    <string name="nature_galaxy">Galaksi</string>
+    <string name="nature_nebula">Bulutsu</string>
+    <string name="nature_comet">Kuyruklu Yıldız</string>
+    <string name="nature_leaf">Yaprak</string>
+    <string name="nature_flower">Çiçek</string>
+    <string name="nature_root">Kök</string>
+    <string name="nature_seed">Tohum</string>
+
+    <string name="abstract_light">Işık</string>
+    <string name="abstract_dark">Karanlık</string>
+    <string name="abstract_time">Zaman</string>
+    <string name="abstract_space">Uzay</string>
+    <string name="abstract_energy">Enerji</string>
+    <string name="abstract_gravity">Yerçekimi</string>
+    <string name="abstract_infinity">Sonsuzluk</string>
+    <string name="abstract_void">Boşluk</string>
+    <string name="abstract_cosmos">Kozmos</string>
+    <string name="abstract_quantum">Kuantum</string>
+    <string name="abstract_dimension">Boyut</string>
+    <string name="abstract_parallel">Paralel</string>
+    <string name="abstract_past">Geçmiş</string>
+    <string name="abstract_future">Gelecek</string>
+    <string name="abstract_present">Şimdi</string>
+    <string name="abstract_eternity">Ebediyet</string>
+    <string name="abstract_mind">Zihin</string>
+    <string name="abstract_soul">Ruh</string>
+    <string name="abstract_spirit">Tin</string>
+    <string name="abstract_body">Beden</string>
+    <string name="abstract_dream">Rüya</string>
+    <string name="abstract_reality">Gerçeklik</string>
+    <string name="abstract_truth">Gerçek</string>
+    <string name="abstract_illusion">İllüzyon</string>
+    <string name="abstract_order">Düzen</string>
+    <string name="abstract_chaos">Kaos</string>
+    <string name="abstract_harmony">Uyum</string>
+    <string name="abstract_discord">Uyumsuzluk</string>
+    <string name="abstract_wisdom">Bilgelik</string>
+    <string name="abstract_knowledge">Bilgi</string>
+    <string name="abstract_instinct">İçgüdü</string>
+    <string name="abstract_reason">Akıl</string>
+
+
+</resources>

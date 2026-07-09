@@ -18,25 +18,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mhmtn.a6thsense.core.presentation.bounceClick
 import com.mhmtn.a6thsense.friends.domain.model.Friend
-import com.mhmtn.a6thsense.friends.presentation.components.CompatibilityResultDialog
-import com.mhmtn.a6thsense.friends.presentation.components.FriendsTab
-import com.mhmtn.a6thsense.friends.presentation.components.HistoryTab
-import com.mhmtn.a6thsense.friends.presentation.components.InviteCodeDialog
-import com.mhmtn.a6thsense.friends.presentation.components.RemoveFriendDialog
-import com.mhmtn.a6thsense.friends.presentation.components.RequestsTab
+import com.mhmtn.a6thsense.friends.presentation.components.*
 import com.mhmtn.a6thsense.ui.theme._6thSenseTheme
 
 @Composable
 fun FriendsScreen(
     state: FriendsContract.State,
+    isDark: Boolean,
     onAction: (FriendsContract.Action) -> Unit,
     onBackClick: () -> Unit,
+    onInviteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -44,10 +45,10 @@ fun FriendsScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
+                    colors = if (isDark) listOf(
+                        Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E)
+                    ) else listOf(
+                        Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF)
                     )
                 )
             )
@@ -60,14 +61,15 @@ fun FriendsScreen(
             // Header
             FriendsHeader(
                 onBackClick = onBackClick,
-                onInviteClick = { onAction(FriendsContract.Action.OnGenerateInviteCode) }
+                onInviteClick = onInviteClick
             )
 
             // Tab selector
             TabSelector(
                 selectedTab = state.selectedTab,
                 onTabSelected = { onAction(FriendsContract.Action.OnTabSelected(it)) },
-                requestCount = state.pendingRequests.size
+                requestCount = state.pendingRequests.size,
+                isLight = !isDark
             )
 
             // Content
@@ -77,7 +79,8 @@ fun FriendsScreen(
                     fadeIn(animationSpec = tween(300)) togetherWith
                             fadeOut(animationSpec = tween(300))
                 },
-                label = "tab_content"
+                label = "tab_content",
+                modifier = Modifier.weight(1f)
             ) { tab ->
                 when (tab) {
                     FriendsContract.Tab.FRIENDS -> {
@@ -102,7 +105,16 @@ fun FriendsScreen(
 
                     FriendsContract.Tab.HISTORY -> {
                         HistoryTab(
-                            history = state.compatibilityHistory
+                            history = state.compatibilityHistory,
+                            isLight = !isDark,
+                            onDeleteTest = { onAction(FriendsContract.Action.OnDeleteTest(it)) }
+                        )
+                    }
+
+                    FriendsContract.Tab.SOUL_SYNC -> {
+                        SoulSyncTab(
+                            friends = state.friends,
+                            onStartSoulSync = { onAction(FriendsContract.Action.OnStartSoulSync(it)) }
                         )
                     }
                 }
@@ -124,6 +136,7 @@ fun FriendsScreen(
         if (state.showTestResultDialog && state.testResult != null) {
             CompatibilityResultDialog(
                 result = state.testResult,
+                isLoading = state.isLoading,
                 onDismiss = { onAction(FriendsContract.Action.OnDismissTestResultDialog) }
             )
         }
@@ -136,6 +149,15 @@ fun FriendsScreen(
             )
         }
 
+        // Loading Overlay
+        if (state.isLoading && !state.showTestResultDialog) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color.White)
+            }
+        }
     }
 }
 
@@ -156,15 +178,15 @@ fun FriendsHeader(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
 
             Text(
-                text = R.string.friends.toString(),
+                text = stringResource(R.string.friends),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
@@ -187,7 +209,7 @@ fun FriendsHeader(
             ) {
                 Text(text = "➕", fontSize = 16.sp)
                 Text(
-                    text = R.string.invite.toString(),
+                    text = stringResource(R.string.invite),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -202,35 +224,52 @@ fun TabSelector(
     selectedTab: FriendsContract.Tab,
     onTabSelected: (FriendsContract.Tab) -> Unit,
     requestCount: Int,
+    isLight: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        TabButton(
-            text = R.string.friends.toString(),
-            isSelected = selectedTab == FriendsContract.Tab.FRIENDS,
-            onClick = { onTabSelected(FriendsContract.Tab.FRIENDS) },
-            modifier = Modifier.weight(1f)
-        )
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            TabButton(
+                text = stringResource(R.string.friends),
+                isSelected = selectedTab == FriendsContract.Tab.FRIENDS,
+                onClick = { onTabSelected(FriendsContract.Tab.FRIENDS) },
+                isLight = isLight,
+                modifier = Modifier.weight(1f)
+            )
 
-        TabButton(
-            text = R.string.requests.toString(),
-            badge = if (requestCount > 0) requestCount else null,
-            isSelected = selectedTab == FriendsContract.Tab.REQUESTS,
-            onClick = { onTabSelected(FriendsContract.Tab.REQUESTS) },
-            modifier = Modifier.weight(1f)
-        )
+            TabButton(
+                text = stringResource(R.string.requests),
+                badge = if (requestCount > 0) requestCount else null,
+                isSelected = selectedTab == FriendsContract.Tab.REQUESTS,
+                onClick = { onTabSelected(FriendsContract.Tab.REQUESTS) },
+                isLight = isLight,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            TabButton(
+                text = stringResource(R.string.history),
+                isSelected = selectedTab == FriendsContract.Tab.HISTORY,
+                onClick = { onTabSelected(FriendsContract.Tab.HISTORY) },
+                isLight = isLight,
+                modifier = Modifier.weight(1f)
+            )
 
-        TabButton(
-            text = R.string.history.toString(),
-            isSelected = selectedTab == FriendsContract.Tab.HISTORY,
-            onClick = { onTabSelected(FriendsContract.Tab.HISTORY) },
-            modifier = Modifier.weight(1f)
-        )
+            TabButton(
+                text = "Deep Sync",
+                isSelected = selectedTab == FriendsContract.Tab.SOUL_SYNC,
+                onClick = { onTabSelected(FriendsContract.Tab.SOUL_SYNC) },
+                isLight = isLight,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
@@ -240,6 +279,7 @@ fun TabButton(
     badge: Int? = null,
     isSelected: Boolean,
     onClick: () -> Unit,
+    isLight: Boolean,
     modifier: Modifier = Modifier
 ) {
     val scale by animateFloatAsState(
@@ -254,7 +294,7 @@ fun TabButton(
                 scaleX = scale
                 scaleY = scale
             }
-            .height(48.dp)
+            .height(44.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(
                 if (isSelected)
@@ -264,17 +304,26 @@ fun TabButton(
                             Color(0xFF4568DC)
                         )
                     )
+                else if (isLight)
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.9f),
+                            Color.White.copy(alpha = 0.7f)
+                        )
+                    )
                 else
                     Brush.linearGradient(
                         listOf(
-                            Color(0xFF2E2445),
-                            Color(0xFF1E2A4F)
+                            MaterialTheme.colorScheme.surfaceVariant,
+                            MaterialTheme.colorScheme.surfaceVariant
                         )
                     )
             )
             .border(
                 width = 1.dp,
-                color = if (isSelected) Color.White.copy(alpha = 0.3f) else Color.Transparent,
+                color = if (isSelected) Color.White.copy(alpha = 0.3f) 
+                        else if (isLight) Color(0xFF7B5EA7).copy(alpha = 0.15f)
+                        else Color.Transparent,
                 shape = RoundedCornerShape(16.dp)
             )
             .bounceClick(onClick = onClick),
@@ -282,55 +331,31 @@ fun TabButton(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = text,
-                fontSize = 14.sp,
+                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                color = Color.White
+                fontSize = 14.sp
             )
-
-            if (badge != null && badge > 0) {
+            
+            badge?.let {
                 Box(
                     modifier = Modifier
-                        .size(20.dp)
+                        .size(18.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFFF6B6B)),
+                        .background(if (isSelected) Color.White else Color(0xFFE91E63)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (badge > 9) "9+" else badge.toString(),
+                        text = it.toString(),
+                        color = if (isSelected) Color(0xFF7B5EA7) else Color.White,
                         fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun FriendsScreenPreview() {
-    _6thSenseTheme {
-        FriendsScreen(
-            state = FriendsContract.State(
-                selectedTab = FriendsContract.Tab.FRIENDS,
-                friends = listOf(
-                    Friend(
-                        uid = "123",
-                        name = "Ahmet",
-                        isPremium = true,
-                        hasCompletedToday = true
-                    )
-                ),
-                pendingRequests = listOf(),
-                compatibilityHistory = listOf(),
-            ),
-            onAction = {},
-            onBackClick = {}
-        )
     }
 }

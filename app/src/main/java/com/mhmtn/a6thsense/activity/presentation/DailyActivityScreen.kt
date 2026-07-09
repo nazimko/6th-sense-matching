@@ -32,6 +32,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.mhmtn.a6thsense.R
 import com.mhmtn.a6thsense.activity.presentation.components.PhaseTransitionView
@@ -57,6 +58,7 @@ fun DailyActivityScreen(
     LaunchedEffect(state.type) {
         Log.d("DailyActivityScreen", "Rendering with sessionType: ${state.type}")
     }
+
 
     val soundPool = remember {
         SoundPool.Builder()
@@ -111,13 +113,23 @@ fun DailyActivityScreen(
             ) {
                 CircularProgressIndicator(color = Color.White)
                 Text(
-                    text = R.string.questions_loading.toString(),
+                    text = stringResource(R.string.questions_loading),
                     color = Color.White,
                     fontSize = 16.sp
                 )
             }
         }
         return
+    }
+
+    val questionSet = state.questionSet
+    val phaseKey = when (state.phase) {
+        DailyActivityContract.Phase.PHASE_1 -> "phase1"
+        DailyActivityContract.Phase.PHASE_2 -> "phase2"
+        DailyActivityContract.Phase.PHASE_3 -> "phase3"
+        DailyActivityContract.Phase.PHASE_4 -> "phase4"
+        DailyActivityContract.Phase.PHASE_5 -> "phase5"
+        DailyActivityContract.Phase.PHASE_6 -> "phase6"
     }
 
     // 👇 SessionType'a göre farklı background gradient
@@ -245,9 +257,12 @@ fun DailyActivityScreen(
                         }
                     )
                 }
+
+
                 SessionType.PREFERENCE -> {
                     PreferencePhaseTransitionView(
                         phase = state.phase,
+                        phaseInfo = state.questionSet?.phases?.get(phaseKey),
                         onTransitionEnd = {
                             onAction(DailyActivityContract.Action.PhaseTransitionShown)
                         }
@@ -264,16 +279,14 @@ fun DailyActivityScreen(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 // Header
-                val questionSet = state.questionSet
-                val phaseKey = when (state.phase) {
-                    DailyActivityContract.Phase.PHASE_1 -> "phase1"
-                    DailyActivityContract.Phase.PHASE_2 -> "phase2"
-                    DailyActivityContract.Phase.PHASE_3 -> "phase3"
-                    DailyActivityContract.Phase.PHASE_4 -> "phase4"
-                    DailyActivityContract.Phase.PHASE_5 -> "phase5"
-                    DailyActivityContract.Phase.PHASE_6 -> "phase6"
+
+                // ✅ DÜZELTME: PHASE_6 (Intuition) için soru sayısını FreeTextQuestionProvider'dan al
+                val totalQuestions = if (state.type == SessionType.INTUITION && state.phase == DailyActivityContract.Phase.PHASE_6) {
+                    FreeTextQuestionProvider.getAllQuestions().size
+                } else {
+                    questionSet?.phases?.get(phaseKey)?.questions?.size ?: MAX_STEP
                 }
-                val totalQuestions = questionSet?.phases?.get(phaseKey)?.questions?.size ?: MAX_STEP
+                
                 val phaseInfo = questionSet?.phases?.get(phaseKey)
 
                 PhaseHeader(
@@ -281,14 +294,14 @@ fun DailyActivityScreen(
                     step = state.step,
                     maxStep = totalQuestions,
                     sessionType = state.type,
-                    phaseTitle = phaseInfo?.title,
-                    phaseDescription = phaseInfo?.description
+                    phaseTitle = phaseInfo?.title?.asString(),
+                    phaseDescription = phaseInfo?.description?.asString()
                 )
 
-                // Grid - Spacer kullanarak ortalandı
+                // Content area - Center vertically
                 Box(
                     modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center // 👈 Changed from TopCenter to Center
                 ) {
                     AnimatedContent(
                         targetState = state.step,
@@ -329,7 +342,7 @@ fun DailyActivityScreen(
 
                 // Progress Dots
                 ProgressDots(
-                    current = state.step,
+                    current = state.step + 1,
                     total = totalQuestions
                 )
             }
@@ -389,12 +402,12 @@ private fun PhaseHeader(
             phaseTitle to getPhaseEmoji(phase)
         } else {
             when (phase) {
-                DailyActivityContract.Phase.PHASE_1 -> R.string.intuition.toString() to "🌙"
-                DailyActivityContract.Phase.PHASE_2 -> R.string.colors.toString() to "🎨"
-                DailyActivityContract.Phase.PHASE_3 -> R.string.spirit_animals.toString() to "🦁"
-                DailyActivityContract.Phase.PHASE_4 -> R.string.elements.toString() to "🌊"
-                DailyActivityContract.Phase.PHASE_5 -> R.string.dimensions.toString() to "✨"
-                DailyActivityContract.Phase.PHASE_6 -> R.string.free_spirit.toString() to "💭"
+                DailyActivityContract.Phase.PHASE_1 -> stringResource(R.string.intuition) to "🌙"
+                DailyActivityContract.Phase.PHASE_2 -> stringResource(R.string.colors) to "🎨"
+                DailyActivityContract.Phase.PHASE_3 -> stringResource(R.string.spirit_animals) to "🦁"
+                DailyActivityContract.Phase.PHASE_4 -> stringResource(R.string.elements) to "🌊"
+                DailyActivityContract.Phase.PHASE_5 -> stringResource(R.string.dimensions) to "✨"
+                DailyActivityContract.Phase.PHASE_6 -> stringResource(R.string.free_spirit) to "💭"
             }
         }
 
@@ -418,7 +431,7 @@ private fun PhaseHeader(
         }
 
         Text(
-            text = "${R.string.qustion} ${step + 1} / $maxStep",
+            text = "${stringResource(R.string.qustion)} ${step + 1} / $maxStep",
             fontSize = 14.sp,
             fontWeight = FontWeight.Light,
             color = Color.White.copy(alpha = 0.7f)

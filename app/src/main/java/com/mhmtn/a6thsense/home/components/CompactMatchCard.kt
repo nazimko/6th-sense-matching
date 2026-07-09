@@ -6,23 +6,26 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mhmtn.a6thsense.activity.domain.DailyActivityContract
 import com.mhmtn.a6thsense.core.presentation.bounceClick
 import com.mhmtn.a6thsense.core.presentation.floating
 import com.mhmtn.a6thsense.home.domain.TodayMatch
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun CompactMatchCard(
@@ -41,6 +44,23 @@ fun CompactMatchCard(
         ),
         label = "glow"
     )
+
+    var profileImageUrl by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(match.userId) {
+        try {
+            val userDoc = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(match.userId)
+                .get()
+                .await()
+            
+            profileImageUrl = userDoc.getString("profileImageUrl")
+                ?: userDoc.getString("photoUrl")
+        } catch (e: Exception) {
+            profileImageUrl = match.userPhoto
+        }
+    }
 
     // Similarity'ye göre gradient seç
     val gradient = when {
@@ -63,8 +83,8 @@ fun CompactMatchCard(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF2A2A3E),
-                        Color(0xFF1A1A2E)
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surface
                     )
                 )
             )
@@ -101,13 +121,23 @@ fun CompactMatchCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = match.userName.firstOrNull()?.uppercase() ?: "?",
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White,
-                    modifier = Modifier.floating(offsetY = 4f, duration = 2000)
-                )
+                val finalPhotoUrl = if (!profileImageUrl.isNullOrBlank()) profileImageUrl else match.userPhoto
+                if (!finalPhotoUrl.isNullOrBlank()) {
+                    AsyncImage(
+                        model = finalPhotoUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text(
+                        text = match.userName.firstOrNull()?.uppercase() ?: "?",
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        modifier = Modifier.floating(offsetY = 4f, duration = 2000)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -117,7 +147,7 @@ fun CompactMatchCard(
                 text = match.userName,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1
             )
 
@@ -166,7 +196,7 @@ fun CompactMatchCard(
                     DailyActivityContract.SessionType.PREFERENCE -> "✨ Vibe Check"
                 },
                 fontSize = 11.sp,
-                color = Color.White.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
         }
     }

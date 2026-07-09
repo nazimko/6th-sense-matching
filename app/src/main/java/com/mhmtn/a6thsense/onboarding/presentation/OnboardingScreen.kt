@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.core.*
 import com.mhmtn.a6thsense.R
 import androidx.compose.foundation.*
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,20 +21,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.mhmtn.a6thsense.core.presentation.bounceClick
+import com.mhmtn.a6thsense.ui.theme._6thSenseTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
+    isDark: Boolean,
     onAction: (OnboardingContract.Action) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
     val scope = rememberCoroutineScope()
+    val colorScheme = MaterialTheme.colorScheme
 
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -47,7 +57,10 @@ fun OnboardingScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = currentPage.gradientColors.map { Color(it) }
+                    colors = if (isDark)
+                        currentPage.gradientColors.map { Color(it) }
+                    else
+                        currentPage.lightGradientColors.map { Color(it) }
                 )
             )
     ) {
@@ -70,8 +83,8 @@ fun OnboardingScreen(
             ) {
                 if (pagerState.currentPage < onboardingPages.size - 1) {
                     Text(
-                        text = R.string.skip.toString(),
-                        color = Color.White.copy(alpha = 0.6f),
+                        text = stringResource(R.string.skip),
+                        color = colorScheme.onBackground.copy(alpha = 0.6f),
                         fontSize = 15.sp,
                         modifier = Modifier
                             .bounceClick {
@@ -142,9 +155,9 @@ fun OnboardingScreen(
             ) {
                 Text(
                     text = if (pagerState.currentPage < onboardingPages.size - 1)
-                        R.string.continue_text.toString()
+                        stringResource(R.string.continue_text)
                     else
-                        "${R.string.begin.toString()} 🔮",
+                        "${stringResource(R.string.begin)} 🔮",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
@@ -163,6 +176,7 @@ private fun OnboardingPageView(
 ) {
     val scale = 1f - 0.1f * kotlin.math.abs(pageOffset)
     val alpha = 1f - 0.3f * kotlin.math.abs(pageOffset)
+    val colorScheme = MaterialTheme.colorScheme
 
     // Emoji pulse animasyonu
     val infiniteTransition = rememberInfiniteTransition(label = "emoji_pulse")
@@ -204,23 +218,40 @@ private fun OnboardingPageView(
                         CircleShape
                     )
             )
-            Text(
-                text = page.emoji,
-                fontSize = 88.sp,
-                modifier = Modifier.graphicsLayer {
-                    scaleX = emojiScale
-                    scaleY = emojiScale
-                }
-            )
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFF0B1A3A), // koyu lacivert
+                                Color(0xFF050D1F)  // daha koyu alt ton
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.aurania_png),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(76.dp) // içte biraz padding hissi için küçült
+                        .graphicsLayer {
+                            scaleX = emojiScale
+                            scaleY = emojiScale
+                        }
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = page.title,
+            text = page.title.asString(),
             fontSize = 28.sp,
             fontWeight = FontWeight.Black,
-            color = Color.White,
+            color = colorScheme.onBackground,
             textAlign = TextAlign.Center,
             lineHeight = 36.sp
         )
@@ -228,9 +259,9 @@ private fun OnboardingPageView(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = page.description,
+            text = page.description.asString(),
             fontSize = 16.sp,
-            color = Color.White.copy(alpha = 0.7f),
+            color = colorScheme.onBackground.copy(alpha = 0.7f),
             textAlign = TextAlign.Center,
             lineHeight = 24.sp
         )
@@ -242,6 +273,8 @@ private fun PagerIndicator(
     currentPage: Int,
     totalPages: Int
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -262,8 +295,8 @@ private fun PagerIndicator(
                     .width(width)
                     .clip(CircleShape)
                     .background(
-                        if (isSelected) Color.White
-                        else Color.White.copy(alpha = 0.3f)
+                        if (isSelected) colorScheme.onBackground
+                        else colorScheme.onBackground.copy(alpha = 0.3f)
                     )
             )
         }
@@ -319,5 +352,27 @@ private fun OnboardingParticles() {
                     .background(Color.White, CircleShape)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnboardingPreview() {
+    _6thSenseTheme(darkTheme = false) {
+        OnboardingScreen(
+            isDark = false,
+            onAction = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnboardingDarkPreview() {
+    _6thSenseTheme(darkTheme = true) {
+        OnboardingScreen(
+            isDark = true,
+            onAction = {}
+        )
     }
 }

@@ -41,7 +41,7 @@ fun ColorChoiceQuestion(
 
         // Soru metni
         Text(
-            text = question.question,
+            text = question.question.asString(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -138,7 +138,7 @@ fun ColorOptionCard(
 
             // Text
             Text(
-                text = option.text,
+                text = option.text.asString(),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,

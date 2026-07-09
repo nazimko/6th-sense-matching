@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import com.mhmtn.a6thsense.R
 fun WaitingForOtherPlayerScreen(
     question: String,
     myAnswer: String,
+    isDark: Boolean,
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "waiting_other")
@@ -54,17 +57,17 @@ fun WaitingForOtherPlayerScreen(
         ),
         label = "pulse"
     )
-
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF0F0C29), Color(0xFF1A1A2E), Color(0xFF24243E))
+    } else {
+        listOf(Color(0xFFF8F5FF), Color(0xFFF0EBFF), Color(0xFFE8DEFF))
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F0C29),
-                        Color(0xFF1A1A2E),
-                        Color(0xFF24243E)
-                    )
+                    colors = gradientColors
                 )
             ),
         contentAlignment = Alignment.Center
@@ -79,7 +82,7 @@ fun WaitingForOtherPlayerScreen(
                 text = question,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
 
@@ -94,7 +97,7 @@ fun WaitingForOtherPlayerScreen(
                         shape = RoundedCornerShape(20.dp)
                     )
                     .clip(RoundedCornerShape(20.dp))
-                    .background(Color(0xFF2A2A3E))
+                    .background(MaterialTheme.colorScheme.surface)
                     .border(
                         width = 2.dp,
                         color = Color(0xFF43E97B),
@@ -107,15 +110,15 @@ fun WaitingForOtherPlayerScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = R.string.your_answer.toString(),
+                        text = stringResource(R.string.your_answer),
                         fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
                     Text(
                         text = myAnswer,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -123,7 +126,7 @@ fun WaitingForOtherPlayerScreen(
                     ) {
                         Text(text = "✓", fontSize = 16.sp, color = Color(0xFF43E97B))
                         Text(
-                            text = R.string.sent_answer.toString(),
+                            text = stringResource(R.string.sent_answer),
                             fontSize = 12.sp,
                             color = Color(0xFF43E97B)
                         )
@@ -146,10 +149,10 @@ fun WaitingForOtherPlayerScreen(
             }
 
             Text(
-                text = R.string.your_match_typing.toString(),
+                text = stringResource(R.string.your_match_typing),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
@@ -172,7 +175,7 @@ fun WaitingForOtherPlayerScreen(
                         modifier = Modifier
                             .size(12.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = alpha))
+                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = alpha))
                     )
                 }
             }

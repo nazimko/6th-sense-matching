@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 fun SoulSyncScreen(
     state: SoulSyncState,
     showConfetti: Boolean,
+    isDark: Boolean,
     onSubmitAnswer: (String) -> Unit,
     onJoinRoom: () -> Unit,
     onSaveAndExit: suspend () -> Unit,
@@ -27,28 +28,14 @@ fun SoulSyncScreen(
     val currentUser = FirebaseAuth.getInstance().currentUser
     val currentUid = currentUser?.uid
 
-    // 👇 Debug log
-    LaunchedEffect(state.players) {
-        Log.d("SoulSyncScreen", "Current UID: $currentUid")
-        Log.d("SoulSyncScreen", "Players map: ${state.players}")
-        Log.d("SoulSyncScreen", "Players keys: ${state.players.keys}")
-        state.players.forEach { (key, player) ->
-            Log.d("SoulSyncScreen", "Player key: $key, uid: ${player.uid}, status: ${player.status}")
-        }
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         when (state.gameState) {
             GameState.WAITING -> {
-                val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
                 val otherPlayer = state.players.values.firstOrNull { it.uid != currentUid }
 
-                Log.d("SoulSyncScreen", "Current player: $currentUser")
-                Log.d("SoulSyncScreen", "Other player: $otherPlayer")
-
-
                 WaitingForOpponent(
-                    currentPlayer = state.players[currentUser],
+                    isDark = isDark,
+                    currentPlayer = state.players[currentUid ?: ""],
                     otherPlayer = otherPlayer,
                     onJoinRoom = onJoinRoom
                 )
@@ -56,6 +43,7 @@ fun SoulSyncScreen(
 
             GameState.COUNTDOWN -> {
                 CountdownScreen(
+                    isDark = isDark,
                     question = state.currentQuestion,
                     countdown = state.countdown
                 )
@@ -64,6 +52,7 @@ fun SoulSyncScreen(
             GameState.PLAYING -> {
                 AnswerInputScreen(
                     question = state.currentQuestion,
+                    isDark = isDark,
                     onSubmit = { answer ->
                         onSubmitAnswer(answer)
                     }
@@ -72,6 +61,7 @@ fun SoulSyncScreen(
 
             GameState.WAITING_FOR_OTHER -> {
                 WaitingForOtherPlayerScreen(
+                    isDark = isDark,
                     question = state.currentQuestion,
                     myAnswer = state.myAnswer
                 )
@@ -79,6 +69,7 @@ fun SoulSyncScreen(
 
             GameState.REVEALING -> {
                 RevealAnswersScreen(
+                    isDark = isDark,
                     question = state.currentQuestion,
                     myAnswer = state.myAnswer,
                     theirAnswer = state.theirAnswer,
@@ -91,8 +82,10 @@ fun SoulSyncScreen(
             GameState.FINISHED -> {
                 val coroutineScope = rememberCoroutineScope()
                 ResultsScreen(
+                    isDark = isDark,
                     myScore = state.myScore,
                     theirScore = state.theirScore,
+                    otherPlayerName = state.otherPlayerName, // 👈 Added
                     compatibility = state.compatibility,
                     showConfetti = showConfetti,
                     onContinue = {
@@ -101,6 +94,10 @@ fun SoulSyncScreen(
                         }
                     }
                 )
+            }
+
+            GameState.CANCELLED -> {
+
             }
         }
     }

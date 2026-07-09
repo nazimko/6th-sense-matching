@@ -44,7 +44,7 @@ fun EmojiChoiceQuestion(
 
         // Soru metni
         Text(
-            text = question.question,
+            text = question.question.asString(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -148,7 +148,7 @@ fun EmojiOptionCard(
 
             // Text
             Text(
-                text = option.text,
+                text = option.text.asString(),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,

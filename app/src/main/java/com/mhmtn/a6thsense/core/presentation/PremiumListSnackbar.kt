@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -135,7 +136,7 @@ fun PremiumLimitSnackbar(
 
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(
-                        text = R.string.limit.toString(),
+                        text = stringResource(R.string.limit),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -156,7 +157,7 @@ fun PremiumLimitSnackbar(
             ) {
                 // Dismiss button (solda)
                 Text(
-                    text = R.string.later.toString(),
+                    text = stringResource(R.string.later),
                     color = Color.White.copy(alpha = 0.5f),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
@@ -193,7 +194,7 @@ fun PremiumLimitSnackbar(
                     ) {
                         Text(text = "✨", fontSize = 14.sp)
                         Text(
-                            text = R.string.upgrade.toString(),
+                            text = stringResource(R.string.upgrade),
                             color = Color.White,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold

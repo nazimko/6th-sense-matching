@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,13 +37,15 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun NetworkErrorView(
     modifier: Modifier = Modifier,
-    message: String = R.string.connection_error_message.toString(),
+    message: String = stringResource( R.string.connection_error_message),
     onRetry: () -> Unit
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF0F0C29)),
+            .background(colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -65,7 +69,7 @@ fun NetworkErrorView(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.1f))
+                    .background(colorScheme.onBackground.copy(alpha = 0.1f))
                     .graphicsLayer { rotationZ = rotation },
                 contentAlignment = Alignment.Center
             ) {
@@ -76,14 +80,14 @@ fun NetworkErrorView(
                 text = message,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
             Text(
-                text = R.string.check_internet_text.toString(),
+                text = stringResource(R.string.check_internet_text),
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.5f),
+                color = colorScheme.onBackground.copy(alpha = 0.5f),
                 textAlign = TextAlign.Center,
                 lineHeight = 20.sp
             )
@@ -102,7 +106,7 @@ fun NetworkErrorView(
                     .padding(horizontal = 32.dp, vertical = 16.dp)
             ) {
                 Text(
-                    text = R.string.try_again_text.toString(),
+                    text = stringResource(R.string.try_again_text),
                     color = Color.White,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold

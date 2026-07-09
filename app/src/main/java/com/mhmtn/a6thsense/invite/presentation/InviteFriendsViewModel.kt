@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.mhmtn.a6thsense.R
 import com.mhmtn.a6thsense.core.domain.analytics.AnalyticsEvent
 import com.mhmtn.a6thsense.core.domain.analytics.AnalyticsHelper
+import com.mhmtn.a6thsense.core.domain.model.UiTextException
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.invite.domain.InviteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,7 +19,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InviteFriendsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val repository: InviteRepository,
     private val auth: FirebaseAuth,
     private val analyticsHelper: AnalyticsHelper
@@ -72,11 +73,13 @@ class InviteFriendsViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                val message = if (e is UiTextException) e.uiText
+                else UiText.StringResource(R.string.error_occurred)
                 Log.e("InviteVM", "Error loading referral info: ${e.message}", e)
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        error = e.message
+                        error = message
                     )
                 }
             }
@@ -87,10 +90,12 @@ class InviteFriendsViewModel @Inject constructor(
         viewModelScope.launch {
             val code = _state.value.referralInfo?.referralCode ?: return@launch
             val link = repository.getShareLink(code)
-            val messagex = context.getString(R.string.share_invite_message, code, link)
-            val message = messagex.trimIndent()
 
-            _effect.emit(InviteFriendsContract.Effect.ShareLink(link, message))
+
+            _effect.emit(InviteFriendsContract.Effect.ShareLink(
+                link,
+                UiText.StringResource(R.string.share_invite_message, code,link)
+            ))
 
             analyticsHelper.logEvent(
                 AnalyticsEvent.ReferralShared("general")
@@ -115,7 +120,7 @@ class InviteFriendsViewModel @Inject constructor(
         viewModelScope.launch {
             val code = _state.value.referralInfo?.referralCode ?: return@launch
             _effect.emit(InviteFriendsContract.Effect.CopyToClipboard(code))
-            _effect.emit(InviteFriendsContract.Effect.ShowToast(R.string.copied.toString()))
+            _effect.emit(InviteFriendsContract.Effect.ShowToast(UiText.StringResource(R.string.copied)))
         }
     }
 
@@ -124,7 +129,7 @@ class InviteFriendsViewModel @Inject constructor(
             val code = _state.value.codeInput.trim()
 
             if (code.isBlank()) {
-                _state.update { it.copy(error = R.string.enter_invite_code.toString()) }
+                _state.update { it.copy(error = UiText.StringResource(R.string.enter_invite_code)) }
                 return@launch
             }
 
@@ -147,10 +152,12 @@ class InviteFriendsViewModel @Inject constructor(
                     AnalyticsEvent.ReferralApplied(code)
                 )
             }.onFailure { error ->
+                val message = if (error is UiTextException) error.uiText
+                else UiText.StringResource(R.string.error_occurred)
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        error = error.message ?: R.string.error_occurred.toString()
+                        error = message
                     )
                 }
             }

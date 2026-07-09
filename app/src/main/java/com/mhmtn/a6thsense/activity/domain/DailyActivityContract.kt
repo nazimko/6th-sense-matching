@@ -1,6 +1,7 @@
 package com.mhmtn.a6thsense.activity.domain
 
 import com.mhmtn.a6thsense.core.domain.Option
+import com.mhmtn.a6thsense.core.presentation.UiText
 
 object DailyActivityContract {
 
@@ -15,6 +16,7 @@ object DailyActivityContract {
         val isPhaseTransition: Boolean = false,
         val questionSet: QuestionSet? = null,
         val isLoadingQuestions: Boolean = true,
+        val minSimilarity: Int = 40,
         val selectedOptions: Map<String, String> = emptyMap()
     )
 
@@ -32,7 +34,7 @@ object DailyActivityContract {
         data object NavigateToSimilarity : Effect
         object ShowNoMatch : Effect
         object ShowAlreadyCompleted : Effect
-        data class ShowToast(val message: String) : Effect
+        data class ShowToast(val message: UiText) : Effect
     }
 
     enum class Phase {

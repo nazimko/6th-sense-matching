@@ -29,16 +29,52 @@ class PaywallViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
             billingRepository.queryProducts()
             billingRepository.availablePlans.collect { plans ->
 
                 val monthly = plans.find { it.productId == BillingRepositoryImpl.MONTHLY_PRODUCT_ID }
+                val quarterly = plans.find { it.productId == BillingRepositoryImpl.QUARTERLY_PRODUCT_ID }
                 val yearly = plans.find { it.productId == BillingRepositoryImpl.YEARLY_PRODUCT_ID }
+
+                val monthlyPriceValue = monthly?.price
+                    ?.replace("[^\\d.]".toRegex(), "")
+                    ?.toDoubleOrNull()
+
+                val quarterlyPriceValue = quarterly?.price
+                    ?.replace("[^\\d.]".toRegex(), "")
+                    ?.toDoubleOrNull()
+
+                val yearlyPriceValue = yearly?.price
+                    ?.replace("[^\\d.]".toRegex(), "")
+                    ?.toDoubleOrNull()
+
+                val quarterlyBadge = if (monthlyPriceValue != null && quarterlyPriceValue != null) {
+                    val quarterlyMonthlyEquivalent = quarterlyPriceValue / 3
+                    val discount = 1 - (quarterlyMonthlyEquivalent / monthlyPriceValue)
+                    val percent = (discount * 100).toInt()
+                    if (percent > 0) "%$percent" else null
+                } else null
+
+                val yearlyBadge = if (monthlyPriceValue != null && yearlyPriceValue != null) {
+
+                    val yearlyMonthlyEquivalent = yearlyPriceValue / 12
+                    val discount = 1 - (yearlyMonthlyEquivalent / monthlyPriceValue)
+                    val percent = (discount * 100).toInt()
+                    if (percent > 0) "%$percent" else null
+                } else null
 
                 _state.update {
                     it.copy(
+                        isLoading = false,
                         monthlyPrice = monthly?.price ?: "",
-                        yearlyPrice = yearly?.price ?: ""
+                        quarterlyPrice = quarterly?.price ?: "",
+                        yearlyPrice = yearly?.price ?: "",
+                        monthlyPeriod = monthly?.billingPeriod ?: "",
+                        quarterlyPeriod = quarterly?.billingPeriod ?: "",
+                        yearlyPeriod = yearly?.billingPeriod ?: "",
+                        quarterlyBadge = quarterlyBadge,
+                        yearlyBadge = yearlyBadge
                     )
                 }
 
@@ -71,6 +107,8 @@ class PaywallViewModel @Inject constructor(
                         val productId = when (_state.value.selectedPlan) {
                             PaywallContract.Plan.MONTHLY ->
                                 BillingRepositoryImpl.MONTHLY_PRODUCT_ID
+                            PaywallContract.Plan.QUARTERLY ->
+                                BillingRepositoryImpl.QUARTERLY_PRODUCT_ID
                             PaywallContract.Plan.YEARLY ->
                                 BillingRepositoryImpl.YEARLY_PRODUCT_ID
                         }

@@ -32,6 +32,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -128,8 +130,8 @@ fun SessionCard(
                     // Completed state - muted green gradient
                     Brush.linearGradient(
                         listOf(
-                            Color(0xFF2A2A3E),
-                            Color(0xFF1A1A2E)
+                            MaterialTheme.colorScheme.surface,
+                            MaterialTheme.colorScheme.surface
                         )
                     )
                 }
@@ -282,7 +284,7 @@ fun SessionCard(
                             color = Color(0xFF43E97B)
                         )
                         Text(
-                            text = R.string.completed.toString(),
+                            text = stringResource(R.string.completed),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF43E97B)
@@ -342,19 +344,17 @@ fun SessionCard(
                         text = title,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = if (isCompleted) MaterialTheme.colorScheme.onSurface else Color.White,
                         letterSpacing = (-0.5).sp,
                         modifier = Modifier.alpha(if (isCompleted) 0.6f else 1f)
                     )
 
                     // Description
                     Text(
-                        text = if (isCompleted) "${R.string.completed.toString()} ✓" else description,
+                        text = if (isCompleted) "${stringResource(R.string.completed)} ✓" else description,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color.White.copy(
-                            alpha = if (isCompleted) 0.5f else 0.85f
-                        ),
+                        color = if (isCompleted) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.85f),
                         letterSpacing = 0.3.sp
                     )
                 }
@@ -445,14 +445,14 @@ fun CompletionBadge(
         ) {
             Text(text = "🎉", fontSize = 32.sp)
             Text(
-                text = R.string.daily_done.toString(),
+                text = stringResource(R.string.daily_done),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
                 textAlign = TextAlign.Center
             )
             Text(
-                text = R.string.daily_done_desc.toString(),
+                text = stringResource(R.string.daily_done_desc),
                 fontSize = 13.sp,
                 color = Color.White.copy(alpha = 0.9f),
                 textAlign = TextAlign.Center

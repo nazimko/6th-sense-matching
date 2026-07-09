@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mhmtn.a6thsense.auth.domain.AuthRepository
+import com.mhmtn.a6thsense.billing.domain.BillingRepository
 import com.mhmtn.a6thsense.core.domain.analytics.AnalyticsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -14,6 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
+    private val billingRepository: BillingRepository,
     private val analyticsHelper: AnalyticsHelper,
     val googleSignInClient: GoogleSignInClient
 ) : ViewModel() {
@@ -42,6 +44,7 @@ class AuthViewModel @Inject constructor(
                     user = user
                 )
             }
+            billingRepository.checkSubscriptionStatus()
 
             analyticsHelper.setUserId(user.uid)
             analyticsHelper.logSignUp("google")

@@ -11,6 +11,8 @@ import dagger.hilt.android.EntryPointAccessors
 @Composable
 fun SettingsRoute(
     onBackClick: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToContactUs: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -28,7 +30,13 @@ fun SettingsRoute(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is SettingsContract.Effect.ShowMessage -> {
-                    snackbarHostState.showSnackbar(effect.message)
+                    snackbarHostState.showSnackbar(effect.message.asString(context))
+                }
+                SettingsContract.Effect.NavigateToContactUs -> {
+                    onNavigateToContactUs()
+                }
+                SettingsContract.Effect.NavigateToLogin -> {
+                    onNavigateToLogin()
                 }
             }
         }

@@ -18,8 +18,8 @@ android {
         applicationId = "com.mhmtn.a6thsense"
         minSdk = 24
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 4
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -80,5 +80,9 @@ dependencies {
     implementation(libs.firebase.config.ktx)
     implementation(libs.firebase.database)
     implementation(libs.facebook.android.sdk)
-
+    implementation(libs.accompanist.drawablepainter)
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.hilt.work)
+    kapt(libs.hilt.compiler.android)
+    implementation(libs.firebase.storage)
 }

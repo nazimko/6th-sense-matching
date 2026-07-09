@@ -4,7 +4,9 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,10 +16,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.mhmtn.a6thsense.activity.domain.Question
 import com.mhmtn.a6thsense.activity.domain.QuestionOption
 import com.mhmtn.a6thsense.core.presentation.bounceClick
@@ -31,16 +35,37 @@ fun TextChoiceQuestion(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Spacer(modifier = Modifier.height(60.dp))
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // 👇 Image Support for TEXT_CHOICE (Fix for p1_q3)
+        question.imageUrl?.let { url ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(bottom = 16.dp)
+                    .shadow(12.dp, RoundedCornerShape(24.dp))
+                    .clip(RoundedCornerShape(24.dp))
+            ) {
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
 
         // Soru metni
         Text(
-            text = question.question,
+            text = question.question.asString(),
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -63,6 +88,8 @@ fun TextChoiceQuestion(
                 )
             }
         }
+        
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -114,7 +141,7 @@ fun TextOptionCard(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = option.text,
+            text = option.text.asString(),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,

@@ -1,8 +1,10 @@
 package com.mhmtn.a6thsense.friends.presentation
 
+import com.mhmtn.a6thsense.core.presentation.UiText
 import com.mhmtn.a6thsense.friends.domain.model.CompatibilityTestResult
 import com.mhmtn.a6thsense.friends.domain.model.Friend
 import com.mhmtn.a6thsense.friends.domain.model.Friendship
+import com.mhmtn.a6thsense.premium.domain.PremiumStatus
 
 
 object FriendsContract {
@@ -18,13 +20,15 @@ object FriendsContract {
         val testResult: CompatibilityTestResult? = null,
         val friendToRemove: Friend? = null,
         val showRemoveFriendDialog: Boolean = false,
+        val premiumStatus: PremiumStatus = PremiumStatus(),
         val error: String? = null
     )
 
     enum class Tab {
         FRIENDS,
         REQUESTS,
-        HISTORY
+        HISTORY,
+        SOUL_SYNC
     }
 
     sealed class Action {
@@ -40,10 +44,14 @@ object FriendsContract {
         data class OnAcceptInviteCode(val code: String) : Action()
         object OnDismissInviteDialog : Action()
         object OnDismissTestResultDialog : Action()
+        data class OnStartSoulSync(val friend: Friend) : Action()
+        data class OnDeleteTest(val testId: String) : Action() // 👈 YENİ
     }
 
     sealed class Effect {
-        data class ShowToast(val message: String) : Effect()
+        data class ShowToast(val message: UiText) : Effect()
         data class ShowTestResult(val result: CompatibilityTestResult) : Effect()
+        data class NavigateToSoulSync(val roomId: String) : Effect()
+        data object ShowPremiumGate : Effect()
     }
 }

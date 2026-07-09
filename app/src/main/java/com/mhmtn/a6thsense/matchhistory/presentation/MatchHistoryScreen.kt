@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,11 +29,37 @@ fun MatchHistoryScreen(
     onAction: (MatchHistoryContract.Action) -> Unit,
     onBackClick: () -> Unit
 ) {
+
+    val colorScheme = MaterialTheme.colorScheme
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F5FF))
+            .background(colorScheme.background)
     ) {
+        // 👇 Silme Onay Diyaloğu
+        if (state.matchToDelete != null) {
+            AlertDialog(
+                onDismissRequest = { onAction(MatchHistoryContract.Action.DismissDeleteDialog) },
+                title = { Text(text = stringResource(R.string.remove_match)) },
+                text = { Text(text = stringResource(R.string.unmatch_confirmation_warning, state.matchToDelete.matchedUserName)) },
+                confirmButton = {
+                    TextButton(
+                        onClick = { onAction(MatchHistoryContract.Action.ConfirmDelete) }
+                    ) {
+                        Text(text = stringResource(R.string.remove), color = Color.Red)
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { onAction(MatchHistoryContract.Action.DismissDeleteDialog) }
+                    ) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
+
         // Dekoratif bloblar
         Box(
             modifier = Modifier
@@ -62,26 +90,30 @@ fun MatchHistoryScreen(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(Color.White)
+                            .background(colorScheme.surface)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Geri",
-                            tint = Color(0xFF2D1B69)
+                            tint = colorScheme.onSurface
                         )
                     }
 
                     Column {
                         Text(
-                            text = "${R.string.matches.toString()} 💫",
+                            text = "${stringResource(R.string.matches)} 💫",
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF2D1B69)
+                            color = colorScheme.onBackground
                         )
                         Text(
-                            text = "${state.totalCount} ${R.string.matches.toString()}",
+                            text = pluralStringResource(
+                                id = R.plurals.matches_plural,
+                                count = state.totalCount,
+                                state.totalCount
+                            ),
                             fontSize = 13.sp,
-                            color = Color(0xFF9E9E9E)
+                            color = colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -117,15 +149,15 @@ fun MatchHistoryScreen(
                             ) {
                                 Text(text = "🔮", fontSize = 64.sp)
                                 Text(
-                                    text = R.string.home_no_matches.toString(),
+                                    text = stringResource(R.string.home_no_matches),
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFF2D1B69)
+                                    color = colorScheme.onBackground
                                 )
                                 Text(
-                                    text = R.string.home_subtitle.toString(),
+                                    text = stringResource(R.string.home_subtitle),
                                     fontSize = 14.sp,
-                                    color = Color(0xFF9E9E9E),
+                                    color = colorScheme.onSurfaceVariant,
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                                 )
                             }
@@ -144,14 +176,19 @@ fun MatchHistoryScreen(
                             onMessageClick = {
                                 onAction(MatchHistoryContract.Action.OnMessageClick(item))
                             },
-                            onSendFriendRequest = { // 👈 YENİ
+                            onSendFriendRequest = {
                                 onAction(MatchHistoryContract.Action.OnSendFriendRequest(item.matchedUserId))
+                            },
+                            onLongClick = {
+                                onAction(MatchHistoryContract.Action.OnDeleteMatch(item))
                             },
                             index = index
                         )
 
                         if (state.hasMoreMatches && !state.isPremium) {
                             PremiumGateCard(
+                                text = stringResource(R.string.more_matches),
+                                desc = stringResource(R.string.gate_card_subtitle),
                                 onUpgradeClick = {
                                     onAction(MatchHistoryContract.Action.OnUpgradeToPremium)
                                 }

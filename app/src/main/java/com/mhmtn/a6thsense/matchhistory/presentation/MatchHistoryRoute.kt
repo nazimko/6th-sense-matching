@@ -44,7 +44,7 @@ fun MatchHistoryRoute(
                     onNavigateToPaywall()
                 }
                 is MatchHistoryContract.Effect.ShowToast -> { // 👈 YENİ
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
 
             }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -76,12 +77,12 @@ fun PhaseTransitionView(
     }
 
     val (title, subtitle) = when (phase) {
-        DailyActivityContract.Phase.PHASE_1 -> R.string.intuition.toString() to R.string.phase1_subtitle.toString()
-        DailyActivityContract.Phase.PHASE_2 -> R.string.colors.toString() to R.string.phase2_subtitle.toString()
-        DailyActivityContract.Phase.PHASE_3 -> R.string.spirit_animals.toString() to R.string.phase3_subtitle.toString()
-        DailyActivityContract.Phase.PHASE_4 -> R.string.elements.toString() to R.string.phase4_subtitle.toString()
-        DailyActivityContract.Phase.PHASE_5 -> R.string.dimensions.toString() to R.string.phase5_subtitle.toString()
-        DailyActivityContract.Phase.PHASE_6 -> R.string.free_spirit.toString() to R.string.phase6_subtitle.toString()
+        DailyActivityContract.Phase.PHASE_1 -> stringResource(R.string.intuition) to stringResource(R.string.phase1_subtitle)
+        DailyActivityContract.Phase.PHASE_2 -> stringResource(R.string.colors) to stringResource(R.string.phase2_subtitle)
+        DailyActivityContract.Phase.PHASE_3 -> stringResource(R.string.spirit_animals) to stringResource(R.string.phase3_subtitle)
+        DailyActivityContract.Phase.PHASE_4 -> stringResource(R.string.elements) to stringResource(R.string.phase4_subtitle)
+        DailyActivityContract.Phase.PHASE_5 -> stringResource(R.string.dimensions) to stringResource(R.string.phase5_subtitle)
+        DailyActivityContract.Phase.PHASE_6 -> stringResource(R.string.free_spirit) to stringResource(R.string.phase6_subtitle)
     }
 
     LaunchedEffect(Unit) {

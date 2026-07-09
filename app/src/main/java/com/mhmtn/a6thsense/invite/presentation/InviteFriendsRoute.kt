@@ -16,6 +16,7 @@ import com.mhmtn.a6thsense.invite.presentation.components.RewardDialog
 
 @Composable
 fun InviteFriendsRoute(
+    isDark: Boolean,
     onBackClick: () -> Unit,
     viewModel: InviteFriendsViewModel = hiltViewModel()
 ) {
@@ -32,30 +33,33 @@ fun InviteFriendsRoute(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is InviteFriendsContract.Effect.ShareLink -> {
-                    shareContent(context = context, message = effect.message)
+                    shareContent(context = context, message = effect.message.asString(context))
                 }
 
                 is InviteFriendsContract.Effect.ShareToPlatform -> { // 👈 Yeni
                     val code = state.referralInfo?.referralCode ?: return@collect
-                    val link = "https://vibetrybe.app/invite?code=$code"
+                    //val link = "aurania://invite?code=$code"
+                    val playStoreLink = "https://play.google.com/apps/internaltest/4700981964110252736"
 
                     when (effect.platform) {
                         SharePlatform.WHATSAPP -> {
-                            val message = context.getString(R.string.invite_message_simple, code)
-                            shareHelper.shareToWhatsApp(message, link)
+                            val message = context.getString(R.string.invite_message_simple, code, playStoreLink)
+                            shareHelper.shareToWhatsApp(message, //link
+                         )
                         }
 
                         SharePlatform.INSTAGRAM -> {
-                            val message = context.getString(R.string.invite_message_simple, code)
-                            shareHelper.shareToInstagram(message, link)
+                            val message = context.getString(R.string.invite_message_simple, code, playStoreLink)
+                            shareHelper.shareToInstagram(message, //link
+                            )
                         }
 
                         SharePlatform.FACEBOOK -> {
                             shareHelper.shareToFacebook(
-                                link = link,
+                                link = playStoreLink,
                                 callbackManager = CallbackManager.Factory.create(),
                                 onSuccess = {
-                                    Toast.makeText(context, R.string.shared.toString(), Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, context.getString(R.string.shared), Toast.LENGTH_SHORT).show()
                                 },
                                 onError = { error ->
                                     Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
@@ -64,24 +68,27 @@ fun InviteFriendsRoute(
                         }
 
                         SharePlatform.TWITTER -> {
-                            val message = context.getString(R.string.invite_message_simple, code)
-                            shareHelper.shareToTwitter(message, link)
+                            val message = context.getString(R.string.invite_message_simple, code, playStoreLink)
+                            shareHelper.shareToTwitter(message, //link
+                            )
                         }
 
                         SharePlatform.MESSAGE -> {
-                            val message = context.getString(R.string.invite_message_simple, code)
-                            shareHelper.shareViaSMS(message, link)
+                            val message = context.getString(R.string.invite_message_simple, code, playStoreLink)
+                            shareHelper.shareViaSMS(message, //link
+                            )
                         }
 
                         SharePlatform.EMAIL -> {
-                            val subject = R.string.email_subject.toString()
+                            val subject = context.getString(R.string.email_subject)
                             val body = context.getString(R.string.invite_email_simple, code)
-                            shareHelper.shareViaEmail(subject, body, link)
+                            shareHelper.shareViaEmail(subject, body, //link
+                            )
                         }
 
                         SharePlatform.OTHER -> {
-                            shareHelper.copyLink(link)
-                            Toast.makeText(context, R.string.copied.toString(), Toast.LENGTH_SHORT).show()
+                            shareHelper.copyLink(playStoreLink)
+                            Toast.makeText(context, context.getString(R.string.copied), Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -91,7 +98,7 @@ fun InviteFriendsRoute(
                 }
 
                 is InviteFriendsContract.Effect.ShowToast -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
 
                 is InviteFriendsContract.Effect.ShowReward -> {
@@ -103,6 +110,7 @@ fun InviteFriendsRoute(
     }
 
     InviteFriendsScreen(
+        isDark = isDark,
         state = state,
         onAction = viewModel::onAction,
         onBackClick = onBackClick
@@ -126,7 +134,7 @@ private fun shareContent(context: Context, message: String) {
         putExtra(Intent.EXTRA_TEXT, message)
     }
 
-    val chooser = Intent.createChooser(intent, R.string.share_aurania.toString())
+    val chooser = Intent.createChooser(intent, context.getString(R.string.share_aurania))
     context.startActivity(chooser)
 }
 

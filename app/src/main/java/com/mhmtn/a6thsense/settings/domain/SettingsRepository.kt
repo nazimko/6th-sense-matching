@@ -10,4 +10,5 @@ interface SettingsRepository {
     suspend fun updateDisplayName(name: String)
     suspend fun updatePhoto(photoUrl: String)
     suspend fun setShowInDiscover(enabled: Boolean)
+    suspend fun updateMinSimilarity(value: Int) // ✅ NEW
 }

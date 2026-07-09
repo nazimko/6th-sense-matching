@@ -16,8 +16,12 @@ interface FriendsRepository {
     // Compatibility Test
     suspend fun runCompatibilityTest(myUid: String, friendUid: String): Result<CompatibilityTestResult>
     fun getCompatibilityHistory(uid: String): Flow<List<CompatibilityTestResult>>
+    suspend fun deleteCompatibilityTest(testId: String): Result<Unit>
 
     suspend fun getOrCreateInviteCode(uid: String): String
 
     suspend fun acceptInviteCode(code: String, accepterUid: String): Result<String>
+
+    // Soul Sync
+    suspend fun startSoulSyncWithFriend(myUid: String, friendUid: String): Result<String>
 }

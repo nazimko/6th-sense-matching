@@ -11,6 +11,7 @@ import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun DiscoverRoute(
+    isDark: Boolean,
     onNavigateToMessaging: (String) -> Unit,
     onNavigateToPaywall: () -> Unit,
     viewModel: DiscoverViewModel = hiltViewModel()
@@ -54,6 +55,7 @@ fun DiscoverRoute(
 
     DiscoverScreen(
         state = state,
+        isDark = isDark,
         showPremiumSnackbar = showPremiumSnackbar,
         onDismissSnackbar = { showPremiumSnackbar = false },
         onUpgradeClick = {

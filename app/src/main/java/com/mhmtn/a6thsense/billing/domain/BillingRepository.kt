@@ -7,7 +7,8 @@ data class SubscriptionPlan(
     val productId: String,
     val title: String,
     val price: String,
-    val description: String
+    val description: String,
+    val billingPeriod: String
 )
 
 interface BillingRepository {
@@ -16,5 +17,6 @@ interface BillingRepository {
 
     suspend fun queryProducts()
     suspend fun purchaseSubscription(productId: String, activity: Activity?): Boolean
-    suspend fun restorePurchases()
+    suspend fun checkSubscriptionStatus()
+    fun resetPremiumState()
 }

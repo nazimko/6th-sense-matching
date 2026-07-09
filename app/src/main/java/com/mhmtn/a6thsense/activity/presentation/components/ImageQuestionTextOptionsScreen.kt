@@ -58,7 +58,7 @@ fun ImageQuestionTextOptionsScreen(
                 ) {
                     SubcomposeAsyncImage(
                         model = imageUrl,
-                        contentDescription = question.question,
+                        contentDescription = question.question.asString(),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     ) {
@@ -82,7 +82,7 @@ fun ImageQuestionTextOptionsScreen(
         // Soru metni
         item {
             Text(
-                text = question.question,
+                text = question.question.asString(),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -100,14 +101,13 @@ fun RewardDialog(
                 )
 
                 Text(
-                    text = R.string.congrats.toString(),
+                    text = stringResource(R.string.congrats),
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
-                val context = LocalContext.current
-                val message = context.getString(R.string.premium_win_message, premiumDays)
+                val message = stringResource((R.string.premium_win_message), premiumDays)
                 Text(
                     text = message,
                     fontSize = 20.sp,
@@ -117,15 +117,15 @@ fun RewardDialog(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-                val statusMessage = context.getString(R.string.premium_active_status, premiumDays)
+                val statusMessage = stringResource((R.string.premium_active_status), premiumDays)
                 // Rewards list
                 Column(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     RewardBadge(emoji = "👑", text = statusMessage)
-                    RewardBadge(emoji = "🔄", text = R.string.unlimited_swipe.toString())
-                    RewardBadge(emoji = "💬", text = R.string.unlimited_messaging.toString())
-                    RewardBadge(emoji = "✨", text = R.string.premium_badge.toString())
+                    RewardBadge(emoji = "🔄", text = stringResource(R.string.unlimited_swipe))
+                    RewardBadge(emoji = "💬", text = stringResource(R.string.unlimited_messaging))
+                    RewardBadge(emoji = "✨", text = stringResource(R.string.premium_badge))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -145,7 +145,7 @@ fun RewardDialog(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "${R.string.great.toString()} 🎊",
+                        text = "${stringResource(R.string.great)} 🎊",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
