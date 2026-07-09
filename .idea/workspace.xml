@@ -200,44 +200,43 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;BundleExportedModule&quot;: &quot;6th_Sense.app&quot;,
-    &quot;Compose Preview.NoMatchScreenPreview.executor&quot;: &quot;Run&quot;,
-    &quot;Compose Preview.PreviewOptionGrid.executor&quot;: &quot;Run&quot;,
-    &quot;ExportBundle.BundlePathFor6th_Sense.app&quot;: &quot;C:\\Users\\mhmtn\\AndroidStudioProjects\\6thSense\\app&quot;,
-    &quot;Gradle.6thSense [signingReport].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.6thSense [testDebugUnitTest].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.6thSense:app [testReleaseUnitTest].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-Deploy&quot;: &quot;Deploy&quot;,
-    &quot;Notification.DoNotAsk-Deploy&quot;: &quot;true&quot;,
-    &quot;PROJECT_TRUSTED_KEY&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Merging main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;C:/Users/mhmtn/AndroidStudioProjects/6thSense/app/src/main/res/drawable&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/mhmtn/AndroidStudioProjects/6thSense_Architecture&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.android.studio.ml.templates&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.app.executor": "Run",
+    "BundleExportedModule": "6th_Sense.app",
+    "Compose Preview.NoMatchScreenPreview.executor": "Run",
+    "Compose Preview.PreviewOptionGrid.executor": "Run",
+    "ExportBundle.BundlePathFor6th_Sense.app": "C:\\Users\\mhmtn\\AndroidStudioProjects\\6thSense\\app",
+    "Gradle.6thSense [signingReport].executor": "Run",
+    "Gradle.6thSense [testDebugUnitTest].executor": "Run",
+    "Gradle.6thSense:app [testReleaseUnitTest].executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-Deploy": "Deploy",
+    "Notification.DoNotAsk-Deploy": "true",
+    "PROJECT_TRUSTED_KEY": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "C:/Users/mhmtn/AndroidStudioProjects/6thSense/app/src/main/res/drawable",
+    "last_opened_file_path": "C:/Users/mhmtn/AndroidStudioProjects/6thSense_Architecture",
+    "settings.editor.selected.configurable": "com.android.studio.ml.templates"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ExportApk.BuildVariants&quot;: [
-      &quot;release&quot;
+  "keyToStringList": {
+    "ExportApk.BuildVariants": [
+      "release"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;kotlin&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "kotlin"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\mhmtn\AndroidStudioProjects\6thSense\app\src\main\res\drawable" />
